@@ -5,7 +5,11 @@ const userSchema = mongoose.Schema({
   name: String,
   role: String,
   passwordHash: String,
-  sensordataObjects: { type: Array, default: [] },
+  sensordataObjectIds: [
+    {
+      type: String,
+    },
+  ],
 })
 
 userSchema.set('toJSON', {
