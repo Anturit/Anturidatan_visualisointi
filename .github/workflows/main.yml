@@ -32,6 +32,9 @@ jobs:
           - name: Install dependencies
             run: npm install
             
+          - name: Run tests
+            run: npm run test
+      
           - name: Setup MongoDB
             uses: supercharge/mongodb-github-action@1.8.0
             with:
@@ -39,4 +42,7 @@ jobs:
                 mongodb-version: ${{ matrix.mongodb-version }}
                 # The port of host
                 host port: mongodb://localhost:27017
+              
+          - name: Run eslint
+            run: npm run lint
 
