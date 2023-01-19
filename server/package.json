@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint .",
+    "test": "NODE_ENV=test jest --verbose --runInBand --forceExit"
   },
   "author": "\"Doubleneck\"",
   "license": "ISC",
@@ -23,5 +24,8 @@
     "jest": "^29.3.1",
     "nodemon": "^2.0.20",
     "supertest": "^6.3.3"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
