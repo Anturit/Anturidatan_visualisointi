@@ -38,7 +38,7 @@ jobs:
                 # Version of mongo to use
                 mongodb-version: ${{ matrix.mongodb-version }}
                 # The port of host
-                host port: mongodb://localhost:27017
+                mongodb-port: mongodb://localhost:27017
               
           - name: Run eslint
             run: npm run lint
