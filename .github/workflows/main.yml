@@ -31,10 +31,7 @@ jobs:
 
           - name: Install dependencies
             run: npm install
-            
-          - name: Run tests
-            run: npm run test
-      
+        
           - name: Setup MongoDB
             uses: supercharge/mongodb-github-action@1.8.0
             with:
@@ -45,4 +42,8 @@ jobs:
               
           - name: Run eslint
             run: npm run lint
+            
+          - name: Run tests
+            run: npm run test
+      
 
