@@ -14,7 +14,6 @@ env:
     TEST_MONGODB_URI: mongodb://localhost:27017/testing
     SECRET: actions
 
-
 jobs:
   build_back_end:
     runs-on: ubuntu-latest
@@ -42,7 +41,6 @@ jobs:
             uses: supercharge/mongodb-github-action@1.8.0
             with:
                 mongodb-version: ${{ matrix.mongodb-version }}
-                mongodb-port: mongodb://localhost:27017
 
           #- name: Run eslint
           #  run: npm run lint
