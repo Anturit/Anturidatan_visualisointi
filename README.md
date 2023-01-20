@@ -22,5 +22,20 @@ Ohtuprojekti 2023, Kymppiremontti
 
 ## Asennus
 
+Asenna riippuvuudet kansioissa _server_ ja _client_ komennolla
 
+```
+npm install
+```
 
+Luo tietokantayhteys _server_-kansiossa paikallisella .env-tiedostolla ja komennolla
+
+```
+npm start
+```
+
+Avaa sovellus paikallisesti _client_-kansiossa komennolla
+
+```
+npm start
+```
