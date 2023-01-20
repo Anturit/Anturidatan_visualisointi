@@ -1,0 +1,50 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+env:
+    NODE_ENV: test
+    TEST_MONGODB_URI: mongodb://localhost:27017/testing
+    SECRET: actions
+
+jobs:
+  build_back_end:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+
+    strategy:
+      matrix:
+        node-version: [14.x,16.x,18.x]
+        mongodb-version: ['4.2', '4.4', '5.0', '6.0']
+    steps:
+          - name: Checkout code
+            uses: actions/checkout@v3
+
+          - name: Set up Node.js ${{ matrix.node-version }}
+            uses: actions/setup-node@v3
+            with:
+              node-version: ${{ matrix.node-version }}
+
+          - name: Install dependencies
+            run: npm install
+
+          - name: Setup MongoDB
+            uses: supercharge/mongodb-github-action@1.8.0
+            with:
+                mongodb-version: ${{ matrix.mongodb-version }}
+
+          #- name: Run eslint
+          #  run: npm run lint
+
+          - name: Run tests
+            run: npm run test
+
