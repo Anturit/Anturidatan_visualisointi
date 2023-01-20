@@ -9,6 +9,11 @@ on:
 permissions:
   contents: read
 
+env:
+    NODE_ENV: test
+    TEST_MONGODB_URI: mongodb://localhost:27017/testing
+    SECRET: actions
+
 
 jobs:
   build_back_end:
@@ -38,10 +43,6 @@ jobs:
             with:
                 mongodb-version: ${{ matrix.mongodb-version }}
                 mongodb-port: mongodb://localhost:27017
-                env:
-                  NODE_ENV: test
-                  TEST_MONGODB_URI: mongodb://localhost:27017/testing
-                  SECRET: actions
 
           #- name: Run eslint
           #  run: npm run lint
