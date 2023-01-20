@@ -2,7 +2,7 @@ import {useState} from 'react'
 import axios from 'axios'
 
 
-const LoginForm = () => {
+const LoginForm = ({setUser}) => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     /*
@@ -22,11 +22,14 @@ const LoginForm = () => {
                 {username, password}
             )
             console.log(`logging in with ${JSON.stringify(user)}`)
+            window.localStorage.setItem(
+                'loggedUser', JSON.stringify(user)
+                )
+            setUser(user)
             setUsername('')
             setPassword('')
         } catch (err){
-            console.log(err)
-            console.log('wrong credentials')
+            alert('wrong username or password')
         }
 
     }
