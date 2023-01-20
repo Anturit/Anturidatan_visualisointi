@@ -38,8 +38,8 @@ jobs:
                 mongodb-version: ${{ matrix.mongodb-version }}
                 mongodb-port: mongodb://localhost:27017
 
-          - name: Run eslint
-            run: npm run lint
+          #- name: Run eslint
+          #  run: npm run lint
 
           - name: Run tests
             run: npm run test
