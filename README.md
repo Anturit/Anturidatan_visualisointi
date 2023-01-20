@@ -17,8 +17,10 @@ Ohtuprojekti 2023, Kymppiremontti
 
 ### Muut
 
-- [Definition of Done]()
+- [Definition of Done](./documentation/definition_of_done.md)
 
 
 ## Asennus
+
+
 
