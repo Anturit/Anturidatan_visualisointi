@@ -1,6 +1,7 @@
 # Anturidatan_visualisointi
 Ohtuprojekti 2023, Kymppiremontti
 
+[Linkki sovellukseen](https://anturit.fly.dev/)
 
 ## Dokumentaatio
 
@@ -14,6 +15,7 @@ Ohtuprojekti 2023, Kymppiremontti
 **Sprint 0**
 - [Tuntikirjanpito koko tiimi](https://github.com/orgs/Anturit/projects/2/insights/17)
 - [Tuntikirjanpito per henkilö](https://github.com/orgs/Anturit/projects/2/insights/10)
+
 
 ### Muut
 
