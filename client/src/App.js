@@ -1,6 +1,6 @@
 import LoginForm from './components/LoginForm'
-import {useState, useEffect} from 'react'
-import jwt_decode from "jwt-decode"
+import { useState, useEffect } from 'react'
+import jwt_decode from 'jwt-decode'
 
 function App() {
   const [user, setUser] = useState(null)
@@ -20,23 +20,23 @@ function App() {
 
   return (
     <>
-    {user === null 
-      ?<LoginForm setUser={setUser}/>
-      : <>
+      {user === null
+        ?<LoginForm setUser={setUser}/>
+        : <>
           <p>{user.name} logged in</p>
-          <button 
+          <button
             onClick={
               () => {
                 setUser(null)
                 window.localStorage.setItem('loggedUser', '')}
-              }
+            }
           >
             Logout
           </button>
         </>
-    }
+      }
     </>
-  );
+  )
 }
 
-export default App;
+export default App
