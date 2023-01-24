@@ -48,3 +48,47 @@ jobs:
           - name: Run tests
             run: npm run test
 
+  end_to_end_test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+        mongodb-version: ['6.0']
+    steps:
+          - name: Checkout code
+            uses: actions/checkout@v3
+          
+          - name: Setup MongoDB
+            uses: supercharge/mongodb-github-action@1.8.0
+            with:
+              mongodb-version: ${{ matrix.mongodb-version }}
+          
+          - name: Set up Node.js ${{ matrix.node-version }}
+            uses: actions/setup-node@v3
+            with:
+              node-version: ${{ matrix.node-version }}
+
+          - name: Install debendencies backend
+            run: |
+              npm install
+
+          - name: Install debendencies frontend
+            run: |
+              cd ../client
+              npm install
+
+          - name: build client and start server
+            working-directory: ./server
+            run: |
+              npm run start:full:test &
+              
+          - name: Run cypress
+            working-directory: ./client
+            run: |
+              cd ../client
+              CYPRESS_BASE_URL=http://localhost:3001/ npm run test:e2e
+
