@@ -1,16 +1,47 @@
-describe('Anturi app', () => {
-  it('front page can be opened', () => {
+describe('Anturi app', function() {
+  beforeEach(function() {
+    cy.request('POST', 'http://localhost:3001/api/testing/reset')
+    const user = {
+      name: 'testuser',
+      username: 'testuser',
+      password: 'testpassword'
+    }
+    cy.request('POST', 'http://localhost:3001/api/users/', user) 
     cy.visit('http://localhost:3000')
+  })
+
+  it('front page can be opened', function() {
     cy.contains('Login')
   })
 
-  it('user can log in', function() {
-    cy.visit('http://localhost:3000')
-    cy.get('#username').type('user')
-    cy.get('#password').type('user')
-    cy.contains('Login').click()
+  describe('Login',function() {
+    it('succeeds with correct credentials', function() {
+      cy.get('#username').type('testuser')
+      cy.get('#password').type('testpassword')
+      cy.contains('Login').click()
 
-    cy.contains('user logged in')
+      cy.contains('testuser logged in')
+    })
+
+    it('fails with wrong credentials', function() {
+      cy.get('#username').type('testuser')
+      cy.get('#password').type('wrong')
+      cy.contains('Login').click()
+
+      cy.on('window:alert',(t)=>{
+        expect(t).to.contains('wrong username or password')
+      })
+    })
+  })
+
+  describe('when logged in', function() {
+    beforeEach(function() {
+      cy.login({ username: 'testuser', password: 'testpassword' })
+    })
+    it('user can log out', function() {
+      cy.contains('Logout').click()
+      cy.contains('Login')
+    })
   })
 })
 
