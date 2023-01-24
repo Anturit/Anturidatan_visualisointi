@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
-const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 
 usersRouter.get('/', async (request, response) => {
@@ -11,7 +10,6 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
   const { username, name, role, password, sensordataObjectIds } =
     await request.body
-  //console.log(typeof request.body.sensordataobjectIds)
 
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(password, saltRounds)
