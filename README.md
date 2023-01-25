@@ -1,6 +1,8 @@
 # Anturidatan_visualisointi
 Ohtuprojekti 2023, Kymppiremontti
 
+![CI](https://github.com/Anturit/Anturidatan_visualisointi/actions/workflows/main.yml/badge.svg)
+
 [Linkki sovellukseen](https://anturit.fly.dev/)
 
 ## Dokumentaatio
