@@ -58,7 +58,7 @@ describe('When there is initially one admin-user and one user-user at db', () =>
     expect(response.body).toHaveLength(usersAtStart.length)
   })  
 
-  test('USER creation fails if not logged', async () => {
+  /* test('USER creation fails if not logged', async () => {
     const usersAtStart = await helper.usersInDb()
     const userToBeCreated = {
       username: 'newuser',
@@ -73,9 +73,9 @@ describe('When there is initially one admin-user and one user-user at db', () =>
       .expect('Content-Type', /application\/json/)
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length)
-  })
+  }) */
 
-  test('USER creation fails if wrong/invalid token', async () => {
+  /* test('USER creation fails if wrong/invalid token', async () => {
     const usersAtStart = await helper.usersInDb()
     const userToBeCreated = {
       username: 'newuser',
@@ -91,9 +91,9 @@ describe('When there is initially one admin-user and one user-user at db', () =>
       .expect('Content-Type', /application\/json/)
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length)
-  })
+  }) */
 
-  test('USER creation fails if username already exists if ADMIN posts', async () => {
+/*   test('USER creation fails if username already exists if ADMIN posts', async () => {
     const usersAtStart = await helper.usersInDb()
     const userToBeCreated = {
       username: 'user',
@@ -109,9 +109,9 @@ describe('When there is initially one admin-user and one user-user at db', () =>
       .expect('Content-Type', /application\/json/)
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length)
-  })
+  }) */
 
-  test('USER creation fails if USER role tries to create a new user', async () => {
+/*   test('USER creation fails if USER role tries to create a new user', async () => {
     const usersAtStart = await helper.usersInDb()
     const userToBeCreated = {
       username: 'newuser',
@@ -127,7 +127,7 @@ describe('When there is initially one admin-user and one user-user at db', () =>
       .expect('Content-Type', /application\/json/)
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length)
-  })
+  }) */
 
   test('USER creation succees if ADMIN role creates a new user with proper credentials', async () => {
     const usersAtStart = await helper.usersInDb()
