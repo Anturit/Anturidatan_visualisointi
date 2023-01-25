@@ -22,7 +22,11 @@ describe('Anturi app', function () {
       cy.get('#password').type('wrong')
       cy.contains('Login').click()
 
+<<<<<<< HEAD
       cy.on('window:alert', (t) => {
+=======
+      cy.on('window:alert',(t) => {
+>>>>>>> f09fb7c2a7e3a7726b0a321f7cc6533763757568
         expect(t).to.contains('wrong username or password')
       })
     })
