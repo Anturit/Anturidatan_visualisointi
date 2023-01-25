@@ -1,4 +1,5 @@
 import LoginForm from './components/LoginForm'
+import RegisterForm from './components/RegisterForm'
 import { useState, useEffect } from 'react'
 import jwt_decode from 'jwt-decode'
 
@@ -35,6 +36,7 @@ function App() {
           </button>
         </>
       }
+      <RegisterForm/>
     </>
   )
 }
