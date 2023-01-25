@@ -1,13 +1,12 @@
 import { useState } from 'react'
 
 const RegisterForm = () => {
-  const roles = ['Admin', 'User']
+  const roles = ['admin', 'user']
 
-  const [newFirstName, setNewFirstName] = useState('')
-  const [newSurname, setNewSurname] = useState('')
+  const [newName, setNewName] = useState('')
   const [newUsername, setNewUsername] = useState('')
   const [newPassword, setNewPassword] = useState('')
-  const [selectedRole, setSelectedRole] = useState(roles[0])
+  const [selectedRole, setSelectedRole] = useState(roles[1])
   const submit = () => {
     console.log('tähän handleRegistration')
   }
@@ -17,13 +16,9 @@ const RegisterForm = () => {
       <form>
         <h4>Rekisteröi uusi käyttäjä</h4>
         <label></label>
-        <label>Etunimi</label>
+        <label>Nimi</label>
         <div>
-          <input value={newFirstName} id='newFirstName' onChange={(e) => setNewFirstName(e.target.value)}/>
-        </div>
-        <label>Sukunimi</label>
-        <div>
-          <input value={newSurname} id='newSurname' onChange={(e) => setNewSurname(e.target.value)}/>
+          <input value={newName} id='newFirstName' onChange={(e) => setNewName(e.target.value)}/>
         </div>
         <label>Käyttäjätunnus</label>
         <div>
