@@ -13,7 +13,7 @@ usersRouter.post('/', async (request, response) => {
     await request.body
   const token = await request.token
   const decodedToken = await jwt.verify(token, process.env.SECRET)
-/*   if (!token || !decodedToken.id) {
+  if (!token || !decodedToken.id) {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
 
@@ -21,7 +21,7 @@ usersRouter.post('/', async (request, response) => {
     return response
       .status(401)
       .json({ error: 'you don´t have rights for this operation' })
-  } */
+  }
 
   if (!(username && password)) {
     return response.status(400).json({
