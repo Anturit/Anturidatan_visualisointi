@@ -3,6 +3,7 @@ import Notification from './components/Notification'
 import { useState, useEffect } from 'react'
 import jwt_decode from 'jwt-decode'
 import RegisterForm from './components/RegisterForm'
+import Togglable from './components/Togglable'
 
 function App() {
   const [user, setUser] = useState(null)
@@ -45,7 +46,10 @@ function App() {
       >
         Logout
       </button>
-      <RegisterForm registerUser={handleRegisterUser}/>
+      <p></p>
+      <Togglable buttonLabel='Add user'>
+        <RegisterForm registerUser={handleRegisterUser}/>
+      </Togglable>
     </div>
   )
 }
