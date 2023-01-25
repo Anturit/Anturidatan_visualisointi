@@ -6,8 +6,8 @@ describe('Anturi app', function() {
       username: 'testuser',
       password: 'testpassword'
     }
-    cy.request('POST', 'http://localhost:3001/api/users/', user) 
-    cy.visit('http://localhost:3000')
+    cy.request('POST', 'http://localhost:3001/api/users/', user)
+    cy.visit('/')
   })
 
   it('front page can be opened', function() {
