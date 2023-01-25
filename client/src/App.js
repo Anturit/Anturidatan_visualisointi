@@ -1,9 +1,11 @@
 import LoginForm from './components/LoginForm'
+import Notification from './components/Notification'
 import { useState, useEffect } from 'react'
 import jwt_decode from 'jwt-decode'
 
 function App() {
   const [user, setUser] = useState(null)
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -18,24 +20,27 @@ function App() {
     }
   }, [])
 
-  return (
-    <>
-      {user === null
-        ?<LoginForm setUser={setUser}/>
-        : <>
-          <p>{user.name} logged in</p>
-          <button
-            onClick={
-              () => {
-                setUser(null)
-                window.localStorage.setItem('loggedUser', '')}
-            }
-          >
-            Logout
-          </button>
-        </>
-      }
+  if (user === null) {
+    return <>
+      <Notification notification={notification} />
+      <LoginForm setUser={setUser} setNotification={setNotification} />
     </>
+  }
+
+  return (
+    <div>
+      <Notification notification={notification} />
+      <p>{user.name} logged in</p>
+      <button
+        onClick={
+          () => {
+            setUser(null)
+            window.localStorage.setItem('loggedUser', '')}
+        }
+      >
+        Logout
+      </button>
+    </div>
   )
 }
 
