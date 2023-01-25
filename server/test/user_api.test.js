@@ -8,6 +8,7 @@ const User = require('../models/user')
 
 let ADMINTOKEN = ''
 let USERTOKEN = ''
+let WRONGTOKEN = ''
 
 beforeAll(async () => {
   await User.deleteMany({})
@@ -45,92 +46,105 @@ beforeAll(async () => {
   }
   const response2 = await supertest(app).post('/api/login').send(userdata2)
   USERTOKEN = response2.body.token
+
+  WRONGTOKEN = 'this_is_a_wrong_token'
+
 })
 
-describe('when there is initially one admin-user and one user-user at db', () => {
+describe('When there is initially one admin-user and one user-user at db', () => {
   test('There are two users at start', async () => {
     const usersAtStart = await helper.usersInDb()
     const response = await api.get('/api/users')
     expect(response.body).toHaveLength(usersAtStart.length)
-  })
+  })  
 
-
-  test('the first news is about HTTP methods', async () => {
-    const userdata = {
-      username: 'admin',
-      password: 'adminPassword',
+  test('USER creation fails if not logged', async () => {
+    const usersAtStart = await helper.usersInDb()
+    const userToBeCreated = {
+      username: 'newuser',
+      name: 'New User',
+      role: 'user',
+      password: 'somepasswordhash',
     }
-    const response = await api.post('/api/login').send(userdata).expect(200).expect('Content-Type', /application\/json/)
-  })
-
-  test('login succees with proper username and password when ADMIN', async () => {
-    const userdata = {
-      username: 'admin',
-      password: 'adminPassword',
-    }
-
-    const response = await api
-      .post('/api/login')
-      .send(userdata)
-      .expect(200)
+    await api
+      .post('/api/users')
+      .send(userToBeCreated)
+      .expect(401)
       .expect('Content-Type', /application\/json/)
-
-    expect(response.body.username).toBe('admin')
-
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
   })
 
-  test('login succees with proper username and password when USER', async () => {
-    const userdata = {
+  test('USER creation fails if wrong/invalid token', async () => {
+    const usersAtStart = await helper.usersInDb()
+    const userToBeCreated = {
+      username: 'newuser',
+      name: 'New User',
+      role: 'user',
+      password: 'somepasswordhash',
+    }
+    await api
+      .post('/api/users')
+      .set('Authorization', `Bearer ${WRONGTOKEN}`)
+      .send(userToBeCreated)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+  })
+
+  test('USER creation fails if username already exists if ADMIN posts', async () => {
+    const usersAtStart = await helper.usersInDb()
+    const userToBeCreated = {
       username: 'user',
-      password: 'userPassword',
-    }
-
-    const response = await api
-      .post('/api/login')
-      .send(userdata)
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-
-    expect(response.body.username).toBe('user')
-  })
-
-  test('login fails with proper username and wrong password when ADMIN', async () => {
-    const userdata = {
-      username: 'admin',
-      password: 'adminPasswordWrong',
+      name: 'New User',
+      role: 'user',
+      password: 'somepasswordhash',
     }
     await api
-      .post('/api/login')
-      .send(userdata)
-      .expect(401)
+      .post('/api/users')
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send(userToBeCreated)
+      .expect(400)
       .expect('Content-Type', /application\/json/)
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
   })
 
-  test('login fails with proper username and wrong password when USER', async () => {
-    const userdata = {
-      username: 'user',
-      password: 'adminPasswordWrong',
+  test('USER creation fails if USER role tries to create a new user', async () => {
+    const usersAtStart = await helper.usersInDb()
+    const userToBeCreated = {
+      username: 'newuser',
+      name: 'New User',
+      role: 'user',
+      password: 'somepasswordhash',
     }
-
     await api
-      .post('/api/login')
-      .send(userdata)
+      .post('/api/users')
+      .set('Authorization', `Bearer ${USERTOKEN}`)
+      .send(userToBeCreated)
       .expect(401)
       .expect('Content-Type', /application\/json/)
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
   })
 
-  test('login fails with wrong username and wrong password when ADMIN', async () => {
-    const userdata = {
-      username: 'adminWrong',
-      password: 'adminPasswordWrong',
+  test('USER creation succees if ADMIN role creates a new user with proper credentials', async () => {
+    const usersAtStart = await helper.usersInDb()
+    const userToBeCreated = {
+      username: 'newuser',
+      name: 'New User',
+      role: 'user',
+      password: 'somepasswordhash',
     }
-
     await api
-      .post('/api/login')
-      .send(userdata)
-      .expect(401)
+      .post('/api/users')
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send(userToBeCreated)
+      .expect(201)
       .expect('Content-Type', /application\/json/)
-
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
   })
+ 
 })
-
