@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import axios from 'axios'
 
-
-const LoginForm = ({ setUser }) => {
+const LoginForm = ({ setUser, setNotification }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   /*
@@ -26,12 +25,18 @@ const LoginForm = ({ setUser }) => {
         'loggedUser', JSON.stringify(user)
       )
       setUser(user)
+      setNotification({ message: `${user.name} logged in` })
+      setTimeout(() => {
+        setNotification(null)
+      }, 3500)
       setUsername('')
       setPassword('')
-    } catch (err){
-      alert('wrong username or password')
+    } catch (err) {
+      setNotification({ message: 'Wrong username or password', type: 'alert' })
+      setTimeout(() => {
+        setNotification(null)
+      }, 3500)
     }
-
   }
 
   return (
