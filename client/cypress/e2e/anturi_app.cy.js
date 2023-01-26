@@ -10,21 +10,19 @@ describe('Anturi app', function () {
 
   describe('Login', function () {
     it('succeeds with correct credentials', function () {
-      cy.get('#username').type('testuser')
-      cy.get('#password').type('testpassword')
-      cy.contains('Login').click()
+      cy.get('[data-cy="username"]').type('testuser')
+      cy.get('[data-cy="password"]').type('testpassword')
+      cy.get('[data-cy="login"]').click()
 
       cy.contains('testuser logged in')
     })
 
     it('fails with wrong credentials', function () {
-      cy.get('#username').type('testuser')
-      cy.get('#password').type('wrong')
-      cy.contains('Login').click()
+      cy.get('[data-cy="username"]').type('testuser')
+      cy.get('[data-cy="password"]').type('wrong')
+      cy.get('[data-cy="login"]').click()
 
-      cy.on('window:alert', (t) => {
-        expect(t).to.contains('wrong username or password')
-      })
+      cy.contains('Wrong username or password') 
     })
   })
 
@@ -32,9 +30,14 @@ describe('Anturi app', function () {
     beforeEach(function () {
       cy.login({ username: 'testuser', password: 'testpassword' })
     })
+
     it('user can log out', function () {
-      cy.contains('Logout').click()
+      cy.get('[data-cy="logout"]').click()
       cy.contains('Login')
+    })
+
+    it('login form is not shown', function () {
+      cy.get('html').should('not.contain', 'Login')
     })
   })
 })
