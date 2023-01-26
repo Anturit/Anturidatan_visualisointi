@@ -14,12 +14,17 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "//start": "Start and open frontend server. Restart on file change",
     "start": "react-scripts start",
+    "//build": "Create optimized production build of frontend for deployment",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "//lint": "Run eslint on directory and subdirectories",
     "lint": "eslint .",
+    "//cypress:open": "Open visual end to end testing tool for development \n    REMEMBER TO:\n    Start backend server in test environment and start frontend server",
     "cypress:open": "cypress open",
+    "//test:e2e": "Run all end to end tests in terminal \n    REMEMBER TO:\n    Start backend server in test environment and start frontend server",
     "test:e2e": "cypress run"
   },
   "proxy": "http://localhost:3001",
