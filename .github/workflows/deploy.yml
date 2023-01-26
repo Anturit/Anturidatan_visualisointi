@@ -1,0 +1,64 @@
+name: Deploy
+
+concurrency: production
+
+on:
+  workflow_dispatch:
+    workflow_run: 
+      workflows: CI Pipeline
+      branches: main
+      types: completed
+
+permissions:
+  contents: read
+
+env:
+  MONGODB_URI: ${{ secrets.MONGODB_URI }}
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+  SECRET: actions
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+        mongodb-version: ['6.0']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Setup MongoDB
+        uses: supercharge/mongodb-github-action@1.8.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
+
+      - name: Install dependencies backend
+        run: |
+          npm install
+
+      - name: Install dependencies frontend
+        run: |
+          cd ../client
+          npm install
+
+      - name: build UI
+        working-directory: ./server
+        run: |
+          npm run build:ui
+
+      - name: Setup fly-actions
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy app
+        working-directory: ./server
+        run: flyctl deploy --remote-only
