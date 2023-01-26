@@ -66,6 +66,7 @@ function App() {
             setUser(null)
             window.localStorage.setItem('loggedUser', '')}
         }
+        data-cy="logout"
       >
         Logout
       </button>
