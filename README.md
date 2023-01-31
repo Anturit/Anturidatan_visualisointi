@@ -17,7 +17,7 @@ Projektissa toteutetaan sensoridatan visualisointi sovellus Kymppiremontit -yrit
 - [Sprint Backlog](https://github.com/orgs/Anturit/projects/2/views/7)
   - *Käynnissäolevan sprintin käyttäjätarinat.*
 - [Task Board](https://github.com/orgs/Anturit/projects/2/views/8)
-  - Käyttäjätarinoihin liityvät tehtävät.
+  - *Käyttäjätarinoihin liityvät tehtävät.*
 - [Other tasks board](https://github.com/orgs/Anturit/projects/2/views/11) 
   - *Kaikki muut projektin etenemiseen liittyvät tehtävät.*
 
