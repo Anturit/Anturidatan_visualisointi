@@ -15,6 +15,18 @@ router.post('/reset', async (request, response) => {
 
   const savedUser = await user.save()
   response.status(201).json(savedUser)
+
+  const passwordAdmin = 'admin'
+  const passwordHashAdmin = await bcrypt.hash(passwordAdmin, saltRounds)
+  const admin = new User({
+    username: 'admin',
+    name: 'admin',
+    role: 'admin',
+    passwordHash: passwordHashAdmin
+  })
+
+  const savedAdmin = await admin.save()
+  response.status(201).json(savedAdmin)
 })
 
 module.exports = router
