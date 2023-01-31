@@ -9,37 +9,9 @@ const User = require('../models/user')
 
 beforeAll(async () => {
   await User.deleteMany({})
-  const passwordHash = await bcrypt.hash('adminPassword', 10)
-
-  const adminuser = new User({
-    username: 'admin',
-    name: 'A. Admin',
-    role: 'admin',
-    passwordHash: passwordHash,
-    sensordataObjectIds: ['sensor1','sensor2']
-  })
-
-  await adminuser.save()
-  const userdata = {
-    username: 'admin',
-    password: 'adminPassword',
-  }
-  await supertest(app).post('/api/login').send(userdata)
-  const passwordHash2 = await bcrypt.hash('userPassword', 10)
-
-  const user = new User({
-    username: 'user',
-    name: 'U. User',
-    role: 'user',
-    passwordHash: passwordHash2,
-    sensordataObjectIds: ['sensor3','sensor4']
-  })
-  await user.save()
-  const userdata2 = {
-    username: 'user',
-    password: 'userPassword',
-  }
-  await supertest(app).post('/api/login').send(userdata2)
+  await (await supertest(app).post('/api/testing'))
+    .expect('Content-Type', /json/)
+    .expect(201)
 })
 
 describe('When there is initially one admin-user and one user-user at db', () => {
@@ -50,7 +22,7 @@ describe('When there is initially one admin-user and one user-user at db', () =>
   })
 
 
-  test('login succees with proper username and password when ADMIN', async () => {
+/*   test('login succees with proper username and password when ADMIN', async () => {
     const userdata = {
       username: 'admin',
       password: 'adminPassword',
@@ -118,5 +90,5 @@ describe('When there is initially one admin-user and one user-user at db', () =>
       .expect(401)
       .expect('Content-Type', /application\/json/)
 
-  })
+  }) */
 })

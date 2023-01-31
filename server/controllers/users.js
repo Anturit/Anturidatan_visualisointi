@@ -9,7 +9,8 @@ usersRouter.get('/', async (request, response) => {
 })
 
 usersRouter.post('/', async (request, response) => {
-  const { username, name, role, password, sensordataObjectIds } =
+  
+  const { username, firstname, lastname, address, postalcode, city, role, expirationdate, password, sensors } =
     await request.body
   const token = await request.token
   const decodedToken = await jwt.verify(token, process.env.SECRET)
@@ -40,10 +41,15 @@ usersRouter.post('/', async (request, response) => {
   const passwordHash = await bcrypt.hash(password, saltRounds)
   const user = new User({
     username,
-    name,
+    firstname,
+    lastname,
+    address,
+    postalcode,
+    city,
     role,
+    expirationdate,
     passwordHash,
-    sensordataObjectIds,
+    sensors,
   })
 
   const savedUser = await user.save()
