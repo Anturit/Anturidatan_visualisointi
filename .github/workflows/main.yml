@@ -2,7 +2,6 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -49,6 +48,7 @@ jobs:
             run: npm run test
 
   end_to_end_test:
+    needs: build_back_end
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -72,11 +72,11 @@ jobs:
             with:
               node-version: ${{ matrix.node-version }}
 
-          - name: Install debendencies backend
+          - name: Install dependencies backend
             run: |
               npm install
 
-          - name: Install debendencies frontend
+          - name: Install dependencies frontend
             run: |
               cd ../client
               npm install
@@ -91,4 +91,3 @@ jobs:
             run: |
               cd ../client
               CYPRESS_BASE_URL=http://localhost:3001/ npm run test:e2e
-
