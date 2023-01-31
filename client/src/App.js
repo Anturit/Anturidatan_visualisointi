@@ -33,6 +33,29 @@ function App() {
       <LoginForm setUser={setUser} setNotification={setNotification} />
     </>
   }
+
+  if (user.role === 'admin') {
+    return (
+      <div>
+        <Notification notification={notification} />
+        <p>{user.name} logged in</p>
+        <button
+          onClick={
+            () => {
+              setUser(null)
+              window.localStorage.setItem('loggedUser', '')}
+          }
+        >
+        Logout
+        </button>
+        <p></p>
+        <Togglable buttonLabel='Add user'>
+          <RegisterForm registerUser={handleRegisterUser}/>
+        </Togglable>
+      </div>
+    )
+  }
+
   return (
     <div>
       <Notification notification={notification} />
@@ -47,10 +70,6 @@ function App() {
       >
         Logout
       </button>
-      <p></p>
-      <Togglable buttonLabel='Add user'>
-        <RegisterForm registerUser={handleRegisterUser}/>
-      </Togglable>
     </div>
   )
 }
