@@ -22,11 +22,11 @@ describe('Anturi app', function () {
       cy.get('[data-cy="password"]').type('wrong')
       cy.get('[data-cy="login"]').click()
 
-      cy.contains('Wrong username or password') 
+      cy.contains('Wrong username or password')
     })
   })
 
-  describe('when logged in', function () {
+  describe('when logged in as user', function () {
     beforeEach(function () {
       cy.login({ username: 'testuser', password: 'testpassword' })
     })
@@ -38,6 +38,17 @@ describe('Anturi app', function () {
 
     it('login form is not shown', function () {
       cy.get('html').should('not.contain', 'Login')
+    }),
+    it('togglable register form is not displayed', function () {
+      cy.get('[data-cy="open"]').should('not.exist')
+    })
+  })
+  describe('when logged in as admin', function () {
+    beforeEach(function () {
+      cy.login({ username: 'admin', password: 'admin' })
+    })
+    it('togglable register form is displayed', function () {
+      cy.get('[data-cy="open"]')
     })
   })
 })
