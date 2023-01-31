@@ -15,12 +15,11 @@ const RegisterForm = () => {
     <div>
       <form>
         <h4>Rekisteröi uusi käyttäjä</h4>
-        <label></label>
         <label>Nimi</label>
         <div>
           <input value={newName} id='newFirstName' onChange={(e) => setNewName(e.target.value)}/>
         </div>
-        <label>Käyttäjätunnus</label>
+        <label>Käyttäjänimi</label>
         <div>
           <input value={newUsername} id='newUsername' onChange={(e) => setNewUsername(e.target.value)}/>
         </div>
