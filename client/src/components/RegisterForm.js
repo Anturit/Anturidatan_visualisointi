@@ -13,8 +13,9 @@ const RegisterForm = () => {
   const [newPassword, setNewPassword] = useState('')
 
   const submit = () => {
-    console.log('tähän handleRegistration')
+    console.log('tähän registerUser')
   }
+
 
   return (
     <div>
@@ -41,17 +42,15 @@ const RegisterForm = () => {
         </div>
         <div>
           <label><h3>Nimi</h3></label>
-          <p>
-            <p>
-              <small>Etunimi</small>
-              <div>
-                <input
-                  placeholder='esim. Matti'
-                  value={newFirstName}
-                  onChange={(e) => setNewFirstName(e.target.value)}/>
-              </div>
-            </p>
-            <p>
+          <div>
+            <small>Etunimi</small>
+            <div>
+              <input
+                placeholder='esim. Matti'
+                value={newFirstName}
+                onChange={(e) => setNewFirstName(e.target.value)}/>
+            </div>
+            <div>
               <small>Sukunimi</small>
               <div>
                 <input
@@ -59,33 +58,32 @@ const RegisterForm = () => {
                   value={newSurname}
                   onChange={(e) => setNewSurname(e.target.value)}/>
               </div>
-            </p>
-          </p>
+            </div>
+          </div>
         </div>
         <div>
           <label><h3>Sähköposti</h3></label>
-          <p>
+          <div>
             <div>
               <input
+                type='email'
                 placeholder='esim. testi@email.fi'
                 value={newEmail} id='newEmail'
                 onChange={(e) => setNewEmail(e.target.value)}/>
             </div>
-          </p>
+          </div>
         </div>
         <div>
           <label><h3>Osoite</h3></label>
-          <p>
-            <p>
-              <small>Katuosoite</small>
-              <div>
-                <input
-                  placeholder='esim. Kauppakatu 29'
-                  value={newAddressLine}
-                  onChange={(e) => setNewAddressLine(e.target.value)}/>
-              </div>
-            </p>
-            <p>
+          <div>
+            <small>Katuosoite</small>
+            <div>
+              <input
+                placeholder='esim. Kauppakatu 29'
+                value={newAddressLine}
+                onChange={(e) => setNewAddressLine(e.target.value)}/>
+            </div>
+            <div>
               <small>Postinumero</small>
               <div>
                 <input
@@ -93,9 +91,9 @@ const RegisterForm = () => {
                   value={newPostcode}
                   onChange={(e) => setNewPostcode(e.target.value)}/>
               </div>
-            </p>
-          </p>
-          <p>
+            </div>
+          </div>
+          <div>
             <small>Kaupunki</small>
             <div>
               <input
@@ -103,17 +101,17 @@ const RegisterForm = () => {
                 value={newCity}
                 onChange={(e) => setNewCity(e.target.value)}/>
             </div>
-          </p>
-          <p>
+          </div>
+          <div>
             <small>Maa</small>
             <div>
               <input value={'Suomi'}/>
             </div>
-          </p>
+          </div>
         </div>
         <div>
           <label><h3>Salasana</h3></label>
-          <p>
+          <div>
             <small>Salasanan tulee sisältää:
               <ul>
                 <li>8 merkkiä</li>
@@ -123,17 +121,17 @@ const RegisterForm = () => {
                 <li>1 numero</li>
               </ul>
             </small>
-          </p>
-          <p>
-            <p>
+          </div>
+          <div>
+            <div>
               <small>Käyttäjän salasana</small>
               <div>
                 <input
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}/>
               </div>
-            </p>
-          </p>
+            </div>
+          </div>
         </div>
         <p>
           <button type="submit" onClick={submit}>Lisää uusi käyttäjä</button>
