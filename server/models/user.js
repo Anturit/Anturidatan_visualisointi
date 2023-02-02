@@ -5,20 +5,41 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  firstname: String,
-  lastname: String,
-  address: String,
-  postalcode: String,
-  city: String,
+  firstName: {
+    type: String,
+    required: true
+  },
+  lastName: {
+    type: String,
+    required: true
+  },
+  address: {
+    type: String,
+    required: true
+  },
+  postalCode: {
+    type: String,
+    required: true
+  },
+  city: {
+    type: String,
+    required: true
+  },
   role: {
     type: String,
     enum: {
-      values:['admin','user'],
+      values: ['admin', 'user'],
       message: 'role must be admin or user'
     }
   },
-  expirationdate: Date,
-  passwordHash: String,
+  expirationDate: {
+    type: Date,
+    required: true
+  },
+  passwordHash: {
+    type: String,
+    required: true
+  },
   senderDeviceIds: [
     {
       type: String,

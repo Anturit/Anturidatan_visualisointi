@@ -1,11 +1,10 @@
 const router = require('express').Router()
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
-const usersRouter = require('./users')
 
 const expiredDate = new Date('2000-04-20T06:12:14.241Z')
 const nonExpiredDate = new Date('3000-04-20T06:12:14.241Z')
-const userUser = {
+const userUser = () => ({
   username: 'user@user',
   firstName: 'UserTest',
   lastName: 'UserTest',
@@ -16,9 +15,9 @@ const userUser = {
   expirationDate: nonExpiredDate,
   senderDeviceIds: ['E00208B4'],
   password: 'user@user',
-}
+})
 
-const expiredUser = {
+const expiredUser = () => ({
   username: 'expireduser@user',
   firstName: 'ExpiredUserTest',
   lastName: 'ExpiredUserTest',
@@ -29,9 +28,9 @@ const expiredUser = {
   expirationDate: expiredDate,
   senderDeviceIds: ['E00208B4'],
   password: 'expireduser@user',
-}
+})
 
-const adminUser = {
+const adminUser = () => ({
   username: 'admin@admin',
   firstName: 'AdminTest',
   lastName: 'AdminTest',
@@ -42,15 +41,16 @@ const adminUser = {
   expirationDate: nonExpiredDate,
   senderDeviceIds: ['E00208B4'],
   password: 'admin@admin',
-}
+})
 
 
 router.post('/reset', async (request, response) => {
   await User.deleteMany({})
-  const testUsers = [userUser, expiredUser, adminUser]
+  const testUsers = [userUser(), expiredUser(), adminUser()]
   const saltRounds = 10
 
   let savedUsers = []
+
   for (let user of testUsers) {
     const passwordHash = await bcrypt.hash(user.password, saltRounds)
     user.passwordHash = passwordHash

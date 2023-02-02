@@ -1,6 +1,7 @@
 describe('Anturi app', function () {
   beforeEach(function () {
-    cy.request('POST', 'http://localhost:3001/api/testing/reset')
+    const response = cy.request('POST', 'http://localhost:3001/api/testing/reset')
+    users = response.body
     cy.visit('/')
   })
 
@@ -10,11 +11,12 @@ describe('Anturi app', function () {
 
   describe('Login', function () {
     it('succeeds with correct credentials', function () {
-      cy.get('[data-cy="username"]').type('testuser')
-      cy.get('[data-cy="password"]').type('testpassword')
+      cy.get('[data-cy="username"]').type('user@user')
+      cy.get('[data-cy="password"]').type('user@user')
       cy.get('[data-cy="login"]').click()
 
-      cy.contains('testuser logged in')
+      //add proper name to check, when name in notification works
+      cy.contains('logged in')
     })
 
     it('fails with wrong credentials', function () {

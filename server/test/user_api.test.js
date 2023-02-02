@@ -111,15 +111,20 @@ describe('When there is initially one admin - user and two user - users at db', 
 
   test('USER creation succees if ADMIN role creates a new user with proper credentials', async () => {
     const usersAtStart = await helper.usersInDb()
-    const userToBeCreated = {
+    const newUser = helper.userUser()
+    console.log(newUser)
+    newUser.username = 'newUserUsername@newUserUsername'
+    /*     const userToBeCreated = {
       username: 'newuser',
+      firstName: 'firstname',
+
       role: 'user',
       password: 'somepasswordhash',
-    }
+    } */
     await api
       .post('/api/users')
       .set('Authorization', `Bearer ${ADMINTOKEN}`)
-      .send(userToBeCreated)
+      .send(newUser)
       .expect(201)
       .expect('Content-Type', /application\/json/)
     const usersAtEnd = await helper.usersInDb()
