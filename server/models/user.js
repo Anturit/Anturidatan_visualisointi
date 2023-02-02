@@ -1,11 +1,46 @@
 const mongoose = require('mongoose')
 
 const userSchema = mongoose.Schema({
-  username: String,
-  name: String,
-  role: String,
-  passwordHash: String,
-  sensordataObjectIds: [
+  username: {
+    type: String,
+    required: true
+  },
+  firstName: {
+    type: String,
+    required: true
+  },
+  lastName: {
+    type: String,
+    required: true
+  },
+  address: {
+    type: String,
+    required: true
+  },
+  postalCode: {
+    type: String,
+    required: true
+  },
+  city: {
+    type: String,
+    required: true
+  },
+  role: {
+    type: String,
+    enum: {
+      values: ['admin', 'user'],
+      message: 'role must be admin or user'
+    }
+  },
+  expirationDate: {
+    type: Date,
+    required: true
+  },
+  passwordHash: {
+    type: String,
+    required: true
+  },
+  senderDeviceIds: [
     {
       type: String,
     },

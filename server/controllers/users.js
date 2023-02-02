@@ -9,8 +9,8 @@ usersRouter.get('/', async (request, response) => {
 })
 
 usersRouter.post('/', async (request, response) => {
-  const { username, name, role, password, sensordataObjectIds } =
-    await request.body
+
+  const user = await request.body
   const token = await request.token
   const decodedToken = await jwt.verify(token, process.env.SECRET)
   if (!token || !decodedToken.id) {
@@ -23,13 +23,13 @@ usersRouter.post('/', async (request, response) => {
       .json({ error: 'you don´t have rights for this operation' })
   }
 
-  if (!(username && password)) {
+  if (!(user.username && user.password)) {
     return response.status(400).json({
       error: 'username and password must be given',
     })
   }
 
-  const existingUser = await User.findOne({ username })
+  const existingUser = await User.findOne({ username: user.username })
   if (existingUser) {
     return response.status(400).json({
       error: 'username must be unique',
@@ -37,16 +37,10 @@ usersRouter.post('/', async (request, response) => {
   }
 
   const saltRounds = 10
-  const passwordHash = await bcrypt.hash(password, saltRounds)
-  const user = new User({
-    username,
-    name,
-    role,
-    passwordHash,
-    sensordataObjectIds,
-  })
-
-  const savedUser = await user.save()
+  user.passwordHash = await bcrypt.hash(user.password, saltRounds)
+  delete user.password
+  const userToSave = new User(user)
+  const savedUser = await userToSave.save()
   response.status(201).json(savedUser)
 })
 

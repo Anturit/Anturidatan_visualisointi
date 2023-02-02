@@ -8,6 +8,8 @@
     "start": "node index.js",
     "//dev": "Start server. Server restarts on file change\n    Normal environment",
     "dev": "nodemon index.js",
+    "//dev:test": "Start server. Server restarts on file change\n    Test environment",
+    "dev:test": "NODE_ENV=test nodemon index.js",
     "//lint": "Run eslint on directory and subdirectories",
     "lint": "eslint .",
     "//test": "Run jest tests\n    Test environment",
