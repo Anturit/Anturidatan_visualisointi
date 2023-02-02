@@ -1,7 +1,6 @@
 describe('Anturi app', function () {
   beforeEach(function () {
     const response = cy.request('POST', 'http://localhost:3001/api/testing/reset')
-    users = response.body
     cy.visit('/')
   })
 
@@ -30,7 +29,7 @@ describe('Anturi app', function () {
 
   describe('when logged in as user', function () {
     beforeEach(function () {
-      cy.login({ username: 'testuser', password: 'testpassword' })
+      cy.login({ username: 'user@user', password: 'user@user' })
     })
 
     it('user can log out', function () {
@@ -47,7 +46,7 @@ describe('Anturi app', function () {
   })
   describe('when logged in as admin', function () {
     beforeEach(function () {
-      cy.login({ username: 'admin', password: 'admin' })
+      cy.login({ username: 'admin@admin', password: 'admin@admin' })
     })
     it('togglable register form is displayed', function () {
       cy.get('[data-cy="open"]')
