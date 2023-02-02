@@ -1,9 +1,9 @@
 import { useState } from 'react'
 
 const RegisterForm = () => {
-
   const roles = ['admin', 'user']
   const [selectedRole, setSelectedRole] = useState(roles[1])
+  const [expirationDate, setExpirationDate] = useState(new Date)
   const [newFirstName, setNewFirstName] = useState('')
   const [newSurname, setNewSurname] = useState('')
   const [newEmail, setNewEmail] = useState('')
@@ -11,127 +11,126 @@ const RegisterForm = () => {
   const [newPostcode, setNewPostcode] = useState('')
   const [newCity, setNewCity] = useState('')
   const [newPassword, setNewPassword] = useState('')
+  const [meter, setMeter] = useState(false)
 
   const submit = () => {
     console.log('tähän registerUser')
   }
 
+  const eightCharsOrMore = /.{8,}/g
+  const atLeastOneUppercase = /[A-Z]/g
+  const atLeastOneLowercase = /[a-z]/g
+  const atLeastOneNumeric = /[0-9]/g
+  const atLeastOneSpecialChar = /[#?!@$%^&*-]/g
+
+  const passwordTracker = {
+    uppercase: newPassword.match(atLeastOneUppercase),
+    lowercase: newPassword.match(atLeastOneLowercase),
+    number: newPassword.match(atLeastOneNumeric),
+    specialChar: newPassword.match(atLeastOneSpecialChar),
+    eightCharsOrGreater: newPassword.match(eightCharsOrMore),
+  }
+
+  const passwordValidation = Object.values(passwordTracker).filter(
+    (value) => value
+  ).length
 
   return (
     <div>
       <form>
+        <h1>Rekisteröintilomake</h1>
+        <label><h3>Käyttäjän rooli</h3></label>
+        <p>
+          <small>Valitse käyttäjän rooli: <span> </span></small>
+          <select
+            value={selectedRole}
+            onChange ={(e) => setSelectedRole(e.target.value)}>
+            {roles.map((value) => (
+              <option
+                value={value}
+                key={value}>
+                {value}
+              </option>
+            ))}
+          </select>
+        </p>
+        <label><h3>Käyttäjätunnus voimassa: </h3></label>
+        <input type="date" id="start" name="expiration"
+          value={expirationDate}
+          min="2023-01-01" max="2050-01-01"
+          onChange={(e) => setExpirationDate(e.target.value)}/>
+        <label><h3>Nimi</h3></label>
+        <small>Etunimi</small>
         <div>
-          <h1>Rekisteröintilomake</h1>
+          <input
+            placeholder='esim. Matti'
+            value={newFirstName}
+            onChange={(e) => setNewFirstName(e.target.value)}/>
         </div>
+        <small>Sukunimi</small>
         <div>
-          <label><h3>Käyttäjän rooli</h3></label>
-          <p>
-            <small>Valitse käyttäjän rooli: <span> </span></small>
-            <select
-              value={selectedRole}
-              onChange ={(e) => setSelectedRole(e.target.value)}>
-              {roles.map((value) => (
-                <option
-                  value={value}
-                  key={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </p>
-        </div>
-        <div>
-          <label><h3>Nimi</h3></label>
-          <div>
-            <small>Etunimi</small>
-            <div>
-              <input
-                placeholder='esim. Matti'
-                value={newFirstName}
-                onChange={(e) => setNewFirstName(e.target.value)}/>
-            </div>
-            <div>
-              <small>Sukunimi</small>
-              <div>
-                <input
-                  placeholder='esim. Meikäläinen'
-                  value={newSurname}
-                  onChange={(e) => setNewSurname(e.target.value)}/>
-              </div>
-            </div>
-          </div>
+          <input
+            placeholder='esim. Meikäläinen'
+            value={newSurname}
+            onChange={(e) => setNewSurname(e.target.value)}/>
         </div>
         <div>
           <label><h3>Sähköposti</h3></label>
-          <div>
-            <div>
-              <input
-                type='email'
-                placeholder='esim. testi@email.fi'
-                value={newEmail} id='newEmail'
-                onChange={(e) => setNewEmail(e.target.value)}/>
-            </div>
-          </div>
+          <input
+            type='email'
+            placeholder='esim. testi@email.fi'
+            value={newEmail} id='newEmail'
+            onChange={(e) => setNewEmail(e.target.value)}/>
         </div>
         <div>
           <label><h3>Osoite</h3></label>
+          <small>Katuosoite</small>
           <div>
-            <small>Katuosoite</small>
-            <div>
-              <input
-                placeholder='esim. Kauppakatu 29'
-                value={newAddressLine}
-                onChange={(e) => setNewAddressLine(e.target.value)}/>
-            </div>
-            <div>
-              <small>Postinumero</small>
-              <div>
-                <input
-                  placeholder='esim. 40100'
-                  value={newPostcode}
-                  onChange={(e) => setNewPostcode(e.target.value)}/>
-              </div>
-            </div>
+            <input
+              placeholder='esim. Kauppakatu 29'
+              value={newAddressLine}
+              onChange={(e) => setNewAddressLine(e.target.value)}/>
           </div>
+          <small>Postinumero</small>
           <div>
-            <small>Kaupunki</small>
-            <div>
-              <input
-                placeholder='esim. 40100'
-                value={newCity}
-                onChange={(e) => setNewCity(e.target.value)}/>
-            </div>
+            <input
+              placeholder='esim. 40100'
+              value={newPostcode}
+              onChange={(e) => setNewPostcode(e.target.value)}/>
           </div>
+          <small>Kaupunki</small>
           <div>
-            <small>Maa</small>
-            <div>
-              <input value={'Suomi'}/>
-            </div>
+            <input
+              placeholder='esim. 40100'
+              value={newCity}
+              onChange={(e) => setNewCity(e.target.value)}/>
+          </div>
+          <small>Maa</small>
+          <div>
+            <input value={'Suomi'}/>
           </div>
         </div>
+        <label><h3>Salasana</h3></label>
+        <small>Käyttäjän salasana</small>
         <div>
-          <label><h3>Salasana</h3></label>
-          <div>
-            <small>Salasanan tulee sisältää:
-              <ul>
-                <li>8 merkkiä</li>
-                <li>1 isokirjain</li>
-                <li>1 pienikirjain</li>
-                <li>1 erikoismerkki</li>
-                <li>1 numero</li>
-              </ul>
-            </small>
-          </div>
-          <div>
-            <div>
-              <small>Käyttäjän salasana</small>
+          <input
+            value={newPassword}
+            onFocus={() => setMeter(true)}
+            onChange={(e) => setNewPassword(e.target.value)}/>
+          {meter && (
+            <small>
+              <div className="password-strength-meter"></div>
               <div>
-                <input
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}/>
+                {passwordValidation < 5 && 'Salasanan tulee sisältää: '}
+                {!passwordTracker.uppercase && 'iso kirjain, '}
+                {!passwordTracker.lowercase && 'pieni kirjain, '}
+                {!passwordTracker.specialChar && 'erikoismerkki, '}
+                {!passwordTracker.number && 'numero, '}
+                {!passwordTracker.eightCharsOrGreater &&
+                  'ainakin kahdeksan merkkiä'}
               </div>
-            </div>
-          </div>
+            </small>
+          )}
         </div>
         <p>
           <button type="submit" onClick={submit}>Lisää uusi käyttäjä</button>
