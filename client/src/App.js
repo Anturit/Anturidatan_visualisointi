@@ -4,10 +4,13 @@ import { useState, useEffect } from 'react'
 import jwt_decode from 'jwt-decode'
 import RegisterForm from './components/RegisterForm'
 import Togglable from './components/Togglable'
+import senderService from './services/senderService'
+import SenderList from './components/SenderList'
 
 function App() {
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState(null)
+  const [senders, setSenders] = useState([])
 
 
   useEffect(() => {
@@ -22,6 +25,19 @@ function App() {
       }
     }
   }, [])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await senderService.getAll(user.token)
+
+      setSenders(data)
+    }
+    if (user) {
+      if (user.role === 'admin') {
+        fetchData()
+      }
+    }
+  }, [user])
 
   const handleRegisterUser = () => {
     return ('integrate backend here')
@@ -51,6 +67,9 @@ function App() {
         <p></p>
         <Togglable buttonLabel='Add user'>
           <RegisterForm registerUser={handleRegisterUser}/>
+        </Togglable>
+        <Togglable buttonLabel='Näytä laitteet'>
+          <SenderList senders={senders} />
         </Togglable>
       </div>
     )
