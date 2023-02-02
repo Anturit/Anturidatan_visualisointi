@@ -3,8 +3,8 @@ const User = require('../models/user')
 const bcrypt = require('bcrypt')
 const usersRouter = require('./users')
 
-const expiredDate= new Date('2000-04-20T06:12:14.241Z')
-const nonExpiredDate= new Date('3000-04-20T06:12:14.241Z')
+const expiredDate = new Date('2000-04-20T06:12:14.241Z')
+const nonExpiredDate = new Date('3000-04-20T06:12:14.241Z')
 const userUser = {
   username: 'user@user',
   firstName: 'UserTest',
@@ -47,11 +47,11 @@ const adminUser = {
 
 router.post('/reset', async (request, response) => {
   await User.deleteMany({})
-  const testUsers = [userUser,expiredUser,adminUser]
+  const testUsers = [userUser, expiredUser, adminUser]
   const saltRounds = 10
 
   let savedUsers = []
-  for (user of testUsers) {
+  for (let user of testUsers) {
     const passwordHash = await bcrypt.hash(user.password, saltRounds)
     user.passwordHash = passwordHash
     delete user.password
