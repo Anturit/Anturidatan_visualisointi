@@ -22,6 +22,7 @@ function App() {
       const expiresAtMillis = decodedToken.exp * 1000
       if (expiresAtMillis > Date.now()) {
         setUser(parsedUser)
+        userService.setToken(parsedUser)
       }
     }
   }, [])

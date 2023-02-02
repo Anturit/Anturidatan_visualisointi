@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import axios from 'axios'
+import userService from '../services/users'
 
 const LoginForm = ({ setUser, setNotification }) => {
   const [username, setUsername] = useState('')
@@ -25,6 +26,7 @@ const LoginForm = ({ setUser, setNotification }) => {
         'loggedUser', JSON.stringify(user)
       )
       setUser(user)
+      userService.setToken(user.token)
       setNotification({ message: `${user.name} logged in` })
       setTimeout(() => {
         setNotification(null)
