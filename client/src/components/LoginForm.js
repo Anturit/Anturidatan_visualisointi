@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import axios from 'axios'
-import userService from '../services/users'
+import userService from '../services/registerService'
 
 const LoginForm = ({ setUser, setNotification }) => {
   const [username, setUsername] = useState('')

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 //import axios from 'axios'
-import userService from '/home/nheikki/Documents/Anturidatan_visualisointi/client/src/services/users.js'
+import registerService from '../services/registerService.js'
 
 const RegisterForm = () => {
 
@@ -14,8 +14,23 @@ const RegisterForm = () => {
   const [newCity, setNewCity] = useState('')
   const [newPassword, setNewPassword] = useState('')
 
-  const submit = () => {
-    console.log('tähän registerUser')
+  const submit = (event) => {
+    event.preventDefault()
+    const userObject = {
+      username: newAddressLine,
+      password: newPassword,
+      firstName: newFirstName,
+      lastName: newSurname,
+      address: newAddressLine,
+      postalCode: newPostcode,
+      city: newCity,
+      role: selectedRole,
+      expirationDate: '3000-04-20T06:12:14.241Z',
+      senderDeviceIds: [
+        'E00208B4'
+      ] }
+
+    registerService.create(userObject)
   }
 
 
@@ -136,7 +151,7 @@ const RegisterForm = () => {
           </div>
         </div>
         <p>
-          <button type="submit">Lisää uusi käyttäjä</button>
+          <button type="submit" onClick={submit}>Lisää uusi käyttäjä</button>
         </p>
       </form>
     </div>

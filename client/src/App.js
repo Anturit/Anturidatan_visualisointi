@@ -6,6 +6,7 @@ import RegisterForm from './components/RegisterForm'
 import Togglable from './components/Togglable'
 import senderService from './services/senderService'
 import SenderList from './components/SenderList'
+import registerService from './services/registerService'
 
 function App() {
   const [user, setUser] = useState(null)
@@ -22,7 +23,7 @@ function App() {
       const expiresAtMillis = decodedToken.exp * 1000
       if (expiresAtMillis > Date.now()) {
         setUser(parsedUser)
-        userService.setToken(parsedUser)
+        registerService.setToken(parsedUser)
       }
     }
   }, [])
