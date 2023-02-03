@@ -31,7 +31,7 @@ const RegisterForm = ({ setNotification }) => {
   const submit = async (event) => {
     event.preventDefault()
     const userObject = {
-      username: newAddressLine,
+      username: newEmail,
       password: newPassword,
       firstName: newFirstName,
       lastName: newSurname,
