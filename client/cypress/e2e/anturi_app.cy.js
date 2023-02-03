@@ -1,3 +1,5 @@
+import { userUser, adminUser, expiredUser } from '../../../server/test/test_helper'
+
 describe('Anturi app', function () {
   beforeEach(function () {
     const response = cy.request('POST', 'http://localhost:3001/api/testing/reset')
@@ -23,7 +25,14 @@ describe('Anturi app', function () {
       cy.get('[data-cy="password"]').type('wrong')
       cy.get('[data-cy="login"]').click()
 
-      cy.contains('Wrong username or password')
+      cy.contains('Väärä käyttäjänimi tai salasana')
+    })
+    it('fails with expired credentials', function () {
+      cy.get('[data-cy="username"]').type(expiredUser().username)
+      cy.get('[data-cy="password"]').type(expiredUser().password)
+      cy.get('[data-cy="login"]').click()
+
+      cy.contains('Käyttäjän lisenssi vanhentunut')
     })
   })
 
@@ -48,8 +57,19 @@ describe('Anturi app', function () {
     beforeEach(function () {
       cy.login({ username: 'admin@admin', password: 'admin@admin' })
     })
-    it('togglable register form is displayed', function () {
+    it.only('togglable register form is displayed', function () {
       cy.get('[data-cy="open"]')
+    })
+    it.only('admin can create new user', function () {
+      cy.contains('Lisää käyttäjä').click()
+      cy.get('[data-cy="firstName"]').type('Test')
+      cy.get('[data-cy="lastName"]').type('Tester')
+      cy.get('[data-cy="email"]').type('user@user')
+      cy.get('[data-cy="adress"]').type('test')
+      cy.get('[data-cy="postalCode"]').type('00000')
+      cy.get('[data-cy="city"]').type('test')
+      cy.get('[data-cy="password"]').type('user@user')
+      cy.get('[data-cy="addUser"]').click()
     })
   })
 })

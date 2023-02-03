@@ -6,6 +6,7 @@ import RegisterForm from './components/RegisterForm'
 import Togglable from './components/Togglable'
 import senderService from './services/senderService'
 import SenderList from './components/SenderList'
+import registerService from './services/registerService'
 
 function App() {
   const [user, setUser] = useState(null)
@@ -22,6 +23,9 @@ function App() {
       const expiresAtMillis = decodedToken.exp * 1000
       if (expiresAtMillis > Date.now()) {
         setUser(parsedUser)
+        registerService.setToken(
+          parsedUser.token
+        )
       }
     }
   }, [])
@@ -38,10 +42,6 @@ function App() {
       }
     }
   }, [user])
-
-  const handleRegisterUser = () => {
-    return ('integrate backend here')
-  }
 
   if (user === null) {
     return <>
@@ -65,8 +65,8 @@ function App() {
         Logout
         </button>
         <p></p>
-        <Togglable buttonLabel='Add user'>
-          <RegisterForm registerUser={handleRegisterUser}/>
+        <Togglable buttonLabel='Lisää käyttäjä'>
+          <RegisterForm setNotification={setNotification} />
         </Togglable>
         <Togglable buttonLabel='Näytä laitteet'>
           <SenderList senders={senders} />

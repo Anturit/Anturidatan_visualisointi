@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import axios from 'axios'
+import userService from '../services/registerService'
 
 const LoginForm = ({ setUser, setNotification }) => {
   const [username, setUsername] = useState('')
@@ -25,14 +26,21 @@ const LoginForm = ({ setUser, setNotification }) => {
         'loggedUser', JSON.stringify(user)
       )
       setUser(user)
-      setNotification({ message: `${user.name} logged in` })
+      userService.setToken(user.token)
+      setNotification({ message: `${user.firstName} ${user.lastName} logged in` })
       setTimeout(() => {
         setNotification(null)
       }, 3500)
       setUsername('')
       setPassword('')
     } catch (err) {
-      setNotification({ message: 'Wrong username or password', type: 'alert' })
+      if (err.response) {
+        if (err.response.data.error.includes('expired')) {
+          setNotification({ message: 'Käyttäjän lisenssi vanhentunut', type: 'alert' })
+        } else {
+          setNotification({ message: 'Väärä käyttäjänimi tai salasana', type: 'alert' })
+        }
+      }
       setTimeout(() => {
         setNotification(null)
       }, 3500)
@@ -42,7 +50,7 @@ const LoginForm = ({ setUser, setNotification }) => {
   return (
     <form onSubmit={handleLogin}>
       <div>
-                username
+                käyttäjänimi
         <input
           type={'text'}
           value={username}
@@ -53,7 +61,7 @@ const LoginForm = ({ setUser, setNotification }) => {
         />
       </div>
       <div>
-                password
+                salasana
         <input
           type={'password'}
           value={password}
