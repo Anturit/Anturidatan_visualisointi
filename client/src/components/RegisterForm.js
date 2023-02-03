@@ -1,5 +1,4 @@
 import { useState } from 'react'
-//import axios from 'axios'
 import registerService from '../services/registerService.js'
 
 const RegisterForm = () => {
@@ -32,6 +31,15 @@ const RegisterForm = () => {
       ] }
 
     registerService.create(userObject)
+
+    //setSelectedRole(useState(roles[1]))
+    //setNewFirstName('')
+    //setNewSurname('')
+    //setNewEmail('')
+    //setNewAddressLine('')
+    //setNewPostcode('')
+    //setNewCity('')
+    //setNewPassword('')
   }
 
   const eightCharsOrMore = /.{8,}/g
