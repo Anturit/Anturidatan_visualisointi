@@ -11,17 +11,17 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
 
   const user = await request.body
-  const token = await request.token
+/*   const token = await request.token
   const decodedToken = await jwt.verify(token, process.env.SECRET)
   if (!token || !decodedToken.id) {
     return response.status(401).json({ error: 'token missing or invalid' })
-  }
+  } */
 
-  if (decodedToken.role !== 'admin') {
+/*   if (decodedToken.role !== 'admin') {
     return response
       .status(401)
       .json({ error: 'you don´t have rights for this operation' })
-  }
+  } */
 
   if (!(user.username && user.password)) {
     return response.status(400).json({
