@@ -1,6 +1,6 @@
-# Testing instructions
+# Instructions to run automated tests locally
 
-In /server/.env set the value of variable:
+In /server/.env set the values of the following environment variables:
 * TEST_MONGODB_URI to be the URL of the database used for testing
 * PORT to be the port used by the server
 * SECRET to be any secret string
@@ -10,7 +10,7 @@ In /server/.env set the value of variable:
 1. In /server to run the tests:
 
 ```bash
-npm run test
+npm test
 ```
 
 ## E2E-tests
