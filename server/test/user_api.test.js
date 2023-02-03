@@ -42,15 +42,11 @@ describe('When there is initially one admin - user and two user - users at db', 
 
   test('USER creation fails if not logged', async () => {
     const usersAtStart = await helper.usersInDb()
-    const userToBeCreated = {
-      userName: 'newuser',
-      firstName: 'New User',
-      role: 'user',
-      password: 'somepasswordhash',
-    }
+    const newUser = helper.userUser()
+    newUser.username = 'newUserUsername@newUserUsername'
     await api
       .post('/api/users')
-      .send(userToBeCreated)
+      .send(newUser)
       .expect(401)
       .expect('Content-Type', /application\/json/)
     const usersAtEnd = await helper.usersInDb()
@@ -59,32 +55,26 @@ describe('When there is initially one admin - user and two user - users at db', 
 
   test('USER creation fails if wrong/invalid token', async () => {
     const usersAtStart = await helper.usersInDb()
-    const userToBeCreated = {
-      username: 'newuser',
-      role: 'user',
-      password: 'somepasswordhash',
-    }
+    const newUser = helper.userUser()
+    newUser.username = 'newUserUsername@newUserUsername'
     await api
       .post('/api/users')
       .set('Authorization', `Bearer ${WRONGTOKEN}`)
-      .send(userToBeCreated)
+      .send(newUser)
       .expect(401)
       .expect('Content-Type', /application\/json/)
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length)
-  })
+  }) 
 
   test('USER creation fails if username already exists if ADMIN posts', async () => {
     const usersAtStart = await helper.usersInDb()
-    const userToBeCreated = {
-      username: 'user@user',
-      role: 'user',
-      password: 'somepasswordhash',
-    }
+    const newUser = helper.userUser()
+    newUser.username = 'user@user'
     await api
       .post('/api/users')
       .set('Authorization', `Bearer ${ADMINTOKEN}`)
-      .send(userToBeCreated)
+      .send(newUser)
       .expect(400)
       .expect('Content-Type', /application\/json/)
     const usersAtEnd = await helper.usersInDb()
@@ -93,16 +83,12 @@ describe('When there is initially one admin - user and two user - users at db', 
 
   test('USER creation fails if USER role tries to create a new user', async () => {
     const usersAtStart = await helper.usersInDb()
-    const userToBeCreated = {
-      username: 'newuser',
-      name: 'New User',
-      role: 'user',
-      password: 'somepasswordhash',
-    }
+    const newUser = helper.userUser()
+    newUser.username = 'newUserUsername@newUserUsername'
     await api
       .post('/api/users')
       .set('Authorization', `Bearer ${USERTOKEN}`)
-      .send(userToBeCreated)
+      .send(newUser)
       .expect(401)
       .expect('Content-Type', /application\/json/)
     const usersAtEnd = await helper.usersInDb()
@@ -112,15 +98,7 @@ describe('When there is initially one admin - user and two user - users at db', 
   test('USER creation succees if ADMIN role creates a new user with proper credentials', async () => {
     const usersAtStart = await helper.usersInDb()
     const newUser = helper.userUser()
-    console.log(newUser)
     newUser.username = 'newUserUsername@newUserUsername'
-    /*     const userToBeCreated = {
-      username: 'newuser',
-      firstName: 'firstname',
-
-      role: 'user',
-      password: 'somepasswordhash',
-    } */
     await api
       .post('/api/users')
       .set('Authorization', `Bearer ${ADMINTOKEN}`)

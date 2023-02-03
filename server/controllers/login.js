@@ -17,6 +17,12 @@ loginRouter.post('/', async (request, response) => {
       error: 'invalid username or password',
     })
   }
+
+  if (user.expirationDate < Date.now()) {
+    return response.status(401).json({
+      error: 'user expired, access denied, contact admin',
+    })
+  }
   const token = jwt.sign(user.toJSON(), process.env.SECRET, {
     expiresIn: 60 * 60,
   })
