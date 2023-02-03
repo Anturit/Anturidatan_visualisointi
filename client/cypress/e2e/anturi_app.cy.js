@@ -1,3 +1,5 @@
+import { userUser, adminUser } from '../../../server/test/test_helper'
+
 describe('Anturi app', function () {
   beforeEach(function () {
     const response = cy.request('POST', 'http://localhost:3001/api/testing/reset')
@@ -50,6 +52,12 @@ describe('Anturi app', function () {
     })
     it('togglable register form is displayed', function () {
       cy.get('[data-cy="open"]')
+    })
+    it('admin can create new user', function () {
+      cy.contains('Add user').click()
+      cy.get('[data-cy="firstName"]').type('Test')
+      cy.get('[data-cy="lastName"]').type('Tester')
+      cy.get('[data-cy="password"]').type('user@user')
     })
   })
 })
