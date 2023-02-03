@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import registerService from '../services/registerService.js'
 
-const RegisterForm = () => {
+const RegisterForm = ({ setNotification }) => {
   const roles = ['admin', 'user']
   const [selectedRole, setSelectedRole] = useState(roles[1])
   const [expirationDate, setExpirationDate] = useState(new Date)
@@ -13,6 +13,20 @@ const RegisterForm = () => {
   const [newCity, setNewCity] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [meter, setMeter] = useState(false)
+
+  const validate = async (userObj) => {
+    for (const key in userObj) {
+      if (typeof userObj[key] === 'string'
+        && userObj[key].replace(/\s/g, '') !== '') {
+        setNotification({ message: 'Tyhjiä kenttiä', type: 'alert' })
+        setTimeout(() => {
+          setNotification(null)
+        }, 3500)
+        return false
+      }
+    }
+    return true
+  }
 
   const submit = async (event) => {
     event.preventDefault()
@@ -28,7 +42,11 @@ const RegisterForm = () => {
       expirationDate: expirationDate,
       senderDeviceIds: [
         'E00208B4'
-      ] }
+      ]
+    }
+    if ((await validate(userObject)) === false) {
+      return
+    }
 
     await registerService.create(userObject)
 
@@ -165,7 +183,7 @@ const RegisterForm = () => {
           )}
         </div>
         <p>
-          <button type="submit" onClick={submit}>Lisää uusi käyttäjä</button>
+          <button type="submit" data-cy='addUser' onClick={submit}>Lisää uusi käyttäjä</button>
         </p>
       </form>
     </div>

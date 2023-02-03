@@ -34,7 +34,13 @@ const LoginForm = ({ setUser, setNotification }) => {
       setUsername('')
       setPassword('')
     } catch (err) {
-      setNotification({ message: 'Wrong username or password', type: 'alert' })
+      if (err.response) {
+        if (err.response.data.error.includes('expired')) {
+          setNotification({ message: 'Käyttäjän lisenssi vanhentunut', type: 'alert' })
+        } else {
+          setNotification({ message: 'Väärä käyttäjänimi tai salasana', type: 'alert' })
+        }
+      }
       setTimeout(() => {
         setNotification(null)
       }, 3500)
@@ -44,7 +50,7 @@ const LoginForm = ({ setUser, setNotification }) => {
   return (
     <form onSubmit={handleLogin}>
       <div>
-                username
+                käyttäjänimi
         <input
           type={'text'}
           value={username}
@@ -55,7 +61,7 @@ const LoginForm = ({ setUser, setNotification }) => {
         />
       </div>
       <div>
-                password
+                salasana
         <input
           type={'password'}
           value={password}

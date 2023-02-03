@@ -65,8 +65,8 @@ function App() {
         Logout
         </button>
         <p></p>
-        <Togglable buttonLabel='Add user'>
-          <RegisterForm/>
+        <Togglable buttonLabel='Lisää käyttäjä'>
+          <RegisterForm setNotification={setNotification} />
         </Togglable>
         <Togglable buttonLabel='Näytä laitteet'>
           <SenderList senders={senders} />
