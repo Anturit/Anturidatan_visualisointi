@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const User = require('../models/user')
+const Sender = require('../models/sender')
 const bcrypt = require('bcrypt')
 
 const expiredDate = new Date('2000-04-20T06:12:14.241Z')
@@ -43,6 +44,26 @@ const adminUser = () => ({
   password: 'admin@admin',
 })
 
+const smallSender = () => ({
+  seq_number:226,
+  device: 'E00208B4',
+  sen_battery: 1.66,
+  date: expiredDate,
+  sen_id: '6a',
+  measurement: 55
+})
+
+const bigSender = () => ({
+  seq_number: 2,
+  device: 'E00208B4',
+  sen_battery: 2.78,
+  date: expiredDate,
+  sen_id: 'f3',
+  dev_battery: 3.19,
+  temperature: 21.04,
+  humidity: 27.41,
+  pressure: 101823
+})
 
 router.post('/reset', async (request, response) => {
   await User.deleteMany({})
@@ -59,6 +80,11 @@ router.post('/reset', async (request, response) => {
     const savedUser = await mongoUser.save()
     savedUsers = savedUsers.concat(savedUser)
   }
+  await Sender.deleteMany({})
+  const mongoSender = new Sender(smallSender())
+  await mongoSender.save()
+  const mongoSender2 = new Sender(bigSender())
+  await mongoSender2.save()
   response.status(201).json(savedUsers)
 })
 
