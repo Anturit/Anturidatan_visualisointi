@@ -8,7 +8,7 @@ describe('Anturi app', function () {
   })
 
   it('front page can be opened', function () {
-    cy.contains('Login')
+    cy.contains('Kirjaudu sisään')
   })
 
   describe('Login', function () {
@@ -44,7 +44,7 @@ describe('Anturi app', function () {
 
     it('user can log out', function () {
       cy.get('[data-cy="logout"]').click()
-      cy.contains('Login')
+      cy.contains('Kirjaudu sisään')
     })
 
     it('login form is not shown', function () {
