@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { groupBy } from 'lodash/collection'
 import Sender from './Sender'
 
