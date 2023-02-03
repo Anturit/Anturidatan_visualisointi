@@ -27,7 +27,7 @@ const LoginForm = ({ setUser, setNotification }) => {
       )
       setUser(user)
       userService.setToken(user.token)
-      setNotification({ message: `${user.name} logged in` })
+      setNotification({ message: `${user.firstName} ${user.lastName} logged in` })
       setTimeout(() => {
         setNotification(null)
       }, 3500)

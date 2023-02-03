@@ -23,7 +23,9 @@ function App() {
       const expiresAtMillis = decodedToken.exp * 1000
       if (expiresAtMillis > Date.now()) {
         setUser(parsedUser)
-        registerService.setToken(parsedUser)
+        registerService.setToken(
+          parsedUser.token
+        )
       }
     }
   }, [])
@@ -40,10 +42,6 @@ function App() {
       }
     }
   }, [user])
-
-  const handleRegisterUser = () => {
-    return ('integrate backend here')
-  }
 
   if (user === null) {
     return <>
@@ -68,7 +66,7 @@ function App() {
         </button>
         <p></p>
         <Togglable buttonLabel='Add user'>
-          <RegisterForm registerUser={handleRegisterUser}/>
+          <RegisterForm/>
         </Togglable>
         <Togglable buttonLabel='Näytä laitteet'>
           <SenderList senders={senders} />

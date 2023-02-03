@@ -14,7 +14,7 @@ const RegisterForm = () => {
   const [newPassword, setNewPassword] = useState('')
   const [meter, setMeter] = useState(false)
 
-  const submit = (event) => {
+  const submit = async (event) => {
     event.preventDefault()
     const userObject = {
       username: newAddressLine,
@@ -25,21 +25,21 @@ const RegisterForm = () => {
       postalCode: newPostcode,
       city: newCity,
       role: selectedRole,
-      expirationDate: '3000-04-20T06:12:14.241Z',
+      expirationDate: expirationDate,
       senderDeviceIds: [
         'E00208B4'
       ] }
 
-    registerService.create(userObject)
+    await registerService.create(userObject)
 
-    //setSelectedRole(useState(roles[1]))
-    //setNewFirstName('')
-    //setNewSurname('')
-    //setNewEmail('')
-    //setNewAddressLine('')
-    //setNewPostcode('')
-    //setNewCity('')
-    //setNewPassword('')
+    setSelectedRole(roles[1])
+    setNewFirstName('')
+    setNewSurname('')
+    setNewEmail('')
+    setNewAddressLine('')
+    setNewPostcode('')
+    setNewCity('')
+    setNewPassword('')
   }
 
   const eightCharsOrMore = /.{8,}/g
@@ -69,6 +69,7 @@ const RegisterForm = () => {
           <small>Valitse käyttäjän rooli: <span> </span></small>
           <select
             value={selectedRole}
+            data-cy='role'
             onChange ={(e) => setSelectedRole(e.target.value)}>
             {roles.map((value) => (
               <option
@@ -81,14 +82,18 @@ const RegisterForm = () => {
         </p>
         <label><h3>Käyttäjätunnus voimassa: </h3></label>
         <input type="date" id="start" name="expiration"
-          value={expirationDate}
+          value={expirationDate.toLocaleDateString('en-CA')}
+          data-cy='expirationDate'
           min="2023-01-01" max="2050-01-01"
-          onChange={(e) => setExpirationDate(e.target.value)}/>
+          onKeyDown={(e) => e.preventDefault()}
+          onChange={(e) => setExpirationDate(new Date(e.target.value))
+          } />
         <label><h3>Nimi</h3></label>
         <small>Etunimi</small>
         <div>
           <input
             placeholder='esim. Matti'
+            data-cy='firstName'
             value={newFirstName}
             onChange={(e) => setNewFirstName(e.target.value)}/>
         </div>
@@ -97,6 +102,7 @@ const RegisterForm = () => {
           <input
             placeholder='esim. Meikäläinen'
             value={newSurname}
+            data-cy='lastName'
             onChange={(e) => setNewSurname(e.target.value)}/>
         </div>
         <div>
@@ -105,6 +111,7 @@ const RegisterForm = () => {
             type='email'
             placeholder='esim. testi@email.fi'
             value={newEmail} id='newEmail'
+            data-cy='email'
             onChange={(e) => setNewEmail(e.target.value)}/>
         </div>
         <div>
@@ -114,6 +121,7 @@ const RegisterForm = () => {
             <input
               placeholder='esim. Kauppakatu 29'
               value={newAddressLine}
+              data-cy='adress'
               onChange={(e) => setNewAddressLine(e.target.value)}/>
           </div>
           <small>Postinumero</small>
@@ -121,6 +129,7 @@ const RegisterForm = () => {
             <input
               placeholder='esim. 40100'
               value={newPostcode}
+              data-cy='postalCode'
               onChange={(e) => setNewPostcode(e.target.value)}/>
           </div>
           <small>Kaupunki</small>
@@ -128,11 +137,8 @@ const RegisterForm = () => {
             <input
               placeholder='esim. 40100'
               value={newCity}
+              data-cy='city'
               onChange={(e) => setNewCity(e.target.value)}/>
-          </div>
-          <small>Maa</small>
-          <div>
-            <input value={'Suomi'}/>
           </div>
         </div>
         <label><h3>Salasana</h3></label>
@@ -140,6 +146,7 @@ const RegisterForm = () => {
         <div>
           <input
             value={newPassword}
+            data-cy='password'
             onFocus={() => setMeter(true)}
             onChange={(e) => setNewPassword(e.target.value)}/>
           {meter && (
