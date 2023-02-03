@@ -54,7 +54,7 @@ function App() {
     return (
       <div>
         <Notification notification={notification} />
-        <p>{user.name} logged in</p>
+        <p>{user.name} sisäänkirjautunut</p>
         <button
           onClick={
             () => {
@@ -62,7 +62,7 @@ function App() {
               window.localStorage.setItem('loggedUser', '')}
           }
         >
-        Logout
+        Kirjaudu ulos
         </button>
         <p></p>
         <Togglable buttonLabel='Lisää käyttäjä'>
@@ -78,7 +78,7 @@ function App() {
   return (
     <div>
       <Notification notification={notification} />
-      <p>{user.name} logged in</p>
+      <p>{user.name} sisäänkirjautunut</p>
       <button
         onClick={
           () => {
@@ -87,7 +87,7 @@ function App() {
         }
         data-cy="logout"
       >
-        Logout
+        Kirjaudu ulos
       </button>
     </div>
   )
