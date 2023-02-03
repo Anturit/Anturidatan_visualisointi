@@ -17,7 +17,7 @@ const RegisterForm = ({ setNotification }) => {
   const validate = async (userObj) => {
     for (const key in userObj) {
       if (typeof userObj[key] === 'string'
-        && userObj[key].replace(/\s/g, '') !== '') {
+        && userObj[key].replace(/\s/g, '') === '') {
         setNotification({ message: 'Tyhjiä kenttiä', type: 'alert' })
         setTimeout(() => {
           setNotification(null)
@@ -49,6 +49,10 @@ const RegisterForm = ({ setNotification }) => {
     }
 
     await registerService.create(userObject)
+    setNotification({ message: `Käyttäjän luonti onnistui! Käyttäjänimi: ${newEmail} Salasana: ${newPassword}` })
+    setTimeout(() => {
+      setNotification(null)
+    }, 10000)
 
     setSelectedRole(roles[1])
     setNewFirstName('')
@@ -99,7 +103,7 @@ const RegisterForm = ({ setNotification }) => {
           </select>
         </p>
         <label><h3>Käyttäjätunnus voimassa: </h3></label>
-        <input type="date" id="start" name="expiration"
+        <input type="date" name="expiration"
           value={expirationDate.toLocaleDateString('en-CA')}
           data-cy='expirationDate'
           min="2023-01-01" max="2050-01-01"

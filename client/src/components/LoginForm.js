@@ -27,7 +27,7 @@ const LoginForm = ({ setUser, setNotification }) => {
       )
       setUser(user)
       userService.setToken(user.token)
-      setNotification({ message: `${user.firstName} ${user.lastName} logged in` })
+      setNotification({ message: `${user.firstName} ${user.lastName} kirjattu sisään` })
       setTimeout(() => {
         setNotification(null)
       }, 3500)
@@ -72,7 +72,7 @@ const LoginForm = ({ setUser, setNotification }) => {
         />
       </div>
       <div>
-        <button type="submit" data-cy="login">Login</button>
+        <button type="submit" data-cy="login">Kirjaudu sisään</button>
       </div>
     </form>
   )
