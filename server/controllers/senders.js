@@ -19,5 +19,17 @@ senderRouter.get('/', async (request, response) => {
   response.json(senders)
 })
 
+senderRouter.get('/:id', async (request, response) => {
+  await request.body
+  const token = await request.token
+  const decodedToken = await jwt.verify(token, process.env.SECRET)
+  if (!token || !decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+
+  const device = await Sender.find({ device: { $in: request.params.id } })
+  response.json(device)
+})
+
 
 module.exports = senderRouter
