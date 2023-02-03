@@ -1,4 +1,4 @@
-const dummy = (users) => {
+const dummy= (users) => {
   return users.length
 }
 

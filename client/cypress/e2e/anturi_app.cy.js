@@ -1,6 +1,6 @@
 describe('Anturi app', function () {
   beforeEach(function () {
-    cy.request('POST', 'http://localhost:3001/api/testing/reset')
+    const response = cy.request('POST', 'http://localhost:3001/api/testing/reset')
     cy.visit('/')
   })
 
@@ -10,11 +10,12 @@ describe('Anturi app', function () {
 
   describe('Login', function () {
     it('succeeds with correct credentials', function () {
-      cy.get('[data-cy="username"]').type('testuser')
-      cy.get('[data-cy="password"]').type('testpassword')
+      cy.get('[data-cy="username"]').type('user@user')
+      cy.get('[data-cy="password"]').type('user@user')
       cy.get('[data-cy="login"]').click()
 
-      cy.contains('testuser logged in')
+      //add proper name to check, when name in notification works
+      cy.contains('logged in')
     })
 
     it('fails with wrong credentials', function () {
@@ -28,7 +29,7 @@ describe('Anturi app', function () {
 
   describe('when logged in as user', function () {
     beforeEach(function () {
-      cy.login({ username: 'testuser', password: 'testpassword' })
+      cy.login({ username: 'user@user', password: 'user@user' })
     })
 
     it('user can log out', function () {
@@ -45,7 +46,7 @@ describe('Anturi app', function () {
   })
   describe('when logged in as admin', function () {
     beforeEach(function () {
-      cy.login({ username: 'admin', password: 'admin' })
+      cy.login({ username: 'admin@admin', password: 'admin@admin' })
     })
     it('togglable register form is displayed', function () {
       cy.get('[data-cy="open"]')

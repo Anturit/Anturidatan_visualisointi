@@ -2,3 +2,5 @@
 **.rest
 .env
 build
+coverage/
+/.vscode/
