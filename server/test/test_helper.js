@@ -1,9 +1,16 @@
 const User = require('../models/user')
+const Sender = require('../models/sender')
 
 const usersInDb = async () => {
   const users = await User.find({})
   return users.map((u) => u.toJSON())
 }
+
+const sendersInDb = async () => {
+  const senders = await Sender.find({})
+  return senders.map((s) => s.toJSON())
+}
+
 const expiredDate = new Date('2000-04-20T06:12:14.241Z')
 const nonExpiredDate = new Date('3000-04-20T06:12:14.241Z')
 const userUser = () => ({
@@ -46,5 +53,5 @@ const adminUser = () => ({
 })
 
 module.exports = {
-  usersInDb, userUser, adminUser, expiredUser
+  usersInDb,sendersInDb, userUser, adminUser, expiredUser
 }
