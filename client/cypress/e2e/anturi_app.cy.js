@@ -1,8 +1,9 @@
+// eslint-disable-next-line no-unused-vars
 import { userUser, adminUser, expiredUser } from '../../../server/test/test_helper'
 
 describe('Anturi app', function () {
   beforeEach(function () {
-    const response = cy.request('POST', 'http://localhost:3001/api/testing/reset')
+    cy.request('POST', 'http://localhost:3001/api/testing/reset')
     cy.visit('/')
   })
 
