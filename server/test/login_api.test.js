@@ -89,4 +89,18 @@ describe('When there is initially one admin-user and two user-users at db', () =
       .expect('Content-Type', /application\/json/)
 
   })
+
+  test('login fails if USER expirationDate out of date', async () => {
+    const userdata = {
+      username: 'expireduser@user',
+      password: 'expireduser@user',
+    }
+
+    await api
+      .post('/api/login')
+      .send(userdata)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+  })
 })
