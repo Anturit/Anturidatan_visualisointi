@@ -30,38 +30,46 @@ const RegisterForm = ({ setNotification }) => {
 
   const submit = async (event) => {
     event.preventDefault()
-    const userObject = {
-      username: newAddressLine,
-      password: newPassword,
-      firstName: newFirstName,
-      lastName: newSurname,
-      address: newAddressLine,
-      postalCode: newPostcode,
-      city: newCity,
-      role: selectedRole,
-      expirationDate: expirationDate,
-      senderDeviceIds: [
-        'E00208B4'
-      ]
-    }
-    if ((await validate(userObject)) === false) {
-      return
-    }
+    try {
+      const userObject = {
+        username: newEmail,
+        password: newPassword,
+        firstName: newFirstName,
+        lastName: newSurname,
+        address: newAddressLine,
+        postalCode: newPostcode,
+        city: newCity,
+        role: selectedRole,
+        expirationDate: expirationDate,
+        senderDeviceIds: [
+          'E00208B4'
+        ]
+      }
+      if ((await validate(userObject)) === false) {
+        return
+      }
 
-    await registerService.create(userObject)
-    setNotification({ message: `Käyttäjän luonti onnistui! Käyttäjänimi: ${newEmail} Salasana: ${newPassword}` })
-    setTimeout(() => {
-      setNotification(null)
-    }, 10000)
+      await registerService.create(userObject)
+      setNotification({ message: `Käyttäjän luonti onnistui! Käyttäjänimi: ${newEmail} Salasana: ${newPassword}` })
+      setTimeout(() => {
+        setNotification(null)
+      }, 10000)
 
-    setSelectedRole(roles[1])
-    setNewFirstName('')
-    setNewSurname('')
-    setNewEmail('')
-    setNewAddressLine('')
-    setNewPostcode('')
-    setNewCity('')
-    setNewPassword('')
+      setSelectedRole(roles[1])
+      setNewFirstName('')
+      setNewSurname('')
+      setNewEmail('')
+      setNewAddressLine('')
+      setNewPostcode('')
+      setNewCity('')
+      setNewPassword('')
+    } catch (err) {
+      if (err.response.data.error.includes('unique')) {
+        setNotification({ message: 'Käyttäjä tällä sähköpostilla on jo olemassa!', type: 'alert' })
+      } else {
+        setNotification({ message: 'Istunto vanhentunut', type: 'alert' })
+      }
+    }
   }
 
   const eightCharsOrMore = /.{8,}/g
@@ -130,7 +138,7 @@ const RegisterForm = ({ setNotification }) => {
         <div>
           <label><h3>Sähköposti</h3></label>
           <input
-            type='email'
+            type='text'
             placeholder='esim. testi@email.fi'
             value={newEmail} id='newEmail'
             data-cy='email'
