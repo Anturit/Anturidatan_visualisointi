@@ -15,7 +15,7 @@ beforeAll(async () => {
 
   const userdata = {
     username: 'admin@admin',
-    password: 'admin@admin',
+    password: 'Admin@admin1',
   }
   const response = await supertest(app).post('/api/login').send(userdata)
   ADMINTOKEN = response.body.token
@@ -107,4 +107,115 @@ describe('When there is initially one admin - user and two user - users at db', 
     expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
   })
 
+  test('USER creation fails if password is too short', async () => {
+    const usersAtStart = await helper.usersInDb()
+    const newUser = helper.userUser()
+    newUser.password = 'Admi!1'
+    await api
+      .post('/api/users')
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+  })
+
+  test('USER creation fails if password is missing a number', async () => {
+    const usersAtStart = await helper.usersInDb()
+    const newUser = helper.userUser()
+    newUser.password = 'Admin@admin'
+    await api
+      .post('/api/users')
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+  })
+
+  test('USER creation fails if password is missing a capital letter', async () => {
+    const usersAtStart = await helper.usersInDb()
+    const newUser = helper.userUser()
+    newUser.password = 'admin@admin1'
+    await api
+      .post('/api/users')
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+  })
+
+  test('USER creation fails if password is missing a special character', async () => {
+    const usersAtStart = await helper.usersInDb()
+    const newUser = helper.userUser()
+    newUser.password = 'Adminadmin1'
+    await api
+      .post('/api/users')
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+  })
+
+  test('USER creation fails if password is missing small letters', async () => {
+    const usersAtStart = await helper.usersInDb()
+    const newUser = helper.userUser()
+    newUser.password = 'ADMIN@ADMIN1'
+    await api
+      .post('/api/users')
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+  })
+
+  test('USER creation fails if postal code is too short', async () => {
+    const usersAtStart = await helper.usersInDb()
+    const newUser = helper.userUser()
+    newUser.postalCode = '1234'
+    await api
+      .post('/api/users')
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+  })
+
+  test('USER creation fails if postal code is too long', async () => {
+    const usersAtStart = await helper.usersInDb()
+    const newUser = helper.userUser()
+    newUser.postalCode = '123456'
+    await api
+      .post('/api/users')
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+  })
+
+  test('USER creation fails if postal has non-numeric characters', async () => {
+    const usersAtStart = await helper.usersInDb()
+    const newUser = helper.userUser()
+    newUser.postalCode = '1234A'
+    await api
+      .post('/api/users')
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+  })
 })

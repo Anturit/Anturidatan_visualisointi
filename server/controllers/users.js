@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
+const validator = require('validator')
 
 usersRouter.get('/', async (request, response) => {
   const users = await User.find({})
@@ -26,6 +27,24 @@ usersRouter.post('/', async (request, response) => {
   if (!(user.username && user.password)) {
     return response.status(400).json({
       error: 'username and password must be given',
+    })
+  }
+
+  if (!validator.isStrongPassword(user.password, {
+                                minLength: 8,
+                                minLowerCase: 1,
+                                minUpperCase: 1,
+                                minNumbers: 1,
+                                minSymbols: 1})) {
+    return response.status(400).json({
+      error: 'password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number and one symbol'
+    })
+  }
+
+  if (!(validator.isLength(user.postalCode, { min: 5, max: 5 })
+      && validator.isNumeric(user.postalCode, { no_symbols: true }))) {
+    return response.status(400).json({
+      error: 'invalid postal code'
     })
   }
 
