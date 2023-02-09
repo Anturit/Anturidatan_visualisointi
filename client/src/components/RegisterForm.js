@@ -112,11 +112,16 @@ const RegisterForm = ({ setNotification }) => {
         </p>
         <label><h3>Käyttäjätunnus voimassa: </h3></label>
         <input type="date" name="expiration"
-          value={expirationDate.toLocaleDateString('en-CA')}
+          value={expirationDate.toISOString().substring(0, 10)}
           data-cy='expirationDate'
-          min="2023-01-01" max="2050-01-01"
-          onKeyDown={(e) => e.preventDefault()}
-          onChange={(e) => setExpirationDate(new Date(e.target.value))
+          max="2100-01-01"
+          onChange={(e) =>
+            setExpirationDate(
+              e.target.value === ''
+                ? new Date()
+                : new Date(e.target.value) > new Date('2100-01-01')
+                  ? new Date('2100-01-01')
+                  : new Date(e.target.value))
           } />
         <label><h3>Nimi</h3></label>
         <small>Etunimi</small>

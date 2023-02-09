@@ -73,7 +73,7 @@ describe('Anturi app', function () {
         cy.get('[data-cy="password"]').type('&')
         cy.contains('Salasanan täytyy sisältää').should('not.exist')
       })
-      it('admin can create new user with default date when all fields are filled', function () {
+      it('create new user with default date when all fields are filled', function () {
         cy.get('[data-cy="role"]').select('user')
         cy.get('[data-cy="firstName"]').type(userUser().firstName)
         cy.get('[data-cy="lastName"]').type(userUser().lastName)
@@ -85,7 +85,7 @@ describe('Anturi app', function () {
         cy.get('[data-cy="addUser"]').click()
         cy.contains('Käyttäjän luonti onnistui!')
       })
-      it('admin can not create user if username is taken', function () {
+      it('can not create user if username is taken', function () {
         cy.get('[data-cy="role"]').select('user')
         cy.get('[data-cy="firstName"]').type(userUser().firstName)
         cy.get('[data-cy="lastName"]').type(userUser().lastName)
@@ -96,6 +96,21 @@ describe('Anturi app', function () {
         cy.get('[data-cy="password"]').type(userUser().password)
         cy.get('[data-cy="addUser"]').click()
         cy.contains('Käyttäjä tällä sähköpostilla on jo olemassa!')
+      })
+      it.only('create new user non expired user and try to login with that user', function () {
+        cy.get('[data-cy="expirationDate"]').type('2050-01-01')
+        cy.get('[data-cy="role"]').select('user')
+        cy.get('[data-cy="firstName"]').type(userUser().firstName)
+        cy.get('[data-cy="lastName"]').type(userUser().lastName)
+        cy.get('[data-cy="email"]').type('testi@testi.net')
+        cy.get('[data-cy="adress"]').type(userUser().address)
+        cy.get('[data-cy="postalCode"]').type(userUser().postalCode)
+        cy.get('[data-cy="city"]').type(userUser().city)
+        cy.get('[data-cy="password"]').type(userUser().password)
+        cy.get('[data-cy="addUser"]').click()
+        cy.contains('Käyttäjän luonti onnistui!')
+        cy.login({ username: 'testi@testi.net', password: userUser().password })
+        cy.contains('sisäänkirjautunut')
       })
       it('registeration fails if some field is empty', function () {
         cy.get('[data-cy="addUser"]').click()
