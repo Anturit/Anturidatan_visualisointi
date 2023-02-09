@@ -12,7 +12,7 @@ beforeAll(async () => {
 
   const userdata = {
     username: 'admin@admin',
-    password: 'admin@admin',
+    password: 'Admin@admin1',
   }
   const response = await supertest(app).post('/api/login').send(userdata)
   ADMINTOKEN = response.body.token
