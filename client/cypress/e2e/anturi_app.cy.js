@@ -97,7 +97,7 @@ describe('Anturi app', function () {
         cy.get('[data-cy="addUser"]').click()
         cy.contains('Käyttäjä tällä sähköpostilla on jo olemassa!')
       })
-      it.only('create new user non expired user and try to login with that user', function () {
+      it('create new user non expired user and try to login with that user', function () {
         cy.get('[data-cy="expirationDate"]').type('2050-01-01')
         cy.get('[data-cy="role"]').select('user')
         cy.get('[data-cy="firstName"]').type(userUser().firstName)
