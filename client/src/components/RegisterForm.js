@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import registerService from '../services/registerService.js'
 
-const RegisterForm = ({ setNotification }) => {
+const RegisterForm = ({ notificationSetter }) => {
   const roles = ['admin', 'user']
   const [selectedRole, setSelectedRole] = useState(roles[1])
   const [expirationDate, setExpirationDate] = useState(new Date)
@@ -18,10 +18,7 @@ const RegisterForm = ({ setNotification }) => {
     for (const key in userObj) {
       if (typeof userObj[key] === 'string'
         && userObj[key].replace(/\s/g, '') === '') {
-        setNotification({ message: 'Tyhjiä kenttiä', type: 'alert' })
-        setTimeout(() => {
-          setNotification(null)
-        }, 3500)
+        notificationSetter({ message: 'Tyhjiä kenttiä', type: 'alert', time: 3500 })
         return false
       }
     }
@@ -50,11 +47,7 @@ const RegisterForm = ({ setNotification }) => {
       }
 
       await registerService.create(userObject)
-      setNotification({ message: `Käyttäjän luonti onnistui! Käyttäjänimi: ${newEmail} Salasana: ${newPassword}` })
-      setTimeout(() => {
-        setNotification(null)
-      }, 10000)
-
+      notificationSetter({ message: `Käyttäjän luonti onnistui! Käyttäjänimi: ${newEmail} Salasana: ${newPassword}`, time: 10000 })
       setSelectedRole(roles[1])
       setNewFirstName('')
       setNewSurname('')
@@ -65,9 +58,9 @@ const RegisterForm = ({ setNotification }) => {
       setNewPassword('')
     } catch (err) {
       if (err.response.data.error.includes('unique')) {
-        setNotification({ message: 'Käyttäjä tällä sähköpostilla on jo olemassa!', type: 'alert' })
+        notificationSetter({ message: 'Käyttäjä tällä sähköpostilla on jo olemassa!', type: 'alert', time: 3500 })
       } else {
-        setNotification({ message: 'Istunto vanhentunut', type: 'alert' })
+        notificationSetter({ message: 'Istunto vanhentunut', type: 'alert', time: 3500 })
       }
     }
   }

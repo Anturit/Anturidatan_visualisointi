@@ -43,10 +43,17 @@ function App() {
     }
   }, [user])
 
+  const notificationSetter = (newNotification) => {
+    setNotification(newNotification)
+    setTimeout(() => {
+      setNotification(null)
+    }, newNotification.time)
+  }
+
   if (user === null) {
     return <>
       <Notification notification={notification} />
-      <LoginForm setUser={setUser} setNotification={setNotification} />
+      <LoginForm setUser={setUser} notificationSetter={notificationSetter} />
     </>
   }
 
@@ -54,7 +61,7 @@ function App() {
     return (
       <div>
         <Notification notification={notification} />
-        <p>{user.name} sisäänkirjautunut</p>
+        <p>{user.firstName} sisäänkirjautunut</p>
         <button
           onClick={
             () => {
@@ -66,7 +73,7 @@ function App() {
         </button>
         <p></p>
         <Togglable buttonLabel='Lisää käyttäjä'>
-          <RegisterForm setNotification={setNotification} />
+          <RegisterForm notificationSetter={notificationSetter} />
         </Togglable>
         <Togglable buttonLabel='Näytä laitteet'>
           <SenderList senders={senders} />
@@ -78,7 +85,7 @@ function App() {
   return (
     <div>
       <Notification notification={notification} />
-      <p>{user.name} sisäänkirjautunut</p>
+      <p>{user.firstName} sisäänkirjautunut</p>
       <button
         onClick={
           () => {
