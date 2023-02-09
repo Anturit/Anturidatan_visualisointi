@@ -14,7 +14,7 @@ describe('Anturi app', function () {
   describe('Login', function () {
     it('succeeds with correct credentials', function () {
       cy.get('[data-cy="username"]').type('user@user')
-      cy.get('[data-cy="password"]').type('user@user')
+      cy.get('[data-cy="password"]').type('User@user1')
       cy.get('[data-cy="login"]').click()
 
       //add proper name to check, when name in notification works
@@ -39,7 +39,7 @@ describe('Anturi app', function () {
 
   describe('when logged in as user', function () {
     beforeEach(function () {
-      cy.login({ username: 'user@user', password: 'user@user' })
+      cy.login({ username: 'user@user', password: 'User@user1' })
     })
 
     it('user can log out', function () {
@@ -56,7 +56,7 @@ describe('Anturi app', function () {
   })
   describe('when logged in as admin', function () {
     beforeEach(function () {
-      cy.login({ username: 'admin@admin', password: 'admin@admin' })
+      cy.login({ username: 'admin@admin', password: 'Admin@admin1' })
     })
     it('togglable register form is displayed', function () {
       cy.get('[data-cy="open"]')
