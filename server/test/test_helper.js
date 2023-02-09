@@ -23,7 +23,7 @@ const userUser = () => ({
   role: 'user',
   expirationDate: nonExpiredDate,
   senderDeviceIds: ['E00208B4'],
-  password: 'user@user',
+  password: 'User@user1',
 })
 
 const expiredUser = () => ({
@@ -36,7 +36,7 @@ const expiredUser = () => ({
   role: 'user',
   expirationDate: expiredDate,
   senderDeviceIds: ['E00208B4'],
-  password: 'expireduser@user',
+  password: 'Expireduser@user1',
 })
 
 const adminUser = () => ({
@@ -49,7 +49,7 @@ const adminUser = () => ({
   role: 'admin',
   expirationDate: nonExpiredDate,
   senderDeviceIds: ['E00208B4'],
-  password: 'admin@admin',
+  password: 'Admin@admin1',
 })
 
 const smallSender = () => ({
@@ -72,6 +72,14 @@ const bigSender = () => ({
   humidity: 27.41,
   pressure: 101823
 })
+
+
 module.exports = {
-  usersInDb,sendersInDb, userUser, adminUser, expiredUser, smallSender, bigSender
+  usersInDb,
+  sendersInDb,
+  userUser,
+  adminUser,
+  expiredUser,
+  smallSender,
+  bigSender,
 }

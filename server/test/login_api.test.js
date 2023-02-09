@@ -21,7 +21,7 @@ describe('When there is initially one admin-user and two user-users at db', () =
   test('login succees with proper username and password when ADMIN', async () => {
     const userdata = {
       username: 'admin@admin',
-      password: 'admin@admin',
+      password: 'Admin@admin1',
     }
 
     const response = await api
@@ -37,7 +37,7 @@ describe('When there is initially one admin-user and two user-users at db', () =
   test('login succees with proper username and password when USER', async () => {
     const userdata = {
       username: 'user@user',
-      password: 'user@user',
+      password: 'User@user1',
     }
 
     const response = await api
