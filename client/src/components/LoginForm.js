@@ -2,13 +2,10 @@ import { useState } from 'react'
 import axios from 'axios'
 import userService from '../services/registerService'
 
-const LoginForm = ({ setUser, setNotification }) => {
+const LoginForm = ({ setUser, notificationSetter }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  /*
-    username
-    password
-    */
+
   const login = async credentials => {
     const res = await axios.post(
       '/api/login/', credentials
@@ -27,23 +24,17 @@ const LoginForm = ({ setUser, setNotification }) => {
       )
       setUser(user)
       userService.setToken(user.token)
-      setNotification({ message: `${user.firstName} ${user.lastName} kirjattu sisään` })
-      setTimeout(() => {
-        setNotification(null)
-      }, 3500)
+      notificationSetter({ message: `${user.firstName} ${user.lastName} kirjattu sisään`, time: 3500 })
       setUsername('')
       setPassword('')
     } catch (err) {
       if (err.response) {
         if (err.response.data.error.includes('expired')) {
-          setNotification({ message: 'Käyttäjän lisenssi vanhentunut', type: 'alert' })
+          notificationSetter({ message: 'Käyttäjän lisenssi vanhentunut', type: 'alert', time: 3500 })
         } else {
-          setNotification({ message: 'Väärä käyttäjänimi tai salasana', type: 'alert' })
+          notificationSetter({ message: 'Väärä käyttäjänimi tai salasana', type: 'alert', time: 3500 })
         }
       }
-      setTimeout(() => {
-        setNotification(null)
-      }, 3500)
     }
   }
 
