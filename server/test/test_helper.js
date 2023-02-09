@@ -52,6 +52,26 @@ const adminUser = () => ({
   password: 'admin@admin',
 })
 
+const smallSender = () => ({
+  seq_number: 226,
+  device: 'E00208B4',
+  sen_battery: 1.66,
+  date: expiredDate,
+  sen_id: '6a',
+  measurement: 55
+})
+
+const bigSender = () => ({
+  seq_number: 2,
+  device: 'E00208B4',
+  sen_battery: 2.78,
+  date: expiredDate,
+  sen_id: 'f3',
+  dev_battery: 3.19,
+  temperature: 21.04,
+  humidity: 27.41,
+  pressure: 101823
+})
 module.exports = {
-  usersInDb,sendersInDb, userUser, adminUser, expiredUser
+  usersInDb,sendersInDb, userUser, adminUser, expiredUser, smallSender, bigSender
 }

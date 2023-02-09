@@ -3,14 +3,12 @@ const supertest = require('supertest')
 const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
-//const User = require('../models/user')
 
 let ADMINTOKEN = ''
 let USERTOKEN = ''
 let WRONGTOKEN = ''
 
 beforeAll(async () => {
- // await User.deleteMany({})
   await supertest(app)
     .post('/api/testing/reset')
     .expect(201)
@@ -65,7 +63,7 @@ describe('When there is initially one admin - user and two user - users at db', 
       .expect('Content-Type', /application\/json/)
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length)
-  }) 
+  })
 
   test('USER creation fails if username already exists if ADMIN posts', async () => {
     const usersAtStart = await helper.usersInDb()
