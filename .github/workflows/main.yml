@@ -41,8 +41,8 @@ jobs:
             with:
                 mongodb-version: ${{ matrix.mongodb-version }}
 
-          #- name: Run eslint
-          #  run: npm run lint
+          - name: Run eslint
+            run: npm run lint
 
           - name: Run tests
             run: npm run test
@@ -79,6 +79,11 @@ jobs:
             run: |
               cd ../client
               npm install
+          
+          - name: Run frontend linting
+            run: |
+              cd ../client
+              npm run lint
 
           - name: build client and start server
             working-directory: ./server
