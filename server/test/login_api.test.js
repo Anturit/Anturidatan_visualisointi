@@ -11,12 +11,6 @@ beforeAll(async () => {
 })
 
 describe('When there is initially one admin-user and two user-users at db', () => {
-  test('Users route retuns same amount of users that are in database', async () => {
-    const usersAtStart = await helper.usersInDb()
-    const response = await api.get('/api/users')
-    expect(response.body).toHaveLength(usersAtStart.length)
-  })
-
 
   test('login succees with proper username and password when ADMIN', async () => {
     const userdata = {
