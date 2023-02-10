@@ -59,8 +59,10 @@ const RegisterForm = ({ notificationSetter }) => {
     } catch (err) {
       if (err.response.data.error.includes('unique')) {
         notificationSetter({ message: 'Käyttäjä tällä sähköpostilla on jo olemassa!', type: 'alert', time: 3500 })
-      } else {
-        notificationSetter({ message: 'Istunto vanhentunut', type: 'alert', time: 3500 })
+      } else if (err.response.data.error.includes('password')) {
+        notificationSetter({ message: 'Salasana ei kelpaa!', type: 'alert', time: 3500 })
+      } else if (err.response.data.error.includes('invalid postal code')) {
+        notificationSetter({ message: 'Virheellinen postinumero!', type: 'alert', time: 3500 })
       }
     }
   }
@@ -69,7 +71,7 @@ const RegisterForm = ({ notificationSetter }) => {
   const atLeastOneUppercase = /[A-Z]/g
   const atLeastOneLowercase = /[a-z]/g
   const atLeastOneNumeric = /[0-9]/g
-  const atLeastOneSpecialChar = /[#?!@$%^&*-]/g
+  const atLeastOneSpecialChar = /[#?!@$%^()&*-]/g
 
   const passwordTracker = {
     uppercase: newPassword.match(atLeastOneUppercase),
