@@ -51,7 +51,7 @@ describe('Anturi app', function () {
       cy.get('html').should('not.contain', 'Login')
     }),
     it('togglable register form is not displayed', function () {
-      cy.get('[data-cy="open"]').should('not.exist')
+      cy.get('[data-cy="open-togglable-registerForm"]').should('not.exist')
     })
   })
   describe('when logged in as admin', function () {
@@ -59,7 +59,7 @@ describe('Anturi app', function () {
       cy.login({ username: 'admin@admin', password: 'Admin@admin1' })
     })
     it('togglable register form is displayed', function () {
-      cy.get('[data-cy="open"]')
+      cy.get('[data-cy="open-togglable-registerForm"]')
     })
     describe('and registeration form is opened', function () {
       beforeEach(function () {

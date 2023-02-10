@@ -5,21 +5,24 @@ const Togglable = (props) => {
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
-
   const toggleVisibility = () => {
     setVisible(!visible)
   }
 
   return (
-    <div>
+    <>
       <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility} data-cy='open'>{props.buttonLabel}</button>
+        <button onClick={toggleVisibility} data-cy={`open-togglable-${props.id}`}>
+          {props.buttonLabel}
+        </button>
       </div>
       <div style={showWhenVisible}>
         {props.children}
-        <button onClick={toggleVisibility} data-cy='close'>Peruuta</button>
+        <button onClick={toggleVisibility} data-cy={`close-togglable-${props.id}`}>
+          Peruuta
+        </button>
       </div>
-    </div>
+    </>
   )
 }
 

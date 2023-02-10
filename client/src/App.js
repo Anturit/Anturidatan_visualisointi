@@ -72,10 +72,10 @@ function App() {
         Kirjaudu ulos
         </button>
         <p></p>
-        <Togglable buttonLabel='Lisää käyttäjä'>
+        <Togglable buttonLabel='Lisää käyttäjä' id='registerForm'>
           <RegisterForm notificationSetter={notificationSetter} />
         </Togglable>
-        <Togglable buttonLabel='Näytä laitteet'>
+        <Togglable buttonLabel='Näytä laitteet' id='senderList'>
           <SenderList senders={senders} />
         </Togglable>
       </div>

@@ -46,7 +46,7 @@ usersRouter.post('/', async (request, response) => {
     minLowerCase: 1,
     minUpperCase: 1,
     minNumbers: 1,
-    minSymbols: 1})) {
+    minSymbols: 1 })) {
     return response.status(400).json({
       error: 'password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number and one symbol'
     })
