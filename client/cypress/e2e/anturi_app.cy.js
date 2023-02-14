@@ -13,7 +13,7 @@ describe('Anturi app', function () {
 
   describe('Login', function () {
     it('succeeds with correct credentials', function () {
-      cy.get('[data-cy="username"]').type('user@user')
+      cy.get('[data-cy="username"]').type('user@user.com')
       cy.get('[data-cy="password"]').type('User@user1')
       cy.get('[data-cy="login"]').click()
 
@@ -39,7 +39,7 @@ describe('Anturi app', function () {
 
   describe('when logged in as user', function () {
     beforeEach(function () {
-      cy.login({ username: 'user@user', password: 'User@user1' })
+      cy.login({ username: 'user@user.com', password: 'User@user1' })
     })
 
     it('user can log out', function () {
@@ -56,7 +56,7 @@ describe('Anturi app', function () {
   })
   describe('when logged in as admin', function () {
     beforeEach(function () {
-      cy.login({ username: 'admin@admin', password: 'Admin@admin1' })
+      cy.login({ username: 'admin@admin.com', password: 'Admin@admin1' })
     })
     it('togglable register form is displayed', function () {
       cy.get('[data-cy="open-togglable-registerForm"]')
@@ -77,7 +77,7 @@ describe('Anturi app', function () {
         cy.get('[data-cy="role"]').select('user')
         cy.get('[data-cy="firstName"]').type(userUser().firstName)
         cy.get('[data-cy="lastName"]').type(userUser().lastName)
-        cy.get('[data-cy="email"]').type('username@username')
+        cy.get('[data-cy="email"]').type('username@username.com')
         cy.get('[data-cy="adress"]').type(userUser().address)
         cy.get('[data-cy="postalCode"]').type(userUser().postalCode)
         cy.get('[data-cy="city"]').type(userUser().city)

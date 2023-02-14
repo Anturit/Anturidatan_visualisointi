@@ -59,6 +59,12 @@ usersRouter.post('/', async (request, response) => {
     })
   }
 
+  if (!(validator.isEmail(user.username))) {
+    return response.status(400).json({
+      error: 'invalid email address'
+    })
+  }
+
   const existingUser = await User.findOne({ username: user.username })
   if (existingUser) {
     return response.status(400).json({

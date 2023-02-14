@@ -15,7 +15,7 @@ senderRouter.get('/', async (request, response) => {
       .status(401)
       .json({ error: 'you don´t have rights for this operation' })
   }
-  const senders = await Sender.find({})
+  const senders = await Sender.find({}).sort({ date: 'descending' })
   response.json(senders)
 })
 
@@ -27,7 +27,9 @@ senderRouter.get('/:id', async (request, response) => {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
 
-  const device = await Sender.find({ device: { $in: request.params.id } })
+  const device = await Sender
+    .find({ device: { $in: request.params.id } })
+    .sort({ date: 'descending' })
   response.json(device)
 })
 
