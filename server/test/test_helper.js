@@ -15,7 +15,7 @@ const sendersInDb = async () => {
 const expiredDate = new Date('2000-04-20T06:12:14.241Z')
 const nonExpiredDate = new Date('3000-04-20T06:12:14.241Z')
 const userUser = () => ({
-  username: 'user@user',
+  username: 'user@user.com',
   firstName: 'UserTest',
   lastName: 'UserTest',
   address: 'UserStreet',
@@ -28,7 +28,7 @@ const userUser = () => ({
 })
 
 const expiredUser = () => ({
-  username: 'expireduser@user',
+  username: 'expireduser@user.com',
   firstName: 'ExpiredUserTest',
   lastName: 'ExpiredUserTest',
   address: 'UserStreet',
@@ -41,7 +41,7 @@ const expiredUser = () => ({
 })
 
 const adminUser = () => ({
-  username: 'admin@admin',
+  username: 'admin@admin.com',
   firstName: 'AdminTest',
   lastName: 'AdminTest',
   address: 'AdminStreet',

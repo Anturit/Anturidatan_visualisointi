@@ -11,14 +11,14 @@ beforeAll(async () => {
     .expect(201)
 
   const userdata = {
-    username: 'admin@admin',
+    username: 'admin@admin.com',
     password: 'Admin@admin1',
   }
   const response = await supertest(app).post('/api/login').send(userdata)
   ADMINTOKEN = response.body.token
 
   const userdata2 = {
-    username: 'user@user',
+    username: 'user@user.com',
     password: 'user@user',
   }
   const response2 = await supertest(app).post('/api/login').send(userdata2)
