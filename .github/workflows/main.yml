@@ -44,9 +44,10 @@ jobs:
           - name: Run linting backend
             run: npm run lint
 
-          - name: Run linting frontend
+          - name: Install frontend dependencies, run linting frontend
             run: |
               cd ../client
+              npm install
               npm run lint
 
           - name: Run tests
