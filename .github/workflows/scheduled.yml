@@ -40,12 +40,14 @@ jobs:
             with:
               mongodb-version: ${{ matrix.mongodb-version }}
           
-          - name: Start server
+          - name: build client and start server
             working-directory: ./server
-            run : npm run start:full:test &
+            run: |
+              npm run start:full:test &
 
           - name: Install Cypress and run tests
             uses: cypress-io/github-action@v5
             with:
               working-directory: client
+              install: false
               wait-on: 'http://localhost:3001'
