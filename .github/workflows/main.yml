@@ -90,6 +90,10 @@ jobs:
             run: |
               npm run start:full:test &
 
+          - name: Sleep for 30 seconds to wait for server
+            run: sleep 30s
+            shell: bash
+
           - name: Run cypress
             working-directory: ./client
             run: |
