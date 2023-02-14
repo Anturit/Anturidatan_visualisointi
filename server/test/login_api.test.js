@@ -13,7 +13,7 @@ describe('When there is initially one admin-user and two user-users at db', () =
 
   test('login succees with proper username and password when ADMIN', async () => {
     const userdata = {
-      username: 'admin@admin',
+      username: 'admin@admin.com',
       password: 'Admin@admin1',
     }
 
@@ -23,13 +23,13 @@ describe('When there is initially one admin-user and two user-users at db', () =
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
-    expect(response.body.username).toBe('admin@admin')
+    expect(response.body.username).toBe('admin@admin.com')
 
   })
 
   test('login succees with proper username and password when USER', async () => {
     const userdata = {
-      username: 'user@user',
+      username: 'user@user.com',
       password: 'User@user1',
     }
 
@@ -39,7 +39,7 @@ describe('When there is initially one admin-user and two user-users at db', () =
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
-    expect(response.body.username).toBe('user@user')
+    expect(response.body.username).toBe('user@user.com')
   })
 
   test('login fails with proper username and wrong password when ADMIN', async () => {
@@ -57,7 +57,7 @@ describe('When there is initially one admin-user and two user-users at db', () =
 
   test('login fails with proper username and wrong password when USER', async () => {
     const userdata = {
-      username: 'user@user',
+      username: 'user@user.com',
       password: 'adminPasswordWrong',
     }
 
@@ -85,7 +85,7 @@ describe('When there is initially one admin-user and two user-users at db', () =
 
   test('login fails if USER expirationDate out of date', async () => {
     const userdata = {
-      username: 'expireduser@user',
+      username: 'expireduser@user.com',
       password: 'Expireduser@user1',
     }
 
