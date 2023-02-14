@@ -1,0 +1,66 @@
+name: end to end tests
+
+on:
+  push:
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '45 8 * * *'
+
+env:
+    NODE_ENV: test
+    TEST_MONGODB_URI: mongodb://localhost:27017/testing
+    SECRET: actions
+
+jobs:
+  end_to_end_test_scheduled:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+        mongodb-version: ['6.0']
+    steps:
+          - name: Checkout code
+            uses: actions/checkout@v3
+          
+          - name: install frontend npm dependencies with caching
+            uses: bahmutov/npm-install@v1
+            with:
+              working-directory: ./client
+
+          - name: install backend npm dependencies with caching
+            uses: bahmutov/npm-install@v1
+            with:
+              working-directory: ./server
+
+          - name: Setup MongoDB
+            uses: supercharge/mongodb-github-action@1.8.0
+            with:
+              mongodb-version: ${{ matrix.mongodb-version }}
+          
+          - name: build client and start server
+            working-directory: ./server
+            run: |
+              npm run start:full:test &
+
+          - name: Install Cypress and run tests
+            uses: cypress-io/github-action@v5
+            with:
+              browser: chrome
+              working-directory: client
+              install: false
+              config: pageLoadTimeout=10000,baseUrl=http://localhost:3001
+              wait-on: 'http://localhost:3001'
+
+          - uses: actions/upload-artifact@v3
+            if: failure()
+            with:
+              name: cypress-screenshots
+              path: ./client/cypress/screenshots
+          
+          - uses: actions/upload-artifact@v3
+            if: always()
+            with:
+              name: cypress-videos
+              path: ./client/cypress/videos
