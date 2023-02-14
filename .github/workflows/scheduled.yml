@@ -50,4 +50,5 @@ jobs:
             with:
               working-directory: client
               install: false
+              config: pageLoadTimeout=10000,baseUrl=http://localhost:3001
               wait-on: 'http://localhost:3001'
