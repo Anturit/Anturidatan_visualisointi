@@ -1,6 +1,5 @@
 
 const supertest = require('supertest')
-const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 
@@ -48,11 +47,12 @@ describe('When there is initially one admin-user and two user-users at db', () =
       username: 'admin',
       password: 'adminPasswordWrong',
     }
-    await api
+    const response = await api
       .post('/api/login')
       .send(userdata)
       .expect(401)
       .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toContain('invalid username or password')
   })
 
   test('login fails with proper username and wrong password when USER', async () => {
@@ -61,11 +61,12 @@ describe('When there is initially one admin-user and two user-users at db', () =
       password: 'adminPasswordWrong',
     }
 
-    await api
+    const response = await api
       .post('/api/login')
       .send(userdata)
       .expect(401)
       .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toContain('invalid username or password')
   })
 
   test('login fails with wrong username and wrong password when ADMIN', async () => {
@@ -74,24 +75,25 @@ describe('When there is initially one admin-user and two user-users at db', () =
       password: 'adminPasswordWrong',
     }
 
-    await api
+    const response = await api
       .post('/api/login')
       .send(userdata)
       .expect(401)
       .expect('Content-Type', /application\/json/)
-
+    expect(response.body.error).toContain('invalid username or password')
   })
 
   test('login fails if USER expirationDate out of date', async () => {
     const userdata = {
       username: 'expireduser@user',
-      password: 'expireduser@user',
+      password: 'Expireduser@user1',
     }
 
-    await api
+    const response = await api
       .post('/api/login')
       .send(userdata)
       .expect(401)
       .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toContain('user expired, access denied, contact admin')
   })
 })
