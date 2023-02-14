@@ -1,0 +1,51 @@
+name: end to end test on push and on schedule
+
+on:
+  push:
+  schedule:
+    - cron: '45 8 * * *'
+
+env:
+    NODE_ENV: test
+    TEST_MONGODB_URI: mongodb://localhost:27017/testing
+    SECRET: actions
+
+jobs:
+  end_to_end_test_scheduled:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+        mongodb-version: ['6.0']
+    steps:
+          - name: Checkout code
+            uses: actions/checkout@v3
+          
+          - name: install frontend npm dependencies with caching
+            uses: bahmutov/npm-install@v1
+            with:
+              working-directory: ./client
+
+          - name: install backend npm dependencies with caching
+            uses: bahmutov/npm-install@v1
+            with:
+              working-directory: ./server
+
+          - name: Setup MongoDB
+            uses: supercharge/mongodb-github-action@1.8.0
+            with:
+              mongodb-version: ${{ matrix.mongodb-version }}
+          
+          - name: Start server
+            working-directory: ./server
+            run : npm run start:full:test &
+
+          - name: Install Cypress and run tests
+            uses: cypress-io/github-action@v5
+            with:
+              working-directory: client
+              wait-on: 'http://localhost:3001'
