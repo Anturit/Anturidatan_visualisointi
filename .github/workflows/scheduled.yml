@@ -52,3 +52,15 @@ jobs:
               install: false
               config: pageLoadTimeout=10000,baseUrl=http://localhost:3001
               wait-on: 'http://localhost:3001'
+
+          - uses: actions/upload-artifact@v3
+            if: failure()
+            with:
+              name: cypress-screenshots
+              path: ./client/cypress/screenshots
+          
+          - uses: actions/upload-artifact@v3
+            if: always()
+            with:
+              name: cypress-videos
+              path: ./client/cypress/videos
