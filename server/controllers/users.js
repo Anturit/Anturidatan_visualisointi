@@ -20,6 +20,23 @@ usersRouter.get('/', async (request, response) => {
   response.json(users)
 })
 
+usersRouter.get('/:id', async (request, response) => {
+  const token = await request.token
+  const decodedToken = await jwt.verify(token, process.env.SECRET)
+  if (!token || !decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+
+  if (decodedToken.role !== 'admin') {
+    if (decodedToken.id !== request.params.id) {
+      return response.status(401).json({ error: 'you don´t have rights for this operation' })
+    }
+  }
+
+  const user = await User.findById(request.params.id)
+  return response.json(user)
+})
+
 usersRouter.post('/', async (request, response) => {
 
   const user = await request.body

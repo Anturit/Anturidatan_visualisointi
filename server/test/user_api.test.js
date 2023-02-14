@@ -1,4 +1,3 @@
-
 const supertest = require('supertest')
 const helper = require('./test_helper')
 const app = require('../app')
@@ -8,10 +7,16 @@ let ADMINTOKEN = ''
 let USERTOKEN = ''
 let WRONGTOKEN = ''
 
+let ADMINID = ''
+let USERID = ''
+
 beforeAll(async () => {
-  await supertest(app)
+  const savedUsers = await supertest(app)
     .post('/api/testing/reset')
     .expect(201)
+
+  ADMINID = savedUsers.body[2].id
+  USERID = savedUsers.body[0].id
 
   const userdata = {
     username: 'admin@admin.com',
@@ -22,7 +27,7 @@ beforeAll(async () => {
 
   const userdata2 = {
     username: 'user@user.com',
-    password: 'user@user',
+    password: 'User@user1',
   }
   const response2 = await supertest(app).post('/api/login').send(userdata2)
   USERTOKEN = response2.body.token
@@ -45,7 +50,7 @@ describe('When there is initially one admin - user and two user - users at db : 
       .set('Authorization', `Bearer ${USERTOKEN}`)
       .expect(401)
       .expect('Content-Type', /application\/json/)
-    expect(response.body.error).toBe('invalid token')
+    expect(response.body.error).toBe('you don´t have rights for this operation')
   })
 
   test('get all users succees if ADMIN  login', async () => {
@@ -56,6 +61,61 @@ describe('When there is initially one admin - user and two user - users at db : 
       .expect(200)
       .expect('Content-Type', /application\/json/)
     expect(response.body).toHaveLength(usersAtStart.length)
+  })
+})
+
+describe('When there is initially one admin - user and two user - users at db : users get by id', () => {
+  test('get user by id fails if not logged', async () => {
+    const response = await api
+      .get(`/api/users/${ADMINID}`)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toBe('invalid token')
+  })
+
+  test('get user by id fails if id is not valid', async () => {
+    const response = await api
+      .get(`/api/users/${ADMINID}1`)
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toBe('malformatted id')
+  })
+
+  test('get user by id succeeds for ADMIN\'s own id if ADMIN login', async () => {
+    const response = await api
+      .get(`/api/users/${ADMINID}`)
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.username).toBe('admin@admin.com')
+  })
+
+  test('get user by id succeeds for another USER id if ADMIN login', async () => {
+    const response = await api
+      .get(`/api/users/${USERID}`)
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.username).toBe('user@user.com')
+  })
+
+  test('get user by id fails for another USER id if USER login', async () => {
+    const response = await api
+      .get(`/api/users/${ADMINID}`)
+      .set('Authorization', `Bearer ${USERTOKEN}`)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toBe('you don´t have rights for this operation')
+  })
+
+  test('get user by id succeeds for USER\'s own id if USER login', async () => {
+    const response = await api
+      .get(`/api/users/${USERID}`)
+      .set('Authorization', `Bearer ${USERTOKEN}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.username).toBe('user@user.com')
   })
 })
 
@@ -125,7 +185,7 @@ describe('When there is initially one admin - user and two user - users at db : 
       .expect('Content-Type', /application\/json/)
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length)
-    expect(response.body.error).toBe('invalid token')
+    expect(response.body.error).toBe('you don´t have rights for this operation')
   })
 
   test('USER creation succees if ADMIN role creates a new user with proper credentials', async () => {
