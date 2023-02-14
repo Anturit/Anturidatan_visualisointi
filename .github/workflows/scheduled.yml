@@ -15,9 +15,6 @@ env:
 jobs:
   end_to_end_test_scheduled:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: server
 
     strategy:
       matrix:
@@ -50,6 +47,7 @@ jobs:
           - name: Install Cypress and run tests
             uses: cypress-io/github-action@v5
             with:
+              browser: chrome
               working-directory: client
               install: false
               config: pageLoadTimeout=10000,baseUrl=http://localhost:3001
