@@ -5,7 +5,8 @@ on:
   pull_request:
     branches: [ main ]
   schedule:
-    - cron: '45 8 * * *'
+    # At 06:45 timezone: UTC
+    - cron: '45 6 * * *'
 
 env:
     NODE_ENV: test
