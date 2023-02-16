@@ -49,13 +49,13 @@ const adminUser = () => ({
   city: 'Helsinki',
   role: 'admin',
   expirationDate: nonExpiredDate,
-  senderDeviceIds: ['E00208B4'],
+  senderDeviceIds: [],
   password: 'Admin@admin1',
 })
 
 const smallSender = () => ({
   seq_number: 226,
-  device: 'E00208B4',
+  device: '1B2AF5B',
   sen_battery: 1.66,
   date: expiredDate,
   sen_id: '6a',

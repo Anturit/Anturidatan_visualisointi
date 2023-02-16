@@ -34,23 +34,67 @@ describe('When there is initially two senders at db', () => {
   })
 
   test('get all senders fails if not login', async () => {
-    await api
+    const response = await api
       .get('/api/senders')
       .expect(401)
       .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toContain('invalid token')
   })
   test('get all senders fails if USER login', async () => {
-    await api
+    const response = await api
       .get('/api/senders')
       .set('Authorization', `Bearer ${ USERTOKEN }`)
       .expect(401)
       .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toContain('you don´t have rights for this operation')
   })
 
   test('get all senders succees if ADMIN  login', async () => {
     await api
       .get('/api/senders')
       .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('get existing sender by "device" succees if ADMIN  login', async () => {
+    await api
+      .get('/api/senders/E00208B4')
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('get non-existing sender by "device" fails if ADMIN  login ', async () => {
+    const response = await api
+      .get('/api/senders/E00208B4DONTEXIST')
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toContain('there´s no device with this id')
+  })
+
+  test('get existing sender by "device" fails if not login', async () => {
+    const response = await api
+      .get('/api/senders/E00208B4')
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toContain('invalid token')
+  })
+
+  test('get sender by "device" fails if USER login and USER doesn´t own the device', async () => {
+    const response = await api
+      .get('/api/senders/1B2AF5B')
+      .set('Authorization', `Bearer ${USERTOKEN}`)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toContain('this user is not the owner of the device')
+  })
+
+  test('get sender by "device" succees if USER login and USER owns the device', async () => {
+    await api
+      .get('/api/senders/E00208B4')
+      .set('Authorization', `Bearer ${USERTOKEN}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
