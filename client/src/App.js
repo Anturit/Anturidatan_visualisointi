@@ -34,7 +34,7 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await senderService.getOneSenderLogs(user.senderDeviceIds, user.token)
+      const data = await senderService.getOneSenderLogs(user.senderDeviceIds[0], user.token)
 
       setSenders(data)
     }
@@ -107,7 +107,7 @@ function App() {
       >
         Kirjaudu ulos
       </button>
-      <div>{userDetails}</div>
+
       <Togglable buttonLabel='Näytä laitteet' id='senderList'>
         <SenderList senders={senders} />
       </Togglable>
