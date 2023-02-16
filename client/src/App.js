@@ -34,12 +34,12 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await senderService.getAll(user.token)
+      const data = await senderService.getOneSenderLogs(user.senderDeviceIds[0], user.token)
 
       setSenders(data)
     }
     if (user) {
-      if (user.role === 'admin') {
+      if (user.role === 'user') {
         fetchData()
       }
     }
@@ -89,9 +89,6 @@ function App() {
         <Togglable buttonLabel='Lisää käyttäjä' id='registerForm'>
           <RegisterForm notificationSetter={notificationSetter} />
         </Togglable>
-        <Togglable buttonLabel='Näytä laitteet' id='senderList'>
-          <SenderList senders={senders} />
-        </Togglable>
       </div>
     )
   }
@@ -111,6 +108,9 @@ function App() {
         Kirjaudu ulos
       </button>
       <div>{userDetails}</div>
+      <Togglable buttonLabel='Näytä laitteet' id='senderList'>
+        <SenderList senders={senders} />
+      </Togglable>
     </div>
   )
 }
