@@ -14,7 +14,6 @@ function App() {
   const [senders, setSenders] = useState([])
   const [userDetails, setUserDetails] = useState([])
 
-
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
@@ -25,16 +24,17 @@ function App() {
       const expiresAtMillis = decodedToken.exp * 1000
       if (expiresAtMillis > Date.now()) {
         setUser(parsedUser)
-        userService.setToken(
-          parsedUser.token
-        )
+        userService.setToken(parsedUser.token)
       }
     }
   }, [])
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await senderService.getOneSenderLogs(user.senderDeviceIds[0], user.token)
+      const data = await senderService.getOneSenderLogs(
+        user.senderDeviceIds[0],
+        user.token
+      )
 
       setSenders(data)
     }
@@ -65,10 +65,12 @@ function App() {
   }
 
   if (user === null) {
-    return <>
-      <Notification notification={notification} />
-      <LoginForm setUser={setUser} notificationSetter={notificationSetter} />
-    </>
+    return (
+      <>
+        <Notification notification={notification} />
+        <LoginForm setUser={setUser} notificationSetter={notificationSetter} />
+      </>
+    )
   }
 
   if (user.role === 'admin') {
@@ -77,13 +79,13 @@ function App() {
         <Notification notification={notification} />
         <p>{user.firstName} sisäänkirjautunut</p>
         <button
-          onClick={
-            () => {
-              setUser(null)
-              window.localStorage.setItem('loggedUser', '')}
-          }
+          onClick={() => {
+            setUser(null)
+            window.localStorage.setItem('loggedUser', '')
+          }}
+          data-cy='logout'
         >
-        Kirjaudu ulos
+          Kirjaudu ulos
         </button>
         <p></p>
         <Togglable buttonLabel='Lisää käyttäjä' id='registerForm'>
@@ -98,12 +100,11 @@ function App() {
       <Notification notification={notification} />
       <p>{user.firstName} sisäänkirjautunut</p>
       <button
-        onClick={
-          () => {
-            setUser(null)
-            window.localStorage.setItem('loggedUser', '')}
-        }
-        data-cy="logout"
+        onClick={() => {
+          setUser(null)
+          window.localStorage.setItem('loggedUser', '')
+        }}
+        data-cy='logout'
       >
         Kirjaudu ulos
       </button>
