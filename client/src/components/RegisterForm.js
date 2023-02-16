@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import registerService from '../services/registerService.js'
+import registerService from '../services/userService.js'
 
 const RegisterForm = ({ notificationSetter }) => {
   const roles = ['admin', 'user']

@@ -15,4 +15,11 @@ const create = async newObject => {
   const response = await axios.post(baseUrl, newObject, config)
   return response.data
 }
-export default { create, setToken }
+
+const getUserDetails = async (user_id, token) => {
+  const config = { headers: { Authorization: `bearer ${token}` }, }
+  const response = await axios.get(`${ baseUrl }/${user_id}`, config)
+  return response.data
+}
+
+export default { create, setToken, getUserDetails }

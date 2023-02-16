@@ -6,24 +6,26 @@ import RegisterForm from './components/RegisterForm'
 import Togglable from './components/Togglable'
 import senderService from './services/senderService'
 import SenderList from './components/SenderList'
-import registerService from './services/registerService'
+import userService from './services/userService'
 
 function App() {
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState(null)
   const [senders, setSenders] = useState([])
+  const [userDetails, setUserDetails] = useState([])
 
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const parsedUser = JSON.parse(loggedUserJSON)
+      console.log(parsedUser)
       const decodedToken = jwt_decode(parsedUser.token)
       console.log(decodedToken)
       const expiresAtMillis = decodedToken.exp * 1000
       if (expiresAtMillis > Date.now()) {
         setUser(parsedUser)
-        registerService.setToken(
+        userService.setToken(
           parsedUser.token
         )
       }
@@ -39,6 +41,18 @@ function App() {
     if (user) {
       if (user.role === 'admin') {
         fetchData()
+      }
+    }
+  }, [user])
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      const data = await userService.getUserDetails(user.id, user.token)
+      setUserDetails(data)
+    }
+    if (user) {
+      if (user.role === 'user') {
+        fetchUserDetails()
       }
     }
   }, [user])
@@ -96,6 +110,7 @@ function App() {
       >
         Kirjaudu ulos
       </button>
+      <div>{userDetails}</div>
     </div>
   )
 }
