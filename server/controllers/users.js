@@ -27,10 +27,8 @@ usersRouter.get('/:id', async (request, response) => {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
 
-  if (decodedToken.role !== 'admin') {
-    if (decodedToken.id !== request.params.id) {
-      return response.status(401).json({ error: 'you don´t have rights for this operation' })
-    }
+  if (decodedToken.role === 'user' && decodedToken.id !== request.params.id) {
+    return response.status(401).json({ error: 'you don´t have rights for this operation' })
   }
 
   const user = await User.findById(request.params.id)
