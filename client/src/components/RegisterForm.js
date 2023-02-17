@@ -153,7 +153,7 @@ const RegisterForm = ({ notificationSetter }) => {
             <input
               placeholder='esim. Kauppakatu 29'
               value={newAddressLine}
-              data-cy='adress'
+              data-cy='address'
               onChange={(e) => setNewAddressLine(e.target.value)}/>
           </div>
           <small>Postinumero</small>
