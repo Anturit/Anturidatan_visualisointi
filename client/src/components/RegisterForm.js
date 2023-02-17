@@ -63,6 +63,8 @@ const RegisterForm = ({ notificationSetter }) => {
         notificationSetter({ message: 'Salasana ei kelpaa!', type: 'alert', time: 3500 })
       } else if (err.response.data.error.includes('invalid postal code')) {
         notificationSetter({ message: 'Virheellinen postinumero!', type: 'alert', time: 3500 })
+      } else if (err.response.data.error.includes('invalid email address')) {
+        notificationSetter({ message: 'Virheellinen sähköpostiosoite!', type: 'alert', time: 3500 })
       }
     }
   }
