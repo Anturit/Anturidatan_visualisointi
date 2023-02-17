@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import jwt_decode from 'jwt-decode'
 import RegisterForm from './components/RegisterForm'
 import Togglable from './components/Togglable'
+import UserProfile from './components/UserProfile'
 import senderService from './services/senderService'
 import SenderList from './components/SenderList'
 import userService from './services/userService'
@@ -18,9 +19,7 @@ function App() {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const parsedUser = JSON.parse(loggedUserJSON)
-      console.log(parsedUser)
       const decodedToken = jwt_decode(parsedUser.token)
-      console.log(decodedToken)
       const expiresAtMillis = decodedToken.exp * 1000
       if (expiresAtMillis > Date.now()) {
         setUser(parsedUser)
@@ -108,7 +107,7 @@ function App() {
       >
         Kirjaudu ulos
       </button>
-      <div>{userDetails}</div>
+      <UserProfile userDetails={userDetails}/>
       <Togglable buttonLabel='Näytä laitteet' id='senderList'>
         <SenderList senders={senders} />
       </Togglable>
