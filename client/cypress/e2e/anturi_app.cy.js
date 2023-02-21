@@ -13,12 +13,12 @@ describe('Anturi app', function () {
 
   describe('Login', function () {
     it('succeeds with correct credentials', function () {
-      cy.get('[data-cy="username"]').type('user@user.com')
-      cy.get('[data-cy="password"]').type('User@user1')
+      cy.get('[data-cy="username"]').type(userUser().username)
+      cy.get('[data-cy="password"]').type(userUser().password)
       cy.get('[data-cy="login"]').click()
 
       //add proper name to check, when name in notification works
-      cy.contains('sisäänkirjautunut')
+      cy.contains(`${userUser().firstName} sisäänkirjautunut`)
     })
 
     it('fails with wrong credentials', function () {
@@ -49,7 +49,7 @@ describe('Anturi app', function () {
 
     it('login form is not shown', function () {
       cy.get('html').should('not.contain', 'Login')
-    }),
+    })
     it('togglable register form is not displayed', function () {
       cy.get('[data-cy="open-togglable-registerForm"]').should('not.exist')
     })
@@ -60,6 +60,21 @@ describe('Anturi app', function () {
     })
     it('togglable register form is displayed', function () {
       cy.get('[data-cy="open-togglable-registerForm"]')
+    })
+    it('User List is displayed', function () {
+      const pageContainsUserFields = (user) => {
+        cy.contains(user.username)
+        cy.contains(user.firstName)
+        cy.contains(user.lastName)
+        cy.contains(user.address)
+        cy.contains(user.postalCode)
+        cy.contains(user.city)
+        cy.contains(user.role)
+        const formattedDate = `${user.expirationDate.getDate()}/${user.expirationDate.getMonth()}/${user.expirationDate.getFullYear()}`
+        cy.contains(formattedDate)
+      }
+      [adminUser(), userUser(), expiredUser()]
+        .forEach(user => pageContainsUserFields(user))
     })
     describe('and registeration form is opened', function () {
       beforeEach(function () {
@@ -97,7 +112,7 @@ describe('Anturi app', function () {
         cy.get('[data-cy="addUser"]').click()
         cy.contains('Käyttäjä tällä sähköpostilla on jo olemassa!')
       })
-      it ('cannot create user if username (email) is wrong type', function () {
+      it('cannot create user if username (email) is wrong type', function () {
         cy.get('[data-cy="role"]').select('user')
         cy.get('[data-cy="firstName"]').type(userUser().firstName)
         cy.get('[data-cy="lastName"]').type(userUser().lastName)
