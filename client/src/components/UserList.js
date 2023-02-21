@@ -1,4 +1,9 @@
 import { useEffect, useState, useMemo } from 'react'
+import {
+  IconButton,
+  Tooltip,
+} from '@mui/material'
+import { Delete } from '@mui/icons-material'
 import MaterialReactTable from 'material-react-table'
 import userService from '../services/userService'
 
@@ -65,6 +70,23 @@ const UserList = () => {
   return <MaterialReactTable
     columns={columns}
     data={users}
+    enableRowActions
+    displayColumnDefOptions={{
+      'mrt-row-actions': {
+        header: 'Poista', //change header text
+        size: 5, //make actions column wider
+      },
+    }}
+    renderRowActions={({ row }) => (
+      <Tooltip arrow placement="right" title="Poista">
+        <IconButton
+          color="error"
+          onClick={() => console.log('action to delete', row.original)}
+        >
+          <Delete />
+        </IconButton>
+      </Tooltip>
+    )}
   />
 }
 
