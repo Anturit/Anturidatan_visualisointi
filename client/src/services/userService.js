@@ -16,12 +16,20 @@ const create = async newObject => {
   return response.data
 }
 
-const getUserDetails = async (user_id) => {
+const getUser = async (user_id) => {
+  /**
+   * Fetch individual user object based on user_id
+   * @param user_id
+   * @returns user object
+   */
   const config = { headers: { Authorization: token }, }
   const response = await axios.get(`${baseUrl}/${user_id}`, config)
   return response.data
 }
-
+/**
+ * // Fetch all user objects.
+ * @returns array of user objects
+ */
 const getAllUsers = async () => {
   const config = {
     headers: { Authorization: token }
@@ -30,4 +38,4 @@ const getAllUsers = async () => {
   return response.data
 }
 
-export default { create, setToken, getUserDetails, getAllUsers }
+export default { create, setToken, getUser, getAllUsers }
