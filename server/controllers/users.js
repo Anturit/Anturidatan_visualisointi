@@ -95,4 +95,22 @@ usersRouter.post('/', async (request, response) => {
   response.status(201).json(savedUser)
 })
 
+usersRouter.delete('/:id', async (request, response) => {
+  const token = await request.token
+  const decodedToken = await jwt.verify(token, process.env.SECRET)
+  if (!token || !decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+
+  if (decodedToken.role !== 'admin') {
+    return response
+      .status(401)
+      .json({ error: 'you don´t have rights for this operation' })
+  }
+
+  await User.findByIdAndRemove(request.params.id)
+  return response.status(200).json({ message: 'user was deleted successfully' })
+
+})
+
 module.exports = usersRouter
