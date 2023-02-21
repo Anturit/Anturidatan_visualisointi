@@ -10,11 +10,17 @@ const UserList = () => {
       .getAllUsers()
       .then((userData) => {
         setUsers(userData)
-        console.log('userData', userData)
       })
   }, [])
 
   const columns = useMemo(
+    /**
+    *{
+    *   accessorKey / accessorFn: get table cell data
+    *   header: corresponding header to cell data in column
+    *}
+    *@returns array of objects for individual column construction
+    */
     () => [
       {
         accessorKey: 'username',

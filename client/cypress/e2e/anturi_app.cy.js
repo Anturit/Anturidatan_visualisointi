@@ -13,12 +13,12 @@ describe('Anturi app', function () {
 
   describe('Login', function () {
     it('succeeds with correct credentials', function () {
-      cy.get('[data-cy="username"]').type('user@user.com')
-      cy.get('[data-cy="password"]').type('User@user1')
+      cy.get('[data-cy="username"]').type(userUser().username)
+      cy.get('[data-cy="password"]').type(userUser().password)
       cy.get('[data-cy="login"]').click()
 
       //add proper name to check, when name in notification works
-      cy.contains('sisäänkirjautunut')
+      cy.contains(`${userUser().firstName} sisäänkirjautunut`)
     })
 
     it('fails with wrong credentials', function () {
@@ -61,7 +61,7 @@ describe('Anturi app', function () {
     it('togglable register form is displayed', function () {
       cy.get('[data-cy="open-togglable-registerForm"]')
     })
-    it.only('User List is displayed', function () {
+    it('User List is displayed', function () {
       const pageContainsUserFields = (user) => {
         cy.contains(user.username)
         cy.contains(user.firstName)
