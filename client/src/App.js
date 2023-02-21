@@ -47,7 +47,7 @@ function App() {
 
   useEffect(() => {
     const fetchUserDetails = async () => {
-      const data = await userService.getUserDetails(user.id)
+      const data = await userService.getUser(user.id)
       setUserDetails(data)
     }
     if (user) {
