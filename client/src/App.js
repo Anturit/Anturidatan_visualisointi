@@ -7,6 +7,7 @@ import Togglable from './components/Togglable'
 import UserProfile from './components/UserProfile'
 import senderService from './services/senderService'
 import SenderList from './components/SenderList'
+import UserList from './components/UserList'
 import userService from './services/userService'
 
 function App() {
@@ -46,7 +47,7 @@ function App() {
 
   useEffect(() => {
     const fetchUserDetails = async () => {
-      const data = await userService.getUserDetails(user.id, user.token)
+      const data = await userService.getUserDetails(user.id)
       setUserDetails(data)
     }
     if (user) {
@@ -81,6 +82,7 @@ function App() {
           onClick={() => {
             setUser(null)
             window.localStorage.setItem('loggedUser', '')
+            userService.setToken(null)
           }}
           data-cy='logout'
         >
@@ -90,6 +92,7 @@ function App() {
         <Togglable buttonLabel='Lisää käyttäjä' id='registerForm'>
           <RegisterForm notificationSetter={notificationSetter} />
         </Togglable>
+        <UserList />
       </div>
     )
   }
@@ -107,7 +110,7 @@ function App() {
       >
         Kirjaudu ulos
       </button>
-      <UserProfile userDetails={userDetails}/>
+      <UserProfile userDetails={userDetails} />
       <Togglable buttonLabel='Näytä laitteet' id='senderList'>
         <SenderList senders={senders} />
       </Togglable>
