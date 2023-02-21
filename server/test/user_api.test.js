@@ -339,5 +339,40 @@ test('USER creation fails if postal has non-numeric characters', async () => {
   expect(response.body.error).toContain('invalid postal code')
 })
 
+describe('When there is initially one admin - user and two user - users at db : users delete', () => {
 
+  test('ADMIN can delete USER', async () => {
+    const usersAtStart = await helper.usersInDb()
+    const response = await api
+      .delete(`/api/users/${USERID}`)
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length - 1)
+    expect(response.body.message).toBe('user was deleted successfully')
+  })
 
+  test('USER deletion fails when no credentials', async () => {
+    const usersAtStart = await helper.usersInDb()
+    const response = await api
+      .delete(`/api/users/${USERID}`)
+      .set('Authorization', `Bearer ${USERTOKEN}`)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+    expect(response.body.error).toBe('you don´t have rights for this operation')
+  })
+
+  test('USER deletion fails when no login', async () => {
+    const usersAtStart = await helper.usersInDb()
+    const response = await api
+      .delete(`/api/users/${USERID}`)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+    expect(response.body.error).toBe('invalid token')
+  })
+})
