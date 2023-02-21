@@ -1,3 +1,27 @@
+# Koodin dokumentointikäytännöt
+
+* Kommentoidaan koodi [JSDOC](https://jsdoc.app/) -käytäntöjen mukaisesti.
+* Dokumentointi tehdään suoraan lähdekoodiin.
+* Kommentoinnin tarkoitus on selventää, **mitä** koodi tekee ja **miksi**.
+
+
+### Esimerkki 1
+
+```
+/**
+ * Foo takes any argument.
+ * The return value is 'baz' in all cases.
+ * @param {*} bar - Any argument
+ * @param {string} [optionalArg] - An optional argument that is a string
+ */
+function foo(bar, optionalArg) {
+  return 'baz';
+}
+```
+
+### Esimerkki 2
+
+```
 import { useState } from 'react'
 
 const Togglable = (props) => {
@@ -38,3 +62,4 @@ const Togglable = (props) => {
 }
 
 export default Togglable
+```

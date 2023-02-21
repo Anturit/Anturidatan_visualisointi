@@ -6,3 +6,4 @@
 * Koodityyli on yhtenäistä, arkkitehtuuri järkevää ja koodi on ylläpidettävää
 * Käyttökokemus asiakasta miellyttävä
 * Asiakas pystyy näkemään koodin ja testien tilanteen CI-palvelusta
+* Koodi on kommentoitu käytäntöjen mukaisesti.
