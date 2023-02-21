@@ -16,10 +16,18 @@ const create = async newObject => {
   return response.data
 }
 
-const getUserDetails = async (user_id, token) => {
-  const config = { headers: { Authorization: `bearer ${token}` }, }
-  const response = await axios.get(`${ baseUrl }/${user_id}`, config)
+const getUserDetails = async (user_id) => {
+  const config = { headers: { Authorization: token }, }
+  const response = await axios.get(`${baseUrl}/${user_id}`, config)
   return response.data
 }
 
-export default { create, setToken, getUserDetails }
+const getAllUsers = async () => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  const response = await axios.get(`${baseUrl}/`, config)
+  return response.data
+}
+
+export default { create, setToken, getUserDetails, getAllUsers }
