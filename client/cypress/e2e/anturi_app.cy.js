@@ -76,6 +76,15 @@ describe('Anturi app', function () {
       [adminUser(), userUser(), expiredUser()]
         .forEach(user => pageContainsUserFields(user))
     })
+    it('user deletion succeeds when deletion mode is enabled', function () {
+      cy.get('[data-cy="enableDeletion"]').click()
+      cy.get('[data-cy="deleteUser user@user.com"]').click()
+      cy.contains('Käyttäjä UserTest poistettu')
+    })
+    it('user deletion fails when deletion mode is disabled', function () {
+      cy.get('[data-cy="deleteUser user@user.com"]').click()
+      cy.contains('Käyttäjä UserTest poistettu').should('not.exist')
+    })
     describe('and registeration form is opened', function () {
       beforeEach(function () {
         cy.contains('Lisää käyttäjä').click()

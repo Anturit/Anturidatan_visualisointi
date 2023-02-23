@@ -11,7 +11,7 @@ import userService from '../services/userService'
 
 const UserList = ({ notificationSetter }) => {
   const [users, setUsers] = useState([])
-
+  const [userDeletionAllowed, setUserDeletionAllowed] = useState(false)
   useEffect(() => {
     userService
       .getAllUsers()
@@ -70,16 +70,13 @@ const UserList = ({ notificationSetter }) => {
   )
 
   const removeUser = async (user) => {
+    console.log(user)
     try {
       await userService.deleteUser(user.id)
       setUsers(users.filter(u => u.id !== user.id))
-      notificationSetter({ message: 'Käyttäjän poisto onnistui!', type: 'alert', time: 3500 })
+      notificationSetter({ message: `Käyttäjä ${user.firstName} poistettu`, time: 3500 })
     } catch (err) {
-      if (err.response.data.error.includes('token')) {
-        notificationSetter({ message: 'Istunto vanhentunut', time: 3500 })
-      } else {
-        notificationSetter({ message: 'Käyttäjän poisto epäonnistui!', type: 'alert', time: 3500 })
-      }
+      notificationSetter({ message: 'Käyttäjän poisto epäonnistui!', type: 'alert', time: 3500 })
     }
   }
 
@@ -96,8 +93,9 @@ const UserList = ({ notificationSetter }) => {
     renderRowActions={({ row }) => (
       <Tooltip arrow placement="right" title="Poista">
         <IconButton
-          color="error"
-          onClick={() => removeUser(row.original)}
+          data-cy={`deleteUser ${row.original.username}`}
+          color={userDeletionAllowed ? 'error' : '#e0e0e0'}
+          onClick={() => userDeletionAllowed && removeUser(row.original)}
         >
           <Delete />
         </IconButton>
@@ -105,8 +103,11 @@ const UserList = ({ notificationSetter }) => {
     )}
     renderTopToolbarCustomActions={() => (
       <Box sx={{ display: 'flex', gap: '1rem' }}>
-        <p>enable user deletion</p>
-        <Checkbox onChange={() => console.log('click')} />
+        <p>Käyttäjien poisto sallittu</p>
+        <Checkbox
+          data-cy='enableDeletion'
+          onChange={() => setUserDeletionAllowed(!userDeletionAllowed)}
+        />
       </Box>
     )}
   />
