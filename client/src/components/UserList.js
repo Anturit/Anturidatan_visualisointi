@@ -1,13 +1,15 @@
 import { useEffect, useState, useMemo } from 'react'
 import {
+  Checkbox,
   IconButton,
   Tooltip,
+  Box,
 } from '@mui/material'
 import { Delete } from '@mui/icons-material'
 import MaterialReactTable from 'material-react-table'
 import userService from '../services/userService'
 
-const UserList = () => {
+const UserList = ({ notificationSetter }) => {
   const [users, setUsers] = useState([])
 
   useEffect(() => {
@@ -67,25 +69,45 @@ const UserList = () => {
     []
   )
 
+  const removeUser = async (user) => {
+    try {
+      await userService.deleteUser(user.id)
+      setUsers(users.filter(u => u.id !== user.id))
+      notificationSetter({ message: 'Käyttäjän poisto onnistui!', type: 'alert', time: 3500 })
+    } catch (err) {
+      if (err.response.data.error.includes('token')) {
+        notificationSetter({ message: 'Istunto vanhentunut', time: 3500 })
+      } else {
+        notificationSetter({ message: 'Käyttäjän poisto epäonnistui!', type: 'alert', time: 3500 })
+      }
+    }
+  }
+
   return <MaterialReactTable
     columns={columns}
     data={users}
     enableRowActions
     displayColumnDefOptions={{
       'mrt-row-actions': {
-        header: 'Poista', //change header text
-        size: 5, //make actions column wider
+        header: 'Poista',
+        size: 5,
       },
     }}
     renderRowActions={({ row }) => (
       <Tooltip arrow placement="right" title="Poista">
         <IconButton
           color="error"
-          onClick={() => console.log('action to delete', row.original)}
+          onClick={() => removeUser(row.original)}
         >
           <Delete />
         </IconButton>
       </Tooltip>
+    )}
+    renderTopToolbarCustomActions={() => (
+      <Box sx={{ display: 'flex', gap: '1rem' }}>
+        <p>enable user deletion</p>
+        <Checkbox onChange={() => console.log('click')} />
+      </Box>
     )}
   />
 }
