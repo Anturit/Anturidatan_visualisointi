@@ -67,11 +67,11 @@ const RegisterForm = ({ notificationSetter }) => {
    * @returns {string} Error text in finnish
    */
   const getErrorMessageInFinnish = (errorText) => {
-    errorMessagesInFinnish.forEach(([english, finnish]) => {
+    for (const [english, finnish] of errorMessagesInFinnish) {
       if (errorText.includes(english)) {
         return finnish
       }
-    })
+    }
     return 'Tuntematon virhe lomakkeen lähettämisessä'
   }
   /**
