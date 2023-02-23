@@ -72,13 +72,14 @@ const UserList = ({ notificationSetter }) => {
   )
 
   const removeUser = async (user) => {
-    console.log(user)
     try {
       await userService.deleteUser(user.id)
       setUsers(users.filter(u => u.id !== user.id))
       notificationSetter({ message: `Käyttäjä ${user.firstName} poistettu`, time: 3500 })
     } catch (err) {
-      notificationSetter({ message: 'Käyttäjän poisto epäonnistui!', type: 'alert', time: 3500 })
+      if (err.message.includes('token')) {
+        notificationSetter({ message: 'Käyttäjän poisto epäonnistui!', type: 'alert', time: 3500 })
+      }
     }
   }
 
