@@ -53,6 +53,7 @@ jobs:
               install: false
               config: pageLoadTimeout=10000,baseUrl=http://localhost:3001
               wait-on: 'http://localhost:3001'
+              wait-on-timeout: 180
 
           - uses: actions/upload-artifact@v3
             if: failure()
