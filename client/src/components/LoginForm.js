@@ -7,12 +7,29 @@ const LoginForm = ({ setUser, notificationSetter }) => {
   const [password, setPassword] = useState('')
 
   const login = async credentials => {
+    /**
+    *@returns user object with all fields except passwordHash:
+    *{* @param {Object} user
+     * @param {string} user.username
+     * @param {string} user.firstName
+     * @param {string} user.lastname
+     * @param {string} user.address
+     * @param {string} user.postalCode
+     * @param {string} user.city
+     * @param {string} user.role
+     * @param {Date} user.expirationDate
+    *  @param {list} user.senderDeviceIds
+    *}
+    */
     const res = await axios.post(
       '/api/login/', credentials
     )
     return res.data
   }
   const handleLogin = async (loginEvent) => {
+    /**
+    * Function to fetch user for session and storing it to localstorage
+   */
     loginEvent.preventDefault()
     try {
       const user = await login(
