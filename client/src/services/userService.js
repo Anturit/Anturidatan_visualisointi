@@ -9,6 +9,12 @@ const setToken = newToken => {
 }
 
 const create = async newObject => {
+  /**
+   * Create new user
+   * @param {object} newObject user object containing all fields in the
+   *                           register form and list of users device ids
+   * @returns {object} user object without password field
+   */
   const config = {
     headers: { Authorization: token },
   }
@@ -38,4 +44,16 @@ const getAllUsers = async () => {
   return response.data
 }
 
-export default { create, setToken, getUser, getAllUsers }
+const deleteUser = async (user_id) => {
+  /**
+   * @param {string} user_id
+   * @returns {object} contains message about successful/failed deletion
+   */
+  const config = {
+    headers: { Authorization: token },
+  }
+  const response = await axios.delete(`${baseUrl}/${user_id}`, config)
+  return response.data
+}
+
+export default { create, setToken, getUser, getAllUsers, deleteUser }

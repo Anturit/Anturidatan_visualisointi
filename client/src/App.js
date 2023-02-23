@@ -6,6 +6,7 @@ import RegisterForm from './components/RegisterForm'
 import Togglable from './components/Togglable'
 import UserProfile from './components/UserProfile'
 import senderService from './services/senderService'
+import SenderDropdown from './components/SenderDropdown'
 import SenderList from './components/SenderList'
 import UserList from './components/UserList'
 import userService from './services/userService'
@@ -64,6 +65,11 @@ function App() {
     }, newNotification.time)
   }
 
+  const fetchSenderById = async (id) => {
+    const sender = await senderService.getOneSenderLogs(id, user.token)
+    setSenders(sender)
+  }
+
   if (user === null) {
     return (
       <>
@@ -92,7 +98,7 @@ function App() {
         <Togglable buttonLabel='Lisää käyttäjä' id='registerForm'>
           <RegisterForm notificationSetter={notificationSetter} />
         </Togglable>
-        <UserList />
+        <UserList notificationSetter={notificationSetter}/>
       </div>
     )
   }
@@ -112,7 +118,12 @@ function App() {
       </button>
       <UserProfile userDetails={userDetails} />
       <Togglable buttonLabel='Näytä laitteet' id='senderList'>
-        <SenderList senders={senders} />
+        <div>
+          {user.senderDeviceIds.length > 1 &&
+            <SenderDropdown senderDeviceIds={user.senderDeviceIds} fetchSenderById={fetchSenderById} />
+          }
+          <SenderList senders={senders} />
+        </div>
       </Togglable>
     </div>
   )
