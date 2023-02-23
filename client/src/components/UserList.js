@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect,  useMemo } from 'react'
 import {
   IconButton,
   Tooltip,
@@ -6,15 +6,17 @@ import {
 import { Delete } from '@mui/icons-material'
 import MaterialReactTable from 'material-react-table'
 import userService from '../services/userService'
-
+import { useSelector } from 'react-redux'
+import { setUsers } from '../reducers/usersReducer'
+import store from '../store'
 const UserList = () => {
-  const [users, setUsers] = useState([])
+  const users = useSelector((state) => state.users)
 
   useEffect(() => {
     userService
       .getAllUsers()
       .then((userData) => {
-        setUsers(userData)
+        store.dispatch(setUsers(userData))
       })
   }, [])
 
