@@ -14,58 +14,92 @@ const RegisterForm = ({ notificationSetter }) => {
   const [newPassword, setNewPassword] = useState('')
   const [meter, setMeter] = useState(false)
 
-  const validate = async (userObj) => {
+  /**
+   * Checks that no string value in user object is not an empty string.
+   * @param {*} userObj
+   * @returns {boolean}
+   */
+  const containsEmptyFields = (userObj) => {
     for (const key in userObj) {
       if (typeof userObj[key] === 'string'
         && userObj[key].replace(/\s/g, '') === '') {
-        notificationSetter({ message: 'Tyhjiä kenttiä', type: 'alert', time: 3500 })
-        return false
+        return true
       }
     }
-    return true
+    return false
+  }
+  const createUserObjectFromStates = () =>  ({
+    username: newEmail,
+    password: newPassword,
+    firstName: newFirstName,
+    lastName: newSurname,
+    address: newAddressLine,
+    postalCode: newPostcode,
+    city: newCity,
+    role: selectedRole,
+    expirationDate: expirationDate,
+    senderDeviceIds: [
+      'E00208B4'
+    ]
+  })
+
+  const resetRegisterFormStates = () => {
+    setSelectedRole(roles[1])
+    setNewFirstName('')
+    setNewSurname('')
+    setNewEmail('')
+    setNewAddressLine('')
+    setNewPostcode('')
+    setNewCity('')
+    setNewPassword('')
   }
 
+  const errorMessagesInFinnish = [
+    ['unique', 'Käyttäjä tällä sähköpostilla on jo olemassa!'],
+    ['password', 'Salasana ei kelpaa!'],
+    ['invalid postal code', 'Virheellinen postinumero!'],
+    ['invalid email address', 'Virheellinen sähköpostiosoite!'],
+  ]
+
+  /**
+   * Returns corresponding error message in finnish
+   * @param {string} errorText
+   * @returns {string} Error text in finnish
+   */
+  const getErrorMessageInFinnish = (errorText) => {
+    for (const [english, finnish] of errorMessagesInFinnish) {
+      if (errorText.includes(english)) {
+        return finnish
+      }
+    }
+    return 'Tuntematon virhe lomakkeen lähettämisessä'
+  }
+  /**
+   * Register form event handler
+   * @param {SubmitEvent}
+   * @returns null
+   */
   const submit = async (event) => {
     event.preventDefault()
+    const userObject = createUserObjectFromStates()
+    if (containsEmptyFields(userObject)) {
+      notificationSetter({
+        message: 'Tyhjiä kenttiä',
+        type: 'alert',
+        time: 3500,
+      })
+      return
+    }
     try {
-      const userObject = {
-        username: newEmail,
-        password: newPassword,
-        firstName: newFirstName,
-        lastName: newSurname,
-        address: newAddressLine,
-        postalCode: newPostcode,
-        city: newCity,
-        role: selectedRole,
-        expirationDate: expirationDate,
-        senderDeviceIds: [
-          'E00208B4'
-        ]
-      }
-      if ((await validate(userObject)) === false) {
-        return
-      }
-
       await registerService.create(userObject)
       notificationSetter({ message: `Käyttäjän luonti onnistui! Käyttäjänimi: ${newEmail} Salasana: ${newPassword}`, time: 10000 })
-      setSelectedRole(roles[1])
-      setNewFirstName('')
-      setNewSurname('')
-      setNewEmail('')
-      setNewAddressLine('')
-      setNewPostcode('')
-      setNewCity('')
-      setNewPassword('')
+      resetRegisterFormStates()
     } catch (err) {
-      if (err.response.data.error.includes('unique')) {
-        notificationSetter({ message: 'Käyttäjä tällä sähköpostilla on jo olemassa!', type: 'alert', time: 3500 })
-      } else if (err.response.data.error.includes('password')) {
-        notificationSetter({ message: 'Salasana ei kelpaa!', type: 'alert', time: 3500 })
-      } else if (err.response.data.error.includes('invalid postal code')) {
-        notificationSetter({ message: 'Virheellinen postinumero!', type: 'alert', time: 3500 })
-      } else if (err.response.data.error.includes('invalid email address')) {
-        notificationSetter({ message: 'Virheellinen sähköpostiosoite!', type: 'alert', time: 3500 })
-      }
+      notificationSetter({
+        message: getErrorMessageInFinnish(err.response.data.error),
+        type: 'alert',
+        time: 3500,
+      })
     }
   }
 
@@ -83,7 +117,7 @@ const RegisterForm = ({ notificationSetter }) => {
     eightCharsOrGreater: newPassword.match(eightCharsOrMore),
   }
 
-  const passwordValidation = Object.values(passwordTracker).filter(
+  const passingPasswordValidationCount = Object.values(passwordTracker).filter(
     (value) => value
   ).length
 
@@ -167,7 +201,7 @@ const RegisterForm = ({ notificationSetter }) => {
           <small>Kaupunki</small>
           <div>
             <input
-              placeholder='esim. 40100'
+              placeholder='esim. Jyväskylä'
               value={newCity}
               data-cy='city'
               onChange={(e) => setNewCity(e.target.value)}/>
@@ -185,7 +219,7 @@ const RegisterForm = ({ notificationSetter }) => {
             <small>
               <div className="password-strength-meter"></div>
               <div>
-                {passwordValidation < 5 && 'Salasanan tulee sisältää: '}
+                {passingPasswordValidationCount < 5 && 'Salasanan tulee sisältää: '}
                 {!passwordTracker.uppercase && 'iso kirjain, '}
                 {!passwordTracker.lowercase && 'pieni kirjain, '}
                 {!passwordTracker.specialChar && 'erikoismerkki, '}
