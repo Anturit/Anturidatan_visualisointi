@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt')
 
 router.post('/reset', async (request, response) => {
   await User.deleteMany({})
-  const testUsers = [helper.userUser(), helper.expiredUser(), helper.adminUser()]
+  const testUsers = [helper.userUser(), helper.expiredUser(), helper.adminUser(), helper.oneDeviceUser(), helper.twoDeviceUser()]
   const saltRounds = 10
 
   let savedUsers = []
