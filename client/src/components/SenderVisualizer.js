@@ -3,6 +3,14 @@ import { SensorChart } from './SensorChart'
 import { formatData, getMeasurementParameters, getSmallSensorIds } from '../utils/senderDataHandler'
 
 const SenderVisualizer = ({ id, logs }) => {
+  /**
+   * Function that shows device's visualized sensor data
+   * @param {string} id device-id
+   * @param {object} logs devices sensor data log
+   * @returns {JSX.Element} JSX element of device's sensor charts
+   */
+
+  //React hook containing info about showing/not showing the charts
   const [detailed, setDetailed] = useState(false)
 
   const hideWhenDetailed = { display: detailed ? 'none' : '' }
@@ -17,6 +25,7 @@ const SenderVisualizer = ({ id, logs }) => {
   const smallSensorData = formatData(logs, measurementParameters)
 
   const toggleDetails = () => {
+    //Function that toggles the visibility of the charts
     setDetailed(!detailed)
   }
 
