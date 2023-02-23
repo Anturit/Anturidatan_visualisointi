@@ -98,7 +98,7 @@ function App() {
         <Togglable buttonLabel='Lisää käyttäjä' id='registerForm'>
           <RegisterForm notificationSetter={notificationSetter} />
         </Togglable>
-        <UserList />
+        <UserList notificationSetter={notificationSetter}/>
       </div>
     )
   }
