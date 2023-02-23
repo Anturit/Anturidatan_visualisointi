@@ -1,6 +1,6 @@
 # Anturidatan visualisointi
 
-![CI](https://github.com/Anturit/Anturidatan_visualisointi/actions/workflows/main.yml/badge.svg)
+![E2E](https://github.com/Anturit/Anturidatan_visualisointi/actions/workflows/scheduled.yml/badge.svg)![Backend](https://github.com/Anturit/Anturidatan_visualisointi/actions/workflows/main.yml/badge.svg)
 
 Helsingin yliopiston Ohjelmistotuotantoprojekti, kevät 2023.
 

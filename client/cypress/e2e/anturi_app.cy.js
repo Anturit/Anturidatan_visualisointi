@@ -54,6 +54,26 @@ describe('Anturi app', function () {
       cy.get('[data-cy="open-togglable-registerForm"]').should('not.exist')
     })
   })
+
+  describe('when logged in as user who has one sender device', function () {
+    beforeEach( function () {
+      cy.login({ username: 'Onedeviceuser1@Onedeviceuser1.com', password: 'Onedeviceuser1@Onedeviceuser1' })
+    })
+
+    it('dropdown menu of senders is not displayed', function () {
+      cy.get('[data-cy="senderDropdown"]').should('not.exist')
+    })
+  })
+
+  describe('when logged in as user who has two sender devices', function () {
+    beforeEach( function () {
+      cy.login({ username: 'Twodeviceuser1@Twodeviceuser1.com', password: 'Twodeviceuser1@Twodeviceuser1' })
+    })
+
+    it('dropdown menu of senders is displayed', function () {
+      cy.get('[data-cy="senderDropdown"]').should('exist')
+    })
+  })
   describe('when logged in as admin', function () {
     beforeEach(function () {
       cy.login({ username: 'admin@admin.com', password: 'Admin@admin1' })

@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useState, useEffect,  useMemo } from 'react'
 import {
   Checkbox,
   IconButton,
@@ -8,15 +8,17 @@ import {
 import { Delete } from '@mui/icons-material'
 import MaterialReactTable from 'material-react-table'
 import userService from '../services/userService'
-
+import { useSelector } from 'react-redux'
+import { setUsers } from '../reducers/usersReducer'
+import store from '../store'
 const UserList = ({ notificationSetter }) => {
-  const [users, setUsers] = useState([])
+  const users = useSelector((state) => state.users)
   const [userDeletionAllowed, setUserDeletionAllowed] = useState(false)
   useEffect(() => {
     userService
       .getAllUsers()
       .then((userData) => {
-        setUsers(userData)
+        store.dispatch(setUsers(userData))
       })
   }, [])
 

@@ -53,6 +53,36 @@ const adminUser = () => ({
   password: 'Admin@admin1',
 })
 
+const oneDeviceUser = () => ({
+  username: 'Onedeviceuser1@Onedeviceuser1.com',
+  password: 'Onedeviceuser1@Onedeviceuser1',
+  firstName: 'Onedeviceuser',
+  lastName: 'Onedeviceuser',
+  address: 'Onedevicestreet 1',
+  postalCode: '00000',
+  city: 'Onedevicecity',
+  role: 'user',
+  expirationDate: nonExpiredDate,
+  senderDeviceIds: [
+    'E00208B4'
+  ]
+})
+
+const twoDeviceUser = () => ({
+  username: 'Twodeviceuser1@Twodeviceuser1.com',
+  password: 'Twodeviceuser1@Twodeviceuser1',
+  firstName: 'Twodeviceuser',
+  lastName: 'Twodeviceuser',
+  address: 'Twodevicestreet 1',
+  postalCode: '00000',
+  city: 'Twodevicecity',
+  role: 'user',
+  expirationDate: nonExpiredDate,
+  senderDeviceIds: [
+    'E00208B4', '1B2AF5B'
+  ]
+})
+
 const smallSender = () => ({
   seq_number: 226,
   device: '1B2AF5B',
@@ -81,6 +111,8 @@ module.exports = {
   userUser,
   adminUser,
   expiredUser,
+  oneDeviceUser,
+  twoDeviceUser,
   smallSender,
   bigSender,
 }
