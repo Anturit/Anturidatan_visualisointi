@@ -74,12 +74,13 @@ const UserList = ({ notificationSetter }) => {
   const removeUser = async (user) => {
     try {
       await userService.deleteUser(user.id)
-      setUsers(users.filter(u => u.id !== user.id))
+      store.dispatch(setUsers(users.filter(u => u.id !== user.id)))
       notificationSetter({ message: `Käyttäjä ${user.firstName} poistettu`, time: 3500 })
     } catch (err) {
       if (err.message.includes('token')) {
-        notificationSetter({ message: 'Käyttäjän poisto epäonnistui!', type: 'alert', time: 3500 })
+        notificationSetter({ message: 'Istunto vanhentunut', type: 'alert', time: 3500 })
       }
+      notificationSetter({ message: 'Tuntematon virhe käyttäjän poistossa', type: 'alert', time: 3500 })
     }
   }
 
