@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import axios from 'axios'
 import userService from '../services/userService'
+import store from '../store'
+import { setUser } from '../reducers/loginFormReducer'
 
-const LoginForm = ({ setUser, notificationSetter }) => {
+const LoginForm = ({ notificationSetter }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -39,7 +41,7 @@ const LoginForm = ({ setUser, notificationSetter }) => {
       window.localStorage.setItem(
         'loggedUser', JSON.stringify(user)
       )
-      setUser(user)
+      store.dispatch(setUser(user))
       userService.setToken(user.token)
       notificationSetter({ message: `${user.firstName} ${user.lastName} kirjattu sisään`, time: 3500 })
       setUsername('')
