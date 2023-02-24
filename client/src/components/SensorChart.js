@@ -10,6 +10,7 @@ import {
 
 const COLORS = ['blue', 'crimson', 'green', 'purple', 'black']
 
+//Enum of Finnish translations of measurement parameters
 const TRANSLATE = {
   temperature: 'Lämpötila',
   humidity: 'Ilmankosteus',
@@ -19,11 +20,15 @@ const TRANSLATE = {
 Object.freeze(TRANSLATE)
 
 const SensorChart = ({ parameter, ids, logs }) => {
+  /**
+   * Creates a chart of specified measurement parameter from all sensors of one sender device
+   * @param {string} parameter - Measurement paramenter to be made a chart of
+   * @param {string[]} ids - Array of sensor ids
+   * @param {Object[]} logs - Array of measurement logs
+   * @returns {JSX.Element} JSX element of chart of a measurement
+   */
 
-  if (logs.length === 0) {
-    return
-  }
-
+  // Creates a linechart of a measurement and maps all sensors as different lines
   return (
     <div>
       <p><b>{ TRANSLATE[parameter] }</b></p>
