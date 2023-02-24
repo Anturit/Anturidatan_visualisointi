@@ -13,6 +13,7 @@ import UserList from './components/UserList'
 import userService from './services/userService'
 import { setUser } from './reducers/loginFormReducer'
 import store from './store'
+//import { setNotification } from './reducers/notificationReducer'
 function App() {
   const user = useSelector((state) => state.loginForm.user)
   const [notification, setNotification] = useState(null)
@@ -63,7 +64,7 @@ function App() {
     return (
       <>
         <Notification notification={notification} />
-        <LoginForm  notificationSetter={notificationSetter} />
+        <LoginForm />
       </>
     )
   }
