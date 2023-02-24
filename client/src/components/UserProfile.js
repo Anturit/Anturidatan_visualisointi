@@ -1,5 +1,18 @@
 
 const UserProfile = ({ userDetails }) => {
+  /**
+   * Renders user details from user object passed as props to component.
+   * @param {object} userDetails
+   * @param {string} userDetails.firstName
+   * @param {string} userDetails.lastName
+   * @param {string} userDetails.username
+   * @param {string} userDetails.address
+   * @param {string} userDetails.postalCode
+   * @param {string} userDetails.city
+   * @param {Date} userDetails.expirationDate
+   */
+
+  // Convert expirationDate to Finnish locale date format
   const expirationDate = new Date(userDetails.expirationDate).toLocaleDateString('fi-FI')
 
   return (
