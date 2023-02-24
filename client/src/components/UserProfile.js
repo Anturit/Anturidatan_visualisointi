@@ -2,15 +2,7 @@ import { useSelector } from 'react-redux'
 
 const UserProfile = () => {
   /**
-   * Renders user details from user object passed as props to component.
-   * @param {object} user
-   * @param {string} user.firstName
-   * @param {string} user.lastName
-   * @param {string} user.username
-   * @param {string} user.address
-   * @param {string} user.postalCode
-   * @param {string} user.city
-   * @param {Date} user.expirationDate
+   * Renders user details from user object imported from Redux store.
    */
   const user = useSelector((state) => state.loginForm.user)
   // Convert expirationDate to Finnish locale date format
