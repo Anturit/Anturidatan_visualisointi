@@ -1,6 +1,7 @@
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import jwt_decode from 'jwt-decode'
 import RegisterForm from './components/RegisterForm'
 import Togglable from './components/Togglable'
@@ -10,12 +11,12 @@ import SenderDropdown from './components/SenderDropdown'
 import SenderList from './components/SenderList'
 import UserList from './components/UserList'
 import userService from './services/userService'
-
+import { setUser } from './reducers/loginFormReducer'
+import store from './store'
 function App() {
-  const [user, setUser] = useState(null)
+  const user = useSelector((state) => state.loginForm.user)
   const [notification, setNotification] = useState(null)
   const [senders, setSenders] = useState([])
-  const [userDetails, setUserDetails] = useState([])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -24,7 +25,7 @@ function App() {
       const decodedToken = jwt_decode(parsedUser.token)
       const expiresAtMillis = decodedToken.exp * 1000
       if (expiresAtMillis > Date.now()) {
-        setUser(parsedUser)
+        store.dispatch(setUser(parsedUser))
         userService.setToken(parsedUser.token)
       }
     }
@@ -46,18 +47,6 @@ function App() {
     }
   }, [user])
 
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      const data = await userService.getUser(user.id)
-      setUserDetails(data)
-    }
-    if (user) {
-      if (user.role === 'user') {
-        fetchUserDetails()
-      }
-    }
-  }, [user])
-
   const notificationSetter = (newNotification) => {
     setNotification(newNotification)
     setTimeout(() => {
@@ -74,7 +63,7 @@ function App() {
     return (
       <>
         <Notification notification={notification} />
-        <LoginForm setUser={setUser} notificationSetter={notificationSetter} />
+        <LoginForm  notificationSetter={notificationSetter} />
       </>
     )
   }
@@ -86,7 +75,7 @@ function App() {
         <p>{user.firstName} sisäänkirjautunut</p>
         <button
           onClick={() => {
-            setUser(null)
+            store.dispatch(setUser(null))
             window.localStorage.setItem('loggedUser', '')
             userService.setToken(null)
           }}
@@ -109,14 +98,14 @@ function App() {
       <p>{user.firstName} sisäänkirjautunut</p>
       <button
         onClick={() => {
-          setUser(null)
+          store.dispatch(setUser(null))
           window.localStorage.setItem('loggedUser', '')
         }}
         data-cy='logout'
       >
         Kirjaudu ulos
       </button>
-      <UserProfile userDetails={userDetails} />
+      <UserProfile userDetails={user} />
       <Togglable buttonLabel='Näytä laitteet' id='senderList'>
         <div>
           {user.senderDeviceIds.length > 1 &&
