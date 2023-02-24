@@ -18,6 +18,10 @@ function App() {
   const [userDetails, setUserDetails] = useState([])
 
   useEffect(() => {
+    /**
+     * Function to fetch user for session and storing it to localstorage
+     * @returns user object with all fields except passwordHash.
+     */
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const parsedUser = JSON.parse(loggedUserJSON)
@@ -31,6 +35,26 @@ function App() {
   }, [])
 
   useEffect(() => {
+    /**
+     * Function to fetch user details for user
+     * @returns user object.
+     */
+    const fetchUserDetails = async () => {
+      const data = await userService.getUser(user.id)
+      setUserDetails(data)
+    }
+    if (user) {
+      if (user.role === 'user') {
+        fetchUserDetails()
+      }
+    }
+  }, [user])
+
+  useEffect(() => {
+    /**
+     * Function to fetch senders for user
+     * @returns sender object.
+     */
     const fetchData = async () => {
       const data = await senderService.getOneSenderLogs(
         user.senderDeviceIds[0],
@@ -46,19 +70,17 @@ function App() {
     }
   }, [user])
 
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      const data = await userService.getUser(user.id)
-      setUserDetails(data)
-    }
-    if (user) {
-      if (user.role === 'user') {
-        fetchUserDetails()
-      }
-    }
-  }, [user])
 
   const notificationSetter = (newNotification) => {
+    /**
+     * Function to set notification and clear it after set time
+     * @param {Object} newNotification
+     * @param {string} newNotification.message
+     * @param {string} newNotification.type
+     * @param {number} newNotification.time
+     * @returns null
+     */
+
     setNotification(newNotification)
     setTimeout(() => {
       setNotification(null)
@@ -66,11 +88,20 @@ function App() {
   }
 
   const fetchSenderById = async (id) => {
+    /**
+     * Function to fetch sender by id
+     * @param {string} id
+     * @returns sender object.
+     */
     const sender = await senderService.getOneSenderLogs(id, user.token)
     setSenders(sender)
   }
 
   if (user === null) {
+    /**
+     * If user is not logged in, render login form
+     * @returns login form
+     */
     return (
       <>
         <Notification notification={notification} />
@@ -80,6 +111,10 @@ function App() {
   }
 
   if (user.role === 'admin') {
+    /**
+     * If user is type admin, render admin view
+     * @returns admin view
+     */
     return (
       <div>
         <Notification notification={notification} />
@@ -102,6 +137,10 @@ function App() {
       </div>
     )
   }
+
+  /**
+   * If user is type user, render user view
+   */
 
   return (
     <div>
