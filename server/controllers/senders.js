@@ -1,8 +1,9 @@
 const senderRouter = require('express').Router()
 const Sender = require('../models/sender')
-const { validateAdminCredentials } = require('../utils/middleware')
+const { adminCredentialsValidator } = require('../utils/middleware')
 
-senderRouter.get('/', validateAdminCredentials, async (request, response) => {
+// Admin only route to get all sender logs
+senderRouter.get('/', adminCredentialsValidator, async (request, response) => {
   const senders = await Sender.find({}).sort({ date: 'descending' })
   response.json(senders)
 })

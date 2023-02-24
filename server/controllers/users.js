@@ -2,11 +2,10 @@ const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 const User = require('../models/user')
 const validator = require('validator')
-const { validateAdminCredentials } = require('../utils/middleware')
+const { adminCredentialsValidator } = require('../utils/middleware')
 
-usersRouter.get('/', validateAdminCredentials, async (request, response) => {
+usersRouter.get('/', adminCredentialsValidator, async (request, response) => {
   const users = await User.find({})
-
   response.json(users)
 })
 
@@ -22,7 +21,8 @@ usersRouter.get('/:id', async (request, response) => {
   return response.json(user)
 })
 
-usersRouter.post('/', validateAdminCredentials, async (request, response) => {
+// Admin only, POST new user to db only if user creation field requirements and validations are fullfilled
+usersRouter.post('/', adminCredentialsValidator, async (request, response) => {
 
   const user = await request.body
 
@@ -71,7 +71,7 @@ usersRouter.post('/', validateAdminCredentials, async (request, response) => {
   response.status(201).json(savedUser)
 })
 
-usersRouter.delete('/:id', validateAdminCredentials, async (request, response) => {
+usersRouter.delete('/:id', adminCredentialsValidator, async (request, response) => {
   const userIdToBeRemoved = request.params.id
 
   await User.findByIdAndRemove(userIdToBeRemoved)

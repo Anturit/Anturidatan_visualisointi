@@ -43,6 +43,7 @@ const tokenExtractor = (request, response, next) => {
   next()
 }
 
+// Parses user token and saves an user object in request
 const userExtractor = (request, response, next) => {
   const token = request.token
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
@@ -60,7 +61,7 @@ const userExtractor = (request, response, next) => {
   next()
 }
 
-const validateAdminCredentials = (request, response, next) => {
+const adminCredentialsValidator = (request, response, next) => {
   const user = request.user
   if (user.role !== 'admin') {
     return response
@@ -77,5 +78,5 @@ module.exports = {
   errorHandler,
   tokenExtractor,
   userExtractor,
-  validateAdminCredentials,
+  adminCredentialsValidator,
 }
