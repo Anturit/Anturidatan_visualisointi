@@ -105,7 +105,7 @@ function App() {
       >
         Kirjaudu ulos
       </button>
-      <UserProfile userDetails={user} />
+      <UserProfile />
       <Togglable buttonLabel='Näytä laitteet' id='senderList'>
         <div>
           {user.senderDeviceIds.length > 1 &&
