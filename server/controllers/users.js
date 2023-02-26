@@ -1,54 +1,30 @@
 const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
-const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 const validator = require('validator')
+const { adminCredentialsValidator } = require('../utils/middleware')
 
-usersRouter.get('/', async (request, response) => {
-  const token = await request.token
-  const decodedToken = await jwt.verify(token, process.env.SECRET)
-  if (!token || !decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
-
-  if (decodedToken.role !== 'admin') {
-    return response
-      .status(401)
-      .json({ error: 'you don´t have rights for this operation' })
-  }
+usersRouter.get('/', adminCredentialsValidator, async (request, response) => {
   const users = await User.find({})
   response.json(users)
 })
 
 usersRouter.get('/:id', async (request, response) => {
-  const token = await request.token
-  const decodedToken = await jwt.verify(token, process.env.SECRET)
-  if (!token || !decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
+  const loggedUser = request.user
+  const userID = request.params.id
 
-  if (decodedToken.role === 'user' && decodedToken.id !== request.params.id) {
+  if (loggedUser.role === 'user' && loggedUser.id !== userID) {
     return response.status(401).json({ error: 'you don´t have rights for this operation' })
   }
 
-  const user = await User.findById(request.params.id)
+  const user = await User.findById(userID)
   return response.json(user)
 })
 
-usersRouter.post('/', async (request, response) => {
+// Admin only, POST new user to db only if user creation field requirements and validations are fullfilled
+usersRouter.post('/', adminCredentialsValidator, async (request, response) => {
 
   const user = await request.body
-  const token = await request.token
-  const decodedToken = await jwt.verify(token, process.env.SECRET)
-  if (!token || !decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
-
-  if (decodedToken.role !== 'admin') {
-    return response
-      .status(401)
-      .json({ error: 'you don´t have rights for this operation' })
-  }
 
   if (!(user.username && user.password)) {
     return response.status(400).json({
@@ -95,20 +71,10 @@ usersRouter.post('/', async (request, response) => {
   response.status(201).json(savedUser)
 })
 
-usersRouter.delete('/:id', async (request, response) => {
-  const token = await request.token
-  const decodedToken = await jwt.verify(token, process.env.SECRET)
-  if (!token || !decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
+usersRouter.delete('/:id', adminCredentialsValidator, async (request, response) => {
+  const userIdToBeRemoved = request.params.id
 
-  if (decodedToken.role !== 'admin') {
-    return response
-      .status(401)
-      .json({ error: 'you don´t have rights for this operation' })
-  }
-
-  await User.findByIdAndRemove(request.params.id)
+  await User.findByIdAndRemove(userIdToBeRemoved)
   return response.status(200).json({ message: 'user was deleted successfully' })
 
 })

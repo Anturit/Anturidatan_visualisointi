@@ -1,34 +1,15 @@
 const senderRouter = require('express').Router()
 const Sender = require('../models/sender')
-const User = require('../models/user')
-const jwt = require('jsonwebtoken')
+const { adminCredentialsValidator } = require('../utils/middleware')
 
-senderRouter.get('/', async (request, response) => {
-  await request.body
-  const token = await request.token
-  const decodedToken = await jwt.verify(token, process.env.SECRET)
-  if (!token || !decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
-
-  if (decodedToken.role !== 'admin') {
-    return response
-      .status(401)
-      .json({ error: 'you don´t have rights for this operation' })
-  }
+// Admin only route to get all sender logs
+senderRouter.get('/', adminCredentialsValidator, async (request, response) => {
   const senders = await Sender.find({}).sort({ date: 'descending' })
   response.json(senders)
 })
 
 senderRouter.get('/:id', async (request, response) => {
-
-  await request.body
-  const token = await request.token
-  const decodedToken = await jwt.verify(token, process.env.SECRET)
-  if (!token || !decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
 
   if (user.role === 'user' && !user.senderDeviceIds.includes(request.params.id)) {
     return response.status(401).json({ error: 'this user is not the owner of the device' })
