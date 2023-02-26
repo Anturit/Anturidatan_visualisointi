@@ -15,7 +15,6 @@ import { setUser } from './reducers/loginFormReducer'
 import store from './store'
 function App() {
   const user = useSelector((state) => state.loginForm.user)
-  const [notification, setNotification] = useState(null)
   const [senders, setSenders] = useState([])
 
   useEffect(() => {
@@ -37,7 +36,6 @@ function App() {
         user.senderDeviceIds[0],
         user.token
       )
-
       setSenders(data)
     }
     if (user) {
@@ -47,13 +45,6 @@ function App() {
     }
   }, [user])
 
-  const notificationSetter = (newNotification) => {
-    setNotification(newNotification)
-    setTimeout(() => {
-      setNotification(null)
-    }, newNotification.time)
-  }
-
   const fetchSenderById = async (id) => {
     const sender = await senderService.getOneSenderLogs(id, user.token)
     setSenders(sender)
@@ -62,8 +53,8 @@ function App() {
   if (user === null) {
     return (
       <>
-        <Notification notification={notification} />
-        <LoginForm  notificationSetter={notificationSetter} />
+        <Notification />
+        <LoginForm />
       </>
     )
   }
@@ -71,7 +62,7 @@ function App() {
   if (user.role === 'admin') {
     return (
       <div>
-        <Notification notification={notification} />
+        <Notification />
         <p>{user.firstName} sisäänkirjautunut</p>
         <button
           onClick={() => {
@@ -85,16 +76,16 @@ function App() {
         </button>
         <p></p>
         <Togglable buttonLabel='Lisää käyttäjä' id='registerForm'>
-          <RegisterForm notificationSetter={notificationSetter} />
+          <RegisterForm />
         </Togglable>
-        <UserList notificationSetter={notificationSetter}/>
+        <UserList />
       </div>
     )
   }
 
   return (
     <div>
-      <Notification notification={notification} />
+      <Notification />
       <p>{user.firstName} sisäänkirjautunut</p>
       <button
         onClick={() => {

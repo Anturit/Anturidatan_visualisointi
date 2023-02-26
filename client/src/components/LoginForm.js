@@ -3,8 +3,9 @@ import axios from 'axios'
 import userService from '../services/userService'
 import store from '../store'
 import { setUser } from '../reducers/loginFormReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
-const LoginForm = ({ notificationSetter }) => {
+const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -43,16 +44,27 @@ const LoginForm = ({ notificationSetter }) => {
       )
       store.dispatch(setUser(user))
       userService.setToken(user.token)
-      notificationSetter({ message: `${user.firstName} ${user.lastName} kirjattu sisään`, time: 3500 })
+      store.dispatch( setNotification(
+        `${user.firstName} ${user.lastName} kirjattu sisään`, 3500
+      ))
       setUsername('')
       setPassword('')
     } catch (err) {
-      if (err.response) {
+      console.log(err)
+      if (err.response.data.error) {
         if (err.response.data.error.includes('expired')) {
-          notificationSetter({ message: 'Käyttäjän lisenssi vanhentunut', type: 'alert', time: 3500 })
+          store.dispatch(setNotification(
+            'Käyttäjän lisenssi vanhentunut', 3500, 'alert'
+          ))
         } else {
-          notificationSetter({ message: 'Väärä käyttäjänimi tai salasana', type: 'alert', time: 3500 })
+          store.dispatch(setNotification(
+            'Väärä käyttäjänimi tai salasana', 3500, 'alert'
+          ))
         }
+      } else {
+        store.dispatch(setNotification(
+          `Palvelin ei vastaa. Status ${err.response.status}`, 3500, 'alert'
+        ))
       }
     }
   }

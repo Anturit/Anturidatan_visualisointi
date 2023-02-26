@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import registerService from '../services/userService.js'
-
-const RegisterForm = ({ notificationSetter }) => {
+import store from '../store.js'
+import { setNotification } from '../reducers/notificationReducer.js'
+const RegisterForm = ( ) => {
   const roles = ['admin', 'user']
   const [selectedRole, setSelectedRole] = useState(roles[1])
   const [expirationDate, setExpirationDate] = useState(new Date)
@@ -83,23 +84,21 @@ const RegisterForm = ({ notificationSetter }) => {
     event.preventDefault()
     const userObject = createUserObjectFromStates()
     if (containsEmptyFields(userObject)) {
-      notificationSetter({
-        message: 'Tyhjiä kenttiä',
-        type: 'alert',
-        time: 3500,
-      })
+      store.dispatch(setNotification(
+        'Tyhjiä kenttiä', 3500, 'alert'
+      ))
       return
     }
     try {
       await registerService.create(userObject)
-      notificationSetter({ message: `Käyttäjän luonti onnistui! Käyttäjänimi: ${newEmail} Salasana: ${newPassword}`, time: 10000 })
+      store.dispatch(setNotification(
+        `Käyttäjän luonti onnistui! Käyttäjänimi: ${newEmail} Salasana: ${newPassword}`, 15000
+      ))
       resetRegisterFormStates()
     } catch (err) {
-      notificationSetter({
-        message: getErrorMessageInFinnish(err.response.data.error),
-        type: 'alert',
-        time: 3500,
-      })
+      store.dispatch(setNotification(
+        getErrorMessageInFinnish(err.response.data.error), 3500, 'alert'
+      ))
     }
   }
 
