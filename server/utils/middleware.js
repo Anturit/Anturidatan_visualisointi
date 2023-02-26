@@ -43,22 +43,40 @@ const tokenExtractor = (request, response, next) => {
   next()
 }
 
+// Parses user token and saves an user object in request
 const userExtractor = (request, response, next) => {
-  if (request.method === 'POST') {
-    const tokenDecoded = jwt.verify(request.token, process.env.SECRET)
-    request.user = {
-      username: tokenDecoded.username,
-      role: tokenDecoded.role,
-      id: tokenDecoded.id,
-    }
+  const token = request.token
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+
+  if (!token || !decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+  request.user = {
+    username: decodedToken.username,
+    role: decodedToken.role,
+    id: decodedToken.id,
+    senderDeviceIds: decodedToken.senderDeviceIds,
   }
 
   next()
 }
+
+const adminCredentialsValidator = (request, response, next) => {
+  const user = request.user
+  if (user.role !== 'admin') {
+    return response
+      .status(401)
+      .json({ error: 'you don´t have rights for this operation' })
+  }
+
+  next()
+}
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
   tokenExtractor,
   userExtractor,
+  adminCredentialsValidator,
 }
