@@ -1,40 +1,35 @@
 # Instructions to run automated tests locally
 
-In /server/.env set the values of the following environment variables:
-* TEST_MONGODB_URI to be the URL of the database used for testing
-* PORT to be the port used by the server
-* SECRET to be any secret string
+Make sure that prerequisites defined in [installation instructions](documentation/installation_instructions-md) are met
 
 ## Backend tests
 
-1. In /server to run the tests:
-
-```bash
-npm test
+```shell
+~/server$ npm run test
 ```
 
 ## E2E-tests
 
-1. In /server start the server in test mode:
+1. Start the server in test mode:
 
-```bash
-npm run start:test
+```shell
+~/server$ npm run start:test
 ```
 
-2. In /client start the React app:
+2. Start the React app:
 
-```bash
-npm start
+```shell
+~/client$ npm start
 ```
 
 3. To run the tests in visual testing tool for Cypress tests:
 
-```bash
-npm run cypress:open
+```shell
+~/client$ npm run cypress:open
 ```
 
 4. To run the tests in terminal:
 
-```bash
-npm run test:e2e
+```shell
+~/client$ npm run test:e2e
 ```
