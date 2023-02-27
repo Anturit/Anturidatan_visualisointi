@@ -121,6 +121,7 @@ function App() {
         Kirjaudu ulos
       </button>
       <UserProfile />
+      <Togglable buttonLabel='Muokkaa tietoja' id='editForm'></Togglable>
       <Togglable buttonLabel='Näytä laitteet' id='senderList'>
         <div>
           {user.senderDeviceIds.length > 1 &&
