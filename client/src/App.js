@@ -17,7 +17,7 @@ function App() {
   const user = useSelector((state) => state.loginForm.user)
   const [senders, setSenders] = useState([])
 
-   /**
+  /**
    * Function to fetch user for session and storing it to localstorage
    * @returns user object with all fields except passwordHash.
    */
@@ -35,25 +35,8 @@ function App() {
   }, [])
 
   /**
-   * Function to fetch user details for user
-   * @returns user object.
-   */
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      const data = await userService.getUser(user.id)
-      setUserDetails(data)
-    }
-    if (user) {
-      if (user.role === 'user') {
-        fetchUserDetails()
-      }
-    }
-  }, [user])
-
-
-  /**
-   * Function to fetch user details for user
-   * @returns user object.
+   * Function to fetch sender logs for user
+   * @returns sender object with all fields.
    */
   useEffect(() => {
     const fetchData = async () => {
@@ -70,20 +53,20 @@ function App() {
     }
   }, [user])
 
-   /**
-   * Function to fetch sender by id
+  /**
+   * Function to fetch sender logs for user
+   * @returns sender object with all fields.
    * @param {string} id
-   * @returns sender object.
+   * @param {string} token
+   * @returns {Object} sender
    */
   const fetchSenderById = async (id) => {
     const sender = await senderService.getOneSenderLogs(id, user.token)
     setSenders(sender)
   }
 
-
-   /**
-   * If user is not logged in, render login form
-   * @returns login form
+  /**
+   * If user is not logged in, show login form
    */
   if (user === null) {
     return (
@@ -93,11 +76,10 @@ function App() {
       </>
     )
   }
-
   /**
-  * If user is type admin, render admin view
-  * @returns admin view
-  */
+   * If user is logged in as admin, show admin view
+   */
+
   if (user.role === 'admin') {
     return (
       <div>
@@ -123,7 +105,7 @@ function App() {
   }
 
   /**
-   * If user is type user, render user view
+   * If user is logged in as user, show user view
    */
   return (
     <div>
