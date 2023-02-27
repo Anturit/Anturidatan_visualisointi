@@ -27,22 +27,7 @@ Projektissa toteutetaan sensoridatan visualisointi sovellus Kymppiremontit -yrit
 
 - [Tuntikirjanpito](https://github.com/orgs/Anturit/projects/2/insights/15) *HUOM! Luku- ja muokkausoikeudet vain tiimin jäsenillä mukaanlukien ohjaaja.*
 
-## Asennus
 
-Asenna riippuvuudet kansioissa _server_ ja _client_ komennolla
-
-```
-npm install
-```
-
-Luo tietokantayhteys _server_-kansiossa paikallisella .env-tiedostolla ja komennolla
-
-```
-npm start
-```
-
-Avaa sovellus paikallisesti _client_-kansiossa komennolla
-
-```
-npm start
-```
+## Testaus ja käyttöönotto
+- [Asennus ohjeet](documentation/installation_instructions-md)
+- [Testaus ohjeet](documentation/testing_instructions.md)

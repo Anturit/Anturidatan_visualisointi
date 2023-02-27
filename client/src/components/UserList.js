@@ -1,4 +1,5 @@
 import { useState, useEffect,  useMemo } from 'react'
+import { setNotification } from '../reducers/notificationReducer'
 import {
   Checkbox,
   IconButton,
@@ -11,14 +12,14 @@ import userService from '../services/userService'
 import { useSelector } from 'react-redux'
 import { setUsers } from '../reducers/usersReducer'
 import store from '../store'
-const UserList = ({ notificationSetter }) => {
+const UserList = () => {
   const users = useSelector((state) => state.users)
   const [userDeletionAllowed, setUserDeletionAllowed] = useState(false)
   useEffect(() => {
     userService
       .getAllUsers()
-      .then((userData) => {
-        store.dispatch(setUsers(userData))
+      .then((users) => {
+        store.dispatch(setUsers(users))
       })
   }, [])
 
@@ -74,12 +75,13 @@ const UserList = ({ notificationSetter }) => {
   const removeUser = async (user) => {
     try {
       await userService.deleteUser(user.id)
-      setUsers(users.filter(u => u.id !== user.id))
-      notificationSetter({ message: `Käyttäjä ${user.firstName} poistettu`, time: 3500 })
+      store.dispatch(setUsers(users.filter(u => u.id !== user.id)))
+      store.dispatch(setNotification(`Käyttäjä ${user.firstName} poistettu`))
     } catch (err) {
       if (err.message.includes('token')) {
-        notificationSetter({ message: 'Käyttäjän poisto epäonnistui!', type: 'alert', time: 3500 })
+        store.dispatch(setNotification('Istunto vanhentunut'))
       }
+      store.dispatch(setNotification('Tuntematon virhe käyttäjän poistossa', 3500, 'alert'))
     }
   }
 

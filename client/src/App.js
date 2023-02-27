@@ -1,6 +1,7 @@
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import jwt_decode from 'jwt-decode'
 import RegisterForm from './components/RegisterForm'
 import Togglable from './components/Togglable'
@@ -10,35 +11,34 @@ import SenderDropdown from './components/SenderDropdown'
 import SenderList from './components/SenderList'
 import UserList from './components/UserList'
 import userService from './services/userService'
-
+import { setUser } from './reducers/loginFormReducer'
+import store from './store'
 function App() {
-  const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState(null)
+  const user = useSelector((state) => state.loginForm.user)
   const [senders, setSenders] = useState([])
-  const [userDetails, setUserDetails] = useState([])
 
+   /**
+   * Function to fetch user for session and storing it to localstorage
+   * @returns user object with all fields except passwordHash.
+   */
   useEffect(() => {
-    /**
-     * Function to fetch user for session and storing it to localstorage
-     * @returns user object with all fields except passwordHash.
-     */
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const parsedUser = JSON.parse(loggedUserJSON)
       const decodedToken = jwt_decode(parsedUser.token)
       const expiresAtMillis = decodedToken.exp * 1000
       if (expiresAtMillis > Date.now()) {
-        setUser(parsedUser)
+        store.dispatch(setUser(parsedUser))
         userService.setToken(parsedUser.token)
       }
     }
   }, [])
 
+  /**
+   * Function to fetch user details for user
+   * @returns user object.
+   */
   useEffect(() => {
-    /**
-     * Function to fetch user details for user
-     * @returns user object.
-     */
     const fetchUserDetails = async () => {
       const data = await userService.getUser(user.id)
       setUserDetails(data)
@@ -50,17 +50,17 @@ function App() {
     }
   }, [user])
 
+
+  /**
+   * Function to fetch user details for user
+   * @returns user object.
+   */
   useEffect(() => {
-    /**
-     * Function to fetch senders for user
-     * @returns sender object.
-     */
     const fetchData = async () => {
       const data = await senderService.getOneSenderLogs(
         user.senderDeviceIds[0],
         user.token
       )
-
       setSenders(data)
     }
     if (user) {
@@ -70,58 +70,42 @@ function App() {
     }
   }, [user])
 
-
-  const notificationSetter = (newNotification) => {
-    /**
-     * Function to set notification and clear it after set time
-     * @param {Object} newNotification
-     * @param {string} newNotification.message
-     * @param {string} newNotification.type
-     * @param {number} newNotification.time
-     * @returns null
-     */
-
-    setNotification(newNotification)
-    setTimeout(() => {
-      setNotification(null)
-    }, newNotification.time)
-  }
-
+   /**
+   * Function to fetch sender by id
+   * @param {string} id
+   * @returns sender object.
+   */
   const fetchSenderById = async (id) => {
-    /**
-     * Function to fetch sender by id
-     * @param {string} id
-     * @returns sender object.
-     */
     const sender = await senderService.getOneSenderLogs(id, user.token)
     setSenders(sender)
   }
 
+
+   /**
+   * If user is not logged in, render login form
+   * @returns login form
+   */
   if (user === null) {
-    /**
-     * If user is not logged in, render login form
-     * @returns login form
-     */
     return (
       <>
-        <Notification notification={notification} />
-        <LoginForm setUser={setUser} notificationSetter={notificationSetter} />
+        <Notification />
+        <LoginForm />
       </>
     )
   }
 
+  /**
+  * If user is type admin, render admin view
+  * @returns admin view
+  */
   if (user.role === 'admin') {
-    /**
-     * If user is type admin, render admin view
-     * @returns admin view
-     */
     return (
       <div>
-        <Notification notification={notification} />
+        <Notification />
         <p>{user.firstName} sisäänkirjautunut</p>
         <button
           onClick={() => {
-            setUser(null)
+            store.dispatch(setUser(null))
             window.localStorage.setItem('loggedUser', '')
             userService.setToken(null)
           }}
@@ -131,9 +115,9 @@ function App() {
         </button>
         <p></p>
         <Togglable buttonLabel='Lisää käyttäjä' id='registerForm'>
-          <RegisterForm notificationSetter={notificationSetter} />
+          <RegisterForm />
         </Togglable>
-        <UserList notificationSetter={notificationSetter}/>
+        <UserList />
       </div>
     )
   }
@@ -141,21 +125,20 @@ function App() {
   /**
    * If user is type user, render user view
    */
-
   return (
     <div>
-      <Notification notification={notification} />
+      <Notification />
       <p>{user.firstName} sisäänkirjautunut</p>
       <button
         onClick={() => {
-          setUser(null)
+          store.dispatch(setUser(null))
           window.localStorage.setItem('loggedUser', '')
         }}
         data-cy='logout'
       >
         Kirjaudu ulos
       </button>
-      <UserProfile userDetails={userDetails} />
+      <UserProfile />
       <Togglable buttonLabel='Näytä laitteet' id='senderList'>
         <div>
           {user.senderDeviceIds.length > 1 &&

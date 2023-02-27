@@ -4,6 +4,7 @@ const Sender = require('../models/sender')
 const helper = require('../test/test_helper')
 const bcrypt = require('bcrypt')
 
+// Test environment purpoeses only, resets db to a base state for testing
 router.post('/reset', async (request, response) => {
   await User.deleteMany({})
   const testUsers = [helper.userUser(), helper.expiredUser(), helper.adminUser(), helper.oneDeviceUser(), helper.twoDeviceUser()]
