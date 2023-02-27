@@ -2,6 +2,7 @@ import { useState } from 'react'
 import registerService from '../services/userService.js'
 import store from '../store.js'
 import { setNotification } from '../reducers/notificationReducer.js'
+import PasswordFeedback from './PasswordFeedback.js'
 const RegisterForm = ( ) => {
   const roles = ['admin', 'user']
   const [selectedRole, setSelectedRole] = useState(roles[1])
@@ -13,7 +14,7 @@ const RegisterForm = ( ) => {
   const [newPostcode, setNewPostcode] = useState('')
   const [newCity, setNewCity] = useState('')
   const [newPassword, setNewPassword] = useState('')
-  const [meter, setMeter] = useState(false)
+  const [showPasswordSecurityFeedback, setShowPasswordSecurityFeedback] = useState(false)
 
   /**
    * Checks that no string value in user object is not an empty string.
@@ -101,24 +102,6 @@ const RegisterForm = ( ) => {
       ))
     }
   }
-
-  const eightCharsOrMore = /.{8,}/g
-  const atLeastOneUppercase = /[A-Z]/g
-  const atLeastOneLowercase = /[a-z]/g
-  const atLeastOneNumeric = /[0-9]/g
-  const atLeastOneSpecialChar = /[#?!@$%^()&*-]/g
-
-  const passwordTracker = {
-    uppercase: newPassword.match(atLeastOneUppercase),
-    lowercase: newPassword.match(atLeastOneLowercase),
-    number: newPassword.match(atLeastOneNumeric),
-    specialChar: newPassword.match(atLeastOneSpecialChar),
-    eightCharsOrGreater: newPassword.match(eightCharsOrMore),
-  }
-
-  const passingPasswordValidationCount = Object.values(passwordTracker).filter(
-    (value) => value
-  ).length
 
   return (
     <div>
@@ -212,22 +195,9 @@ const RegisterForm = ( ) => {
           <input
             value={newPassword}
             data-cy='password'
-            onFocus={() => setMeter(true)}
+            onFocus={() => setShowPasswordSecurityFeedback(true)}
             onChange={(e) => setNewPassword(e.target.value)}/>
-          {meter && (
-            <small>
-              <div className="password-strength-meter"></div>
-              <div>
-                {passingPasswordValidationCount < 5 && 'Salasanan tulee sisältää: '}
-                {!passwordTracker.uppercase && 'iso kirjain, '}
-                {!passwordTracker.lowercase && 'pieni kirjain, '}
-                {!passwordTracker.specialChar && 'erikoismerkki, '}
-                {!passwordTracker.number && 'numero, '}
-                {!passwordTracker.eightCharsOrGreater &&
-                  'ainakin kahdeksan merkkiä'}
-              </div>
-            </small>
-          )}
+          {showPasswordSecurityFeedback && <PasswordFeedback password={newPassword}/>}
         </div>
         <p>
           <button type="submit" data-cy='addUser' onClick={submit}>Lisää uusi käyttäjä</button>
