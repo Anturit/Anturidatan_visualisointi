@@ -17,6 +17,10 @@ function App() {
   const user = useSelector((state) => state.loginForm.user)
   const [senders, setSenders] = useState([])
 
+  /**
+   * Function to fetch user for session and storing it to localstorage
+   * @returns user object with all fields except passwordHash.
+   */
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
@@ -30,6 +34,10 @@ function App() {
     }
   }, [])
 
+  /**
+   * Function to fetch sender logs for user
+   * @returns sender object with all fields.
+   */
   useEffect(() => {
     const fetchData = async () => {
       const data = await senderService.getOneSenderLogs(
@@ -45,11 +53,21 @@ function App() {
     }
   }, [user])
 
+  /**
+   * Function to fetch sender logs for user
+   * @returns sender object with all fields.
+   * @param {string} id
+   * @param {string} token
+   * @returns {Object} sender
+   */
   const fetchSenderById = async (id) => {
     const sender = await senderService.getOneSenderLogs(id, user.token)
     setSenders(sender)
   }
 
+  /**
+   * If user is not logged in, show login form
+   */
   if (user === null) {
     return (
       <>
@@ -58,6 +76,9 @@ function App() {
       </>
     )
   }
+  /**
+   * If user is logged in as admin, show admin view
+   */
 
   if (user.role === 'admin') {
     return (
@@ -83,6 +104,9 @@ function App() {
     )
   }
 
+  /**
+   * If user is logged in as user, show user view
+   */
   return (
     <div>
       <Notification />
