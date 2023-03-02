@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
+import store from '../store.js'
 import userService from '../services/userService'
+import { setNotification } from '../reducers/notificationReducer'
 
 /**
   * Component to render dropdown menu for user to select which user details to edit.
@@ -8,6 +10,22 @@ const EditProfileDetailsDropdown = ({ userDetailsToShow }) => {
 
   const [selectedValue, setSelectedValue] = useState(userDetailsToShow.address)
   const [inputValue, setInputValue] = useState('')
+
+  /**
+   * Checks that no string value in user object is not an empty string.
+   * @param {*} userObj
+   * @returns {boolean}
+   */
+  const containsEmptyFields = (userObj) => {
+    for (const key in userObj) {
+      if (typeof userObj[key] === 'string'
+        && userObj[key].replace(/\s/g, '') === '') {
+        return true
+      }
+    }
+    return false
+  }
+
   /**
     * Constant to handle change in dropdown menu.
     * @param {*} event
@@ -28,12 +46,22 @@ const EditProfileDetailsDropdown = ({ userDetailsToShow }) => {
     * Constant to handle form submit and update user details.
     * @param {*} event
   */
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
     const updatedUser = {
       [selectedValue]: inputValue
     }
-    userService.updateUserDetails(userDetailsToShow.id, updatedUser)
+    if (containsEmptyFields(updatedUser)) {
+      store.dispatch(setNotification('Tyhjiä kenttiä', 3500, 'alert'))
+      return
+    }
+    try {
+      await userService.updateUserDetails(userDetailsToShow.id, updatedUser)
+      store.dispatch(setNotification('Tiedon muokkaaminen onnistui!', 15000
+      ))
+    } catch (error) {
+      store.dispatch(setNotification('Tiedon muokkaaminen epäonnistui!', 15000, 'alert'))
+    }
     setInputValue('')
   }
 
@@ -41,7 +69,7 @@ const EditProfileDetailsDropdown = ({ userDetailsToShow }) => {
     <div>
       <h3>Valitse muokattava tieto:</h3>
       <div>
-        <select name='details' id='details' onChange={handleSelectChange}>
+        <select name='details' id='details' onChange={handleSelectChange} data-cy='EditUserDetailsDropdown'>
           <option key='address' value={userDetailsToShow.address}>{userDetailsToShow.address}</option>
           <option key='postalCode' value={userDetailsToShow.postalCode}>{userDetailsToShow.postalCode}</option>
           <option key='city' value={userDetailsToShow.city}>{userDetailsToShow.city}</option>
