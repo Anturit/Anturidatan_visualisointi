@@ -8,6 +8,7 @@ import Togglable from './components/Togglable'
 import UserProfile from './components/UserProfile'
 import senderService from './services/senderService'
 import SenderDropdown from './components/SenderDropdown'
+import EditProfileDetailsDropdown from './components/EditProfileDetailsDropdown'
 import SenderList from './components/SenderList'
 import UserList from './components/UserList'
 import userService from './services/userService'
@@ -53,6 +54,7 @@ function App() {
     }
   }, [user])
 
+
   /**
    * Function to fetch sender logs for user
    * @returns sender object with all fields.
@@ -65,6 +67,7 @@ function App() {
     setSenders(sender)
   }
 
+
   /**
    * If user is not logged in, show login form
    */
@@ -76,10 +79,10 @@ function App() {
       </>
     )
   }
+
   /**
    * If user is logged in as admin, show admin view
    */
-
   if (user.role === 'admin') {
     return (
       <div>
@@ -121,7 +124,9 @@ function App() {
         Kirjaudu ulos
       </button>
       <UserProfile />
-      <Togglable buttonLabel='Muokkaa tietoja' id='editForm'></Togglable>
+      <Togglable buttonLabel='Muokkaa tietoja' id='editForm'>
+        <EditProfileDetailsDropdown userDetailsToShow={user}/>
+      </Togglable>
       <Togglable buttonLabel='Näytä laitteet' id='senderList'>
         <div>
           {user.senderDeviceIds.length > 1 &&
