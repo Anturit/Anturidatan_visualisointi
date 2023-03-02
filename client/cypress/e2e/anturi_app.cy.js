@@ -53,6 +53,50 @@ describe('Anturi app', function () {
     it('togglable register form is not displayed', function () {
       cy.get('[data-cy="open-togglable-registerForm"]').should('not.exist')
     })
+    describe('and edit user information form is opened', function () {
+      beforeEach(function () {
+        cy.contains('Muokkaa tietoja').click()
+      })
+
+      it('password change form is displayed', function () {
+        cy.get('[data-cy="passwordChangeForm"]').should('exist')
+      })
+      it('password change succeeds with valid inputs', function () {
+        cy.get('[data-cy="oldPassword"]').type('User@user1')
+        cy.get('[data-cy="newPassword"]').type('User@user2')
+        cy.get('[data-cy="confirmNewPassword"]').type('User@user2')
+        cy.get('[data-cy="passwordChangeButton"]').click()
+        cy.contains('Salasana vaihdettu onnistuneesti!')
+      })
+      it('password change fails if old password is incorrect', function () {
+        cy.get('[data-cy="oldPassword"]').type('wrong')
+        cy.get('[data-cy="newPassword"]').type('User@user2')
+        cy.get('[data-cy="confirmNewPassword"]').type('User@user2')
+        cy.get('[data-cy="passwordChangeButton"]').click()
+        cy.contains('Vanha salasana väärin!')
+      })
+      it('password change fails if new password is invalid', function () {
+        cy.get('[data-cy="oldPassword"]').type('User@user1')
+        cy.get('[data-cy="newPassword"]').type('User@user')
+        cy.get('[data-cy="confirmNewPassword"]').type('User@user')
+        cy.get('[data-cy="passwordChangeButton"]').click()
+        cy.contains('Uusi salasana ei täytä salasanavaatimuksia!')
+      })
+      it('password change fails if new password and confirmation do not match', function () {
+        cy.get('[data-cy="oldPassword"]').type('User@user1')
+        cy.get('[data-cy="newPassword"]').type('User@user2')
+        cy.get('[data-cy="confirmNewPassword"]').type('User@user3')
+        cy.get('[data-cy="passwordChangeButton"]').click()
+        cy.contains('Uudet salasanat eivät täsmää!')
+      })
+      it('password change fails if new password is the same as old password', function () {
+        cy.get('[data-cy="oldPassword"]').type('User@user1')
+        cy.get('[data-cy="newPassword"]').type('User@user1')
+        cy.get('[data-cy="confirmNewPassword"]').type('User@user1')
+        cy.get('[data-cy="passwordChangeButton"]').click()
+        cy.contains('Uusi salasana ei voi olla sama kuin vanha salasana!')
+      })
+    })
   })
 
   describe('when logged in as user who has one sender device', function () {
