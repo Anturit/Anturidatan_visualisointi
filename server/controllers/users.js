@@ -83,10 +83,6 @@ usersRouter.post('/:id/password_change', async (request, response) => {
   const userId = request.params.id
   const user = await User.findById(userId)
 
-  if (user.role === 'user' && user.id !== userId) {
-    return response.status(401).json({ error: 'you don´t have rights for this operation' })
-  }
-
   const oldPassword = request.body.oldPassword
 
   const oldPasswordMatches = await bcrypt.compare(oldPassword, user.passwordHash)
