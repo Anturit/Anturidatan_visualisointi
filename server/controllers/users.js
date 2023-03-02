@@ -11,13 +11,13 @@ usersRouter.get('/', adminCredentialsValidator, async (request, response) => {
 
 usersRouter.get('/:id', async (request, response) => {
   const loggedUser = request.user
-  const userID = request.params.id
+  const userId = request.params.id
 
-  if (loggedUser.role === 'user' && loggedUser.id !== userID) {
+  if (loggedUser.role === 'user' && loggedUser.id !== userId) {
     return response.status(401).json({ error: 'you don´t have rights for this operation' })
   }
 
-  const user = await User.findById(userID)
+  const user = await User.findById(userId)
   return response.json(user)
 })
 
@@ -76,6 +76,55 @@ usersRouter.delete('/:id', adminCredentialsValidator, async (request, response) 
 
   await User.findByIdAndRemove(userIdToBeRemoved)
   return response.status(200).json({ message: 'user was deleted successfully' })
+
+})
+
+usersRouter.post('/:id/password_change', async (request, response) => {
+  const userId = request.params.id
+  const user = await User.findById(userId)
+
+  const oldPassword = request.body.oldPassword
+
+  const oldPasswordMatches = await bcrypt.compare(oldPassword, user.passwordHash)
+
+  if (!oldPasswordMatches) {
+    return response.status(401).json({ error: 'old password does not match user password' })
+  }
+
+  const newPassword = request.body.newPassword
+  const confirmNewPassword = request.body.confirmNewPassword
+
+  if (newPassword !== confirmNewPassword) {
+    return response.status(400).json({ error: 'password confirmation does not match with new password' })
+  }
+
+  if (oldPassword === confirmNewPassword) {
+    return response.status(400).json({ error: 'new password can\'t be same as old password' })
+  }
+
+  if (!validator.isStrongPassword(confirmNewPassword, {
+    minLength: 8,
+    minLowerCase: 1,
+    minUpperCase: 1,
+    minNumbers: 1,
+    minSymbols: 1 })) {
+    return response.status(400).json({
+      error: 'password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number and one symbol'
+    })
+  }
+
+  const saltRounds = 10
+  const passwordHash = await bcrypt.hash(confirmNewPassword, saltRounds)
+
+  await User.updateOne(
+    { _id: userId },
+    { $set: { passwordHash: passwordHash } },
+    { new: true }
+  )
+
+  const changedUser = await User.findById(userId)
+
+  response.status(201).json(changedUser)
 
 })
 

@@ -9,10 +9,10 @@ const setToken = newToken => {
 }
 
 /**
-   * Create new user
-   * @param {object} newObject user object containing all fields in the
-   *                           register form and list of users device ids
-   * @returns {object} user object without password field
+ * Create new user
+ * @param {Object} newObject user object containing all fields in the
+ *                           register form and list of users device ids
+ * @returns {Object} user object without password field
 */
 const create = async newObject => {
   const config = {
@@ -23,9 +23,9 @@ const create = async newObject => {
 }
 
 /**
-   * Fetch individual user object based on user_id
-   * @param user_id
-   * @returns user object
+ * Fetch individual user object based on user_id
+ * @param {string} user_id
+ * @returns {Object} user object
 */
 const getUser = async (user_id) => {
   const config = { headers: { Authorization: token }, }
@@ -35,8 +35,8 @@ const getUser = async (user_id) => {
 
 /**
  * // Fetch all user objects.
- * @returns array of user objects
-*/
+ * @returns {Object[]} array of user objects
+ */
 const getAllUsers = async () => {
   const config = {
     headers: { Authorization: token }
@@ -46,8 +46,8 @@ const getAllUsers = async () => {
 }
 
 /**
-   * @param {string} user_id
-   * @returns {object} contains message about successful/failed deletion
+ * @param {string} user_id
+ * @returns {Object} contains message about successful/failed deletion
 */
 const deleteUser = async (user_id) => {
   const config = {
