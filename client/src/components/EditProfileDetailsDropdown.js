@@ -70,31 +70,31 @@ const EditProfileDetailsDropdown = ({ userDetailsToShow }) => {
       <h3>Valitse muokattava tieto:</h3>
       <div>
         <select name='details' id='details' onChange={handleSelectChange} data-cy='EditUserDetailsDropdown'>
-          <option key='address' value={userDetailsToShow.address}>{userDetailsToShow.address}</option>
-          <option key='postalCode' value={userDetailsToShow.postalCode}>{userDetailsToShow.postalCode}</option>
-          <option key='city' value={userDetailsToShow.city}>{userDetailsToShow.city}</option>
+          <option key='address' value={userDetailsToShow.address} data-cy='addressOption'>{userDetailsToShow.address}</option>
+          <option key='postalCode' value={userDetailsToShow.postalCode} data-cy='postalCodeOption'>{userDetailsToShow.postalCode}</option>
+          <option key='city' value={userDetailsToShow.city} data-cy='cityOption'>{userDetailsToShow.city}</option>
         </select>
       </div>
 
       {selectedValue === userDetailsToShow.address &&
-      <form onSubmit={handleSubmit}>
-        <input type="text" value={inputValue} onChange={handleInputChange}/>
-        <button type="submit" onClick={handleSubmit}>Tallenna</button>
+      <form onSubmit={handleSubmit} data-cy='addressForm'>
+        <input type="text" value={inputValue} onChange={handleInputChange} data-cy='addressField'/>
+        <button type="submit" onClick={handleSubmit} data-cy='addressSubmitButton'>Tallenna</button>
       </form>
       }
 
       {selectedValue === userDetailsToShow.postalCode &&
-      <form onSubmit={handleSubmit}>
-        <input type="text" value={inputValue} onChange={handleInputChange}/>
-        <button type="submit" onClick={handleSubmit}>Tallenna</button>
+      <form onSubmit={handleSubmit} data-cy='postalCodeForm'>
+        <input type="text" value={inputValue} onChange={handleInputChange} data-cy='postalCodeField'/>
+        <button type="submit" onClick={handleSubmit} data-cy='postalCodeSubmitButton'>Tallenna</button>
       </form>
       }
 
       {selectedValue === userDetailsToShow.city &&
       <div>
-        <form onSubmit={handleSubmit}>
-          <input type="text" value={inputValue} onChange={handleInputChange}/>
-          <button type="submit" onClick={handleSubmit}>Tallenna</button>
+        <form onSubmit={handleSubmit} data-cy='cityForm'>
+          <input type="text" value={inputValue} onChange={handleInputChange} data-cy='cityField'/>
+          <button type="submit" onClick={handleSubmit} data-cy='citySubmitButton'>Tallenna</button>
         </form>
       </div>}
     </div>
