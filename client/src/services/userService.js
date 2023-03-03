@@ -57,4 +57,23 @@ const deleteUser = async (user_id) => {
   return response.data
 }
 
-export default { create, setToken, getUser, getAllUsers, deleteUser }
+/**
+ * @param {string} user_id
+ * @param {string} oldPassword
+ * @param {string} newPassword
+ *  @param {string} confirmNewPassword
+ * @returns {Object} contains message about successful/failed password change
+*/
+const changePassword = async (user_id, oldPassword, newPassword, confirmNewPassword) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  const response = await axios.post(`${baseUrl}/${user_id}/password_change`, {
+    oldPassword: oldPassword,
+    newPassword: newPassword,
+    confirmNewPassword: confirmNewPassword
+  }, config)
+  return response.data
+}
+
+export default { create, setToken, getUser, getAllUsers, deleteUser, changePassword }

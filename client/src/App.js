@@ -3,6 +3,7 @@ import Notification from './components/Notification'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import jwt_decode from 'jwt-decode'
+import PasswordChangeForm from './components/PasswordChangeForm'
 import RegisterForm from './components/RegisterForm'
 import Togglable from './components/Togglable'
 import UserProfile from './components/UserProfile'
@@ -121,7 +122,9 @@ function App() {
         Kirjaudu ulos
       </button>
       <UserProfile />
-      <Togglable buttonLabel='Muokkaa tietoja' id='editForm'></Togglable>
+      <Togglable buttonLabel='Muokkaa tietoja' id='editForm'>
+        <PasswordChangeForm />
+      </Togglable>
       <Togglable buttonLabel='Näytä laitteet' id='senderList'>
         <div>
           {user.senderDeviceIds.length > 1 &&
