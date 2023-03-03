@@ -18,11 +18,12 @@ const notificationSlice = createSlice({
     },
   },
 })
+
 /**
  * Sets notification to redux state for specified duration
  * @param {string} message - message
- * @param {number} timeMs - optional notification duration in milliseconds. defaults to 4000
- * @param {string} type - optional message display type: 'error' or 'info'. defaults to 'info'
+ * @param {number} [timeMs=4000] - optional notification duration in milliseconds. defaults to 4000
+ * @param {string} [type='info'] - optional message display type: 'error' or 'info'. defaults to 'info'
  */
 export const setNotification = (message, timeMs = 4000, type = 'info') => {
   console.log('setNotification ', message, timeMs)

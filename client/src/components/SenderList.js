@@ -1,7 +1,11 @@
 import { groupByDeviceID } from '../utils/senderDataHandler'
 import SenderVisualizer from './SenderVisualizer'
 
-// Group by device id and visualize sensor logs
+/**
+* Groups SenderVisualizer by sender ids
+* @param {Array.<Object>}
+* @returns {JSX.Element}
+*/
 const SenderList = ({ senders }) => {
 
   const groupedSenders = groupByDeviceID(senders)

@@ -1,11 +1,11 @@
 import { useState } from 'react'
 
+/**
+ * Function that creates Toggleable component
+  * @param {Object} props - Props object containing children, buttonLabel and id.
+ * @returns {JSX.Element} - JSX element to render
+ */
 const Togglable = (props) => {
-  /**
-   * Function that creates Toggleable component
-    * @param {Object} props - Props object containing children, buttonLabel and id.
-   * @returns {JSX.Element} - JSX element to render
-   */
 
   //React hook that creates state variable visible and function setVisible to change the visibility.
   const [visible, setVisible] = useState(false)

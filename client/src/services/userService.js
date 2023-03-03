@@ -1,8 +1,21 @@
 import axios from 'axios'
 const baseUrl = '/api/users'
 
-
 let token = null
+
+/**
+ * @typedef {Object} userObject - object with all fields except passwordHash:
+ * @property {string} username
+ * @property {string} firstName
+ * @property {string} lastName
+ * @property {string} address
+ * @property {string} postalCode
+ * @property {string} city
+ * @property {string} role
+ * @property {Date} expirationDate
+ * @property {string[]} senderDeviceIds
+*
+*/
 
 const setToken = newToken => {
   token = `Bearer ${newToken.toString()}`
@@ -12,7 +25,7 @@ const setToken = newToken => {
  * Create new user
  * @param {Object} newObject user object containing all fields in the
  *                           register form and list of users device ids
- * @returns {Object} user object without password field
+ * @returns {userObject} user object without password field
 */
 const create = async newObject => {
   const config = {
@@ -25,7 +38,7 @@ const create = async newObject => {
 /**
  * Fetch individual user object based on user_id
  * @param {string} user_id
- * @returns {Object} user object
+ * @returns {userObject} userObject
 */
 const getUser = async (user_id) => {
   const config = { headers: { Authorization: token }, }
@@ -35,7 +48,7 @@ const getUser = async (user_id) => {
 
 /**
  * // Fetch all user objects.
- * @returns {Object[]} array of user objects
+ * @returns {Array.<userObject>} array of user objects
  */
 const getAllUsers = async () => {
   const config = {
@@ -47,7 +60,7 @@ const getAllUsers = async () => {
 
 /**
  * @param {string} user_id
- * @returns {Object} contains message about successful/failed deletion
+ * @returns {Object.<string, string>} contains message about successful/failed deletion
 */
 const deleteUser = async (user_id) => {
   const config = {
@@ -61,8 +74,8 @@ const deleteUser = async (user_id) => {
  * @param {string} user_id
  * @param {string} oldPassword
  * @param {string} newPassword
- *  @param {string} confirmNewPassword
- * @returns {Object} contains message about successful/failed password change
+ * @param {string} confirmNewPassword
+ * @returns {Object.<string, string>} contains message about successful/failed password change
 */
 const changePassword = async (user_id, oldPassword, newPassword, confirmNewPassword) => {
   const config = {
