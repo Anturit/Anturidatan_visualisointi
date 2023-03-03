@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import registerService from '../services/userService.js'
-import store from '../store.js'
 import { setNotification } from '../reducers/notificationReducer.js'
 import PasswordFeedback from './PasswordFeedback.js'
+import { useDispatch } from 'react-redux'
 const RegisterForm = ( ) => {
   const roles = ['admin', 'user']
   const [selectedRole, setSelectedRole] = useState(roles[1])
@@ -15,7 +15,7 @@ const RegisterForm = ( ) => {
   const [newCity, setNewCity] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [showPasswordSecurityFeedback, setShowPasswordSecurityFeedback] = useState(false)
-
+  const dispatch = useDispatch()
   /**
    * Checks that no string value in user object is not an empty string.
    * @param {*} userObj
@@ -85,19 +85,19 @@ const RegisterForm = ( ) => {
     event.preventDefault()
     const userObject = createUserObjectFromStates()
     if (containsEmptyFields(userObject)) {
-      store.dispatch(setNotification(
+      dispatch(setNotification(
         'Tyhjiä kenttiä', 3500, 'alert'
       ))
       return
     }
     try {
       await registerService.create(userObject)
-      store.dispatch(setNotification(
+      dispatch(setNotification(
         `Käyttäjän luonti onnistui! Käyttäjänimi: ${newEmail} Salasana: ${newPassword}`, 15000
       ))
       resetRegisterFormStates()
     } catch (err) {
-      store.dispatch(setNotification(
+      dispatch(setNotification(
         getErrorMessageInFinnish(err.response.data.error), 3500, 'alert'
       ))
     }

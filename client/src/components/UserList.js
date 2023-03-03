@@ -9,17 +9,18 @@ import {
 import { Delete } from '@mui/icons-material'
 import MaterialReactTable from 'material-react-table'
 import userService from '../services/userService'
-import { useSelector } from 'react-redux'
+import { useSelector,useDispatch } from 'react-redux'
 import { setUsers } from '../reducers/usersReducer'
-import store from '../store'
+
 const UserList = () => {
   const users = useSelector((state) => state.users)
+  const dispatch = useDispatch()
   const [userDeletionAllowed, setUserDeletionAllowed] = useState(false)
   useEffect(() => {
     userService
       .getAllUsers()
       .then((users) => {
-        store.dispatch(setUsers(users))
+        dispatch(setUsers(users))
       })
   }, [])
 
@@ -75,13 +76,13 @@ const UserList = () => {
   const removeUser = async (user) => {
     try {
       await userService.deleteUser(user.id)
-      store.dispatch(setUsers(users.filter(u => u.id !== user.id)))
-      store.dispatch(setNotification(`Käyttäjä ${user.firstName} poistettu`))
+      dispatch(setUsers(users.filter(u => u.id !== user.id)))
+      dispatch(setNotification(`Käyttäjä ${user.firstName} poistettu`))
     } catch (err) {
       if (err.message.includes('token')) {
-        store.dispatch(setNotification('Istunto vanhentunut'))
+        dispatch(setNotification('Istunto vanhentunut'))
       }
-      store.dispatch(setNotification('Tuntematon virhe käyttäjän poistossa', 3500, 'alert'))
+      dispatch(setNotification('Tuntematon virhe käyttäjän poistossa', 3500, 'alert'))
     }
   }
 
