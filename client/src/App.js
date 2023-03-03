@@ -1,8 +1,9 @@
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import jwt_decode from 'jwt-decode'
+import PasswordChangeForm from './components/PasswordChangeForm'
 import RegisterForm from './components/RegisterForm'
 import Togglable from './components/Togglable'
 import UserProfile from './components/UserProfile'
@@ -13,10 +14,11 @@ import SenderList from './components/SenderList'
 import UserList from './components/UserList'
 import userService from './services/userService'
 import { setUser } from './reducers/loginFormReducer'
-import store from './store'
+
 function App() {
   const user = useSelector((state) => state.loginForm.user)
   const [senders, setSenders] = useState([])
+  const dispatch = useDispatch()
 
   /**
    * Function to fetch user for session and storing it to localstorage
@@ -29,7 +31,7 @@ function App() {
       const decodedToken = jwt_decode(parsedUser.token)
       const expiresAtMillis = decodedToken.exp * 1000
       if (expiresAtMillis > Date.now()) {
-        store.dispatch(setUser(parsedUser))
+        dispatch(setUser(parsedUser))
         userService.setToken(parsedUser.token)
       }
     }
@@ -90,7 +92,7 @@ function App() {
         <p>{user.firstName} sisäänkirjautunut</p>
         <button
           onClick={() => {
-            store.dispatch(setUser(null))
+            dispatch(setUser(null))
             window.localStorage.setItem('loggedUser', '')
             userService.setToken(null)
           }}
@@ -116,7 +118,7 @@ function App() {
       <p>{user.firstName} sisäänkirjautunut</p>
       <button
         onClick={() => {
-          store.dispatch(setUser(null))
+          dispatch(setUser(null))
           window.localStorage.setItem('loggedUser', '')
         }}
         data-cy='logout'
@@ -126,6 +128,7 @@ function App() {
       <UserProfile />
       <Togglable buttonLabel='Muokkaa tietoja' id='editForm'>
         <EditProfileDetailsDropdown userDetailsToShow={user}/>
+        <PasswordChangeForm />
       </Togglable>
       <Togglable buttonLabel='Näytä laitteet' id='senderList'>
         <div>

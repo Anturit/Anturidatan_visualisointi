@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import axios from 'axios'
 import userService from '../services/userService'
-import store from '../store'
 import { setUser } from '../reducers/loginFormReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { useDispatch } from 'react-redux'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-
+  const dispatch = useDispatch()
   const login = async credentials => {
     /**
     *@returns user object with all fields except passwordHash:
@@ -42,9 +42,9 @@ const LoginForm = () => {
       window.localStorage.setItem(
         'loggedUser', JSON.stringify(user)
       )
-      store.dispatch(setUser(user))
+      dispatch(setUser(user))
       userService.setToken(user.token)
-      store.dispatch( setNotification(
+      dispatch( setNotification(
         `${user.firstName} ${user.lastName} kirjattu sisään`, 3500
       ))
       setUsername('')
@@ -53,16 +53,16 @@ const LoginForm = () => {
       console.log(err)
       if (err.response.data.error) {
         if (err.response.data.error.includes('expired')) {
-          store.dispatch(setNotification(
+          dispatch(setNotification(
             'Käyttäjän lisenssi vanhentunut', 3500, 'alert'
           ))
         } else {
-          store.dispatch(setNotification(
+          dispatch(setNotification(
             'Väärä käyttäjänimi tai salasana', 3500, 'alert'
           ))
         }
       } else {
-        store.dispatch(setNotification(
+        dispatch(setNotification(
           `Palvelin ei vastaa. Status ${err.response.status}`, 3500, 'alert'
         ))
       }

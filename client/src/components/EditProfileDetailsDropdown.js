@@ -67,36 +67,44 @@ const EditProfileDetailsDropdown = ({ userDetailsToShow }) => {
 
   return (
     <div>
-      <h3>Valitse muokattava tieto:</h3>
+      <h2>Valitse muokattava tieto</h2>
       <div>
         <select name='details' id='details' onChange={handleSelectChange} data-cy='EditUserDetailsDropdown'>
-          <option key='address' value={userDetailsToShow.address} data-cy='addressOption'>{userDetailsToShow.address}</option>
-          <option key='postalCode' value={userDetailsToShow.postalCode} data-cy='postalCodeOption'>{userDetailsToShow.postalCode}</option>
-          <option key='city' value={userDetailsToShow.city} data-cy='cityOption'>{userDetailsToShow.city}</option>
+          <option key='address' value={userDetailsToShow.address}>Osoite</option>
+          <option key='postalCode' value={userDetailsToShow.postalCode}>Postinumero</option>
+          <option key='city' value={userDetailsToShow.city}>Kaupunki</option>
         </select>
       </div>
 
       {selectedValue === userDetailsToShow.address &&
       <form onSubmit={handleSubmit} data-cy='addressForm'>
-        <input type="text" value={inputValue} onChange={handleInputChange} data-cy='addressField'/>
-        <button type="submit" onClick={handleSubmit} data-cy='addressSubmitButton'>Tallenna</button>
+        <small>Uusi osoite</small>
+        <div>
+          <input type="text" value={inputValue} onChange={handleInputChange} data-cy='newAddress'/>
+          <button type="submit" onClick={handleSubmit} data-cy='addressSubmitButton'>Tallenna</button>
+        </div>
       </form>
       }
 
       {selectedValue === userDetailsToShow.postalCode &&
       <form onSubmit={handleSubmit} data-cy='postalCodeForm'>
-        <input type="text" value={inputValue} onChange={handleInputChange} data-cy='postalCodeField'/>
-        <button type="submit" onClick={handleSubmit} data-cy='postalCodeSubmitButton'>Tallenna</button>
+        <small>Uusi postinumero</small>
+        <div>
+          <input type="text" value={inputValue} onChange={handleInputChange} data-cy='newPostalCode'/>
+          <button type="submit" onClick={handleSubmit} data-cy='postalCodeSubmitButton'>Tallenna</button>
+        </div>
       </form>
       }
 
       {selectedValue === userDetailsToShow.city &&
-      <div>
+
         <form onSubmit={handleSubmit} data-cy='cityForm'>
-          <input type="text" value={inputValue} onChange={handleInputChange} data-cy='cityField'/>
-          <button type="submit" onClick={handleSubmit} data-cy='citySubmitButton'>Tallenna</button>
-        </form>
-      </div>}
+          <small>Uusi kaupunki</small>
+          <div>
+            <input type="text" value={inputValue} onChange={handleInputChange} data-cy='newCity'/>
+            <button type="submit" onClick={handleSubmit} data-cy='citySubmitButton'>Tallenna</button>
+          </div>
+        </form>}
     </div>
   )
 }
