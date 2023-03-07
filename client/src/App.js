@@ -2,7 +2,6 @@ import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import jwt_decode from 'jwt-decode'
 import PasswordChangeForm from './components/PasswordChangeForm'
 import RegisterForm from './components/RegisterForm'
 import Togglable from './components/Togglable'
@@ -12,28 +11,14 @@ import SenderDropdown from './components/SenderDropdown'
 import SenderList from './components/SenderList'
 import UserList from './components/UserList'
 import userService from './services/userService'
-import { setUser } from './reducers/loginFormReducer'
 
 function App() {
   const user = useSelector((state) => state.loginForm.user)
   const [senders, setSenders] = useState([])
   const dispatch = useDispatch()
 
-  /**
-   * Function to fetch user for session and storing it to localstorage
-   * @returns user object with all fields except passwordHash.
-   */
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedUser')
-    if (loggedUserJSON) {
-      const parsedUser = JSON.parse(loggedUserJSON)
-      const decodedToken = jwt_decode(parsedUser.token)
-      const expiresAtMillis = decodedToken.exp * 1000
-      if (expiresAtMillis > Date.now()) {
-        dispatch(setUser(parsedUser))
-        userService.setToken(parsedUser.token)
-      }
-    }
+    userService.loginLocalUserIfInLocalStorage(dispatch)
   }, [])
 
   /**
@@ -88,11 +73,7 @@ function App() {
         <Notification />
         <p>{user.firstName} sisäänkirjautunut</p>
         <button
-          onClick={() => {
-            dispatch(setUser(null))
-            window.localStorage.setItem('loggedUser', '')
-            userService.setToken(null)
-          }}
+          onClick={() => userService.logoutLocalUser(dispatch)}
           data-cy='logout'
         >
           Kirjaudu ulos
@@ -114,10 +95,7 @@ function App() {
       <Notification />
       <p>{user.firstName} sisäänkirjautunut</p>
       <button
-        onClick={() => {
-          dispatch(setUser(null))
-          window.localStorage.setItem('loggedUser', '')
-        }}
+        onClick={() => userService.logoutLocalUser(dispatch)}
         data-cy='logout'
       >
         Kirjaudu ulos

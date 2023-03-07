@@ -1,6 +1,7 @@
 import axios from 'axios'
+import { setUser } from '../reducers/loginFormReducer'
+import jwt_decode from 'jwt-decode'
 const baseUrl = '/api/users'
-
 let token = null
 
 /**
@@ -19,6 +20,40 @@ let token = null
 
 const setToken = newToken => {
   token = `Bearer ${newToken.toString()}`
+}
+/**
+ * Essentially logouts user by removing user information from browser and website memory.
+ *
+ * @param {any|function} redux store's `dispatch` function
+ */
+const logoutLocalUser = (dispatch) => {
+  dispatch(setUser(null))
+  window.localStorage.setItem('loggedUser', '')
+  token = null
+}
+
+const isJsonWebTokenExpired = jwt => {
+  const decodedToken = jwt_decode(jwt)
+  const expiresAtMillis = decodedToken.exp * 1000
+  return expiresAtMillis < Date.now()
+}
+
+/**
+ * Load user object to program memory if window.localStorage has user object with non-expired JSON web token.
+ *
+ * @param {any|function} redux store's `dispatch` function
+ * @returns {boolean} true for success
+ */
+const loginLocalUserIfValidTokenInLocalStorage = (dispatch) => {
+  const loggedUserJSON = window.localStorage.getItem('loggedUser')
+  if (!loggedUserJSON) return false
+
+  const parsedUser = JSON.parse(loggedUserJSON)
+  if (isJsonWebTokenExpired(parsedUser.token)) return false
+
+  dispatch(setUser(parsedUser))
+  setToken(parsedUser.token)
+  return true
 }
 
 /**
@@ -89,4 +124,4 @@ const changePassword = async (user_id, oldPassword, newPassword, confirmNewPassw
   return response.data
 }
 
-export default { create, setToken, getUser, getAllUsers, deleteUser, changePassword }
+export default { create, setToken, getUser, getAllUsers, deleteUser, changePassword, logoutLocalUser, loginLocalUserIfInLocalStorage: loginLocalUserIfValidTokenInLocalStorage }

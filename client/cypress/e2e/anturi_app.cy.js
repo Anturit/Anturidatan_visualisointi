@@ -21,6 +21,16 @@ describe('Anturi app', function () {
       cy.contains(`${userUser().firstName} sisäänkirjautunut`)
     })
 
+    it('stays logged in after page refresh', function () {
+      //note that 'manual' login has to be used to ensure that program loads user details to window.localStorage
+      cy.get('[data-cy="username"]').type(userUser().username)
+      cy.get('[data-cy="password"]').type(userUser().password)
+      cy.get('[data-cy="login"]').click()
+      cy.contains(`${userUser().firstName} sisäänkirjautunut`)
+      cy.reload()
+      cy.contains(`${userUser().firstName} sisäänkirjautunut`)
+    })
+
     it('fails with wrong credentials', function () {
       cy.get('[data-cy="username"]').type('testuser')
       cy.get('[data-cy="password"]').type('wrong')

@@ -38,7 +38,8 @@ const PasswordChangeForm = () => {
     event.preventDefault()
     try {
       await userService.changePassword(user_id, oldPassword, newPassword, confirmNewPassword)
-      dispatch(setNotification('Salasana vaihdettu onnistuneesti!'))
+      dispatch(setNotification('Salasana vaihdettu onnistuneesti!\nKirjaudu sisään uudella salasanalla.', 10000))
+      userService.logoutLocalUser(dispatch)
     } catch (error) {
       dispatch(setNotification(
         getErrorMessageInFinnish(error.response.data.error), 3500, 'alert'
@@ -47,7 +48,7 @@ const PasswordChangeForm = () => {
   }
 
   return (
-    <div data-cy='passwordChangeForm'>
+    <div data-cy='passwordChangeForm' style={{ paddingBottom:'1em' }}>
       <form onSubmit={submit}>
         <h2>Vaihda salasana</h2>
         <small>Vanha salasana</small>
@@ -82,9 +83,12 @@ const PasswordChangeForm = () => {
             onChange={(e) => setConfirmNewPassword(e.target.value)}
           />
         </div>
-        <br />
+        {(newPassword === confirmNewPassword)
+          ? <small>Onnistunut salasanan vaihto aiheuttaa automaattisen uloskirjautumisen</small>
+          : <small>Uusi salasana ja vahvista uusi salasana eivät täsmää</small>
+        }
+        <br/>
         <button data-cy='passwordChangeButton' type="submit">Vaihda salasana</button>
-        <p></p>
       </form>
     </div>
   )
