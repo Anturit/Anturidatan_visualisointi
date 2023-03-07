@@ -3,6 +3,11 @@ import registerService from '../services/userService.js'
 import { setNotification } from '../reducers/notificationReducer.js'
 import PasswordFeedback from './PasswordFeedback.js'
 import { useDispatch } from 'react-redux'
+
+/**
+ * @typedef {import('../services/userService').userObject} userObject
+ */
+
 const RegisterForm = ( ) => {
   const roles = ['admin', 'user']
   const [selectedRole, setSelectedRole] = useState(roles[1])
@@ -16,9 +21,10 @@ const RegisterForm = ( ) => {
   const [newPassword, setNewPassword] = useState('')
   const [showPasswordSecurityFeedback, setShowPasswordSecurityFeedback] = useState(false)
   const dispatch = useDispatch()
+
   /**
    * Checks that no string value in user object is not an empty string.
-   * @param {*} userObj
+   * @param {userObject} userObj
    * @returns {boolean}
    */
   const containsEmptyFields = (userObj) => {
@@ -30,6 +36,7 @@ const RegisterForm = ( ) => {
     }
     return false
   }
+
   const createUserObjectFromStates = () =>  ({
     username: newEmail,
     password: newPassword,
@@ -78,8 +85,8 @@ const RegisterForm = ( ) => {
   }
   /**
    * Register form event handler
-   * @param {SubmitEvent}
-   * @returns null
+   * @param {onClick} event - The observable event.
+  *  @listens onClick
    */
   const submit = async (event) => {
     event.preventDefault()

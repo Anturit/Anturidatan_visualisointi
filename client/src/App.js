@@ -78,10 +78,10 @@ function App() {
       </>
     )
   }
+
   /**
    * If user is logged in as admin, show admin view
    */
-
   if (user.role === 'admin') {
     return (
       <div>

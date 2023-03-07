@@ -9,13 +9,15 @@ import {
 import { Delete } from '@mui/icons-material'
 import MaterialReactTable from 'material-react-table'
 import userService from '../services/userService'
-import { useSelector,useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { setUsers } from '../reducers/usersReducer'
 
 const UserList = () => {
   const users = useSelector((state) => state.users)
-  const dispatch = useDispatch()
   const [userDeletionAllowed, setUserDeletionAllowed] = useState(false)
+
+  const dispatch = useDispatch()
+
   useEffect(() => {
     userService
       .getAllUsers()
@@ -24,14 +26,14 @@ const UserList = () => {
       })
   }, [])
 
+  /**
+  * {
+  *   accessorKey / accessorFn: get table cell data
+  *   header: corresponding header to cell data in column
+  * }
+  * @returns {Array.<Object>}array of objects for individual column construction
+  */
   const columns = useMemo(
-    /**
-    *{
-    *   accessorKey / accessorFn: get table cell data
-    *   header: corresponding header to cell data in column
-    *}
-    *@returns array of objects for individual column construction
-    */
     () => [
       {
         accessorKey: 'username',
