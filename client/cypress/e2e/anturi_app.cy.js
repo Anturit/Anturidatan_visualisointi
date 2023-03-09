@@ -96,6 +96,24 @@ describe('Anturi app', function () {
         cy.get('[data-cy="passwordChangeButton"]').click()
         cy.contains('Uusi salasana ei voi olla sama kuin vanha salasana!')
       })
+      it('dropwdown for changing user information is displayed', function () {
+        cy.get('[data-cy="EditUserDetailsDropdown"]').should('exist')
+      })
+      it('address can be changed successfully', function () {
+        cy.get('[data-cy="EditUserDetailsDropdown"]').select('Osoite')
+        cy.get('[data-cy="newAddress"]').type('Testikatu 1')
+        cy.get('[data-cy="addressSubmitButton"]').click()
+      })
+      it('postal code can be changed successfully', function () {
+        cy.get('[data-cy="EditUserDetailsDropdown"]').select('Postinumero')
+        cy.get('[data-cy="newPostalCode"]').type('00100')
+        cy.get('[data-cy="postalCodeSubmitButton"]').click()
+      })
+      it('city can be changed successfully', function () {
+        cy.get('[data-cy="EditUserDetailsDropdown"]').select('Kaupunki')
+        cy.get('[data-cy="newCity"]').type('Helsinki')
+        cy.get('[data-cy="citySubmitButton"]').click()
+      })
     })
   })
 

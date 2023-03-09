@@ -71,6 +71,21 @@ const deleteUser = async (user_id) => {
 }
 
 /**
+   * Update user details
+   * @param {string} user_id
+   * @param {object} newObject
+   * @returns {object} user object
+*/
+
+const updateUserDetails = async (user_id, newObject) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  const response = await axios.put(`${baseUrl}/${user_id}`, newObject, config)
+  return response.data
+}
+
+/**
  * @param {string} user_id
  * @param {string} oldPassword
  * @param {string} newPassword
@@ -89,4 +104,4 @@ const changePassword = async (user_id, oldPassword, newPassword, confirmNewPassw
   return response.data
 }
 
-export default { create, setToken, getUser, getAllUsers, deleteUser, changePassword }
+export default { create, setToken, getUser, getAllUsers, deleteUser, changePassword, updateUserDetails }
