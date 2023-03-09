@@ -421,6 +421,19 @@ describe('When there is initially one admin - user and two user - users at db : 
   })
 })
 
+describe('When user info is changed', () => {
+  test('FIRSTNAME CHANGE succeeds with correct values', async () => {
+    const newFirstName = 'testiHeikki'
+
+    await api
+      .post(`/api/users/${USERID}/info_change`)
+      .set('Authorization', `Bearer ${USERTOKEN}`)
+      .send(newFirstName)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+  })
+})
+
 describe('When there is initially one admin - user and two user - users at db : users delete', () => {
 
   test('ADMIN can delete USER', async () => {

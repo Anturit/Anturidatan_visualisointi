@@ -79,6 +79,24 @@ usersRouter.delete('/:id', adminCredentialsValidator, async (request, response) 
 
 })
 
+usersRouter.post('/:id/info_change', async (request, response) => {
+  const userId = request.params.id
+  const newFistName = request.body.newFirstName
+  //const user = await User.findById(userId)
+
+  await User.updateOne(
+    { _id: userId },
+    { $set: { firstName: newFistName } },
+    { new: true }
+  )
+
+  const changedUser = await User.findById(userId)
+
+  response.status(201).json(changedUser)
+
+})
+
+
 usersRouter.post('/:id/password_change', async (request, response) => {
   const userId = request.params.id
   const user = await User.findById(userId)
