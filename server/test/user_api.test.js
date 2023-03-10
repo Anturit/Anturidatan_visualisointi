@@ -450,50 +450,6 @@ describe('When user info is changed', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
-  //test('POSTALCODE CHANGE fails if postal code is too short', async () => {
-  //  const newValue = 'postalCode'
-  //  const newInput = '1234'
-  //  const updatedUser = {
-  //    newValue, newInput
-  //  }
-  //  const response = await api
-  //    .put(`/api/users/${USERID}`)
-  //    .set('Authorization', `Bearer ${USERTOKEN}`)
-  //    .send({ USERID }, updatedUser)
-  //    .expect(400)
-  //    .expect('Content-Type', /application\/json/)
-  //  expect(response.body.error).toBe('invalid postal code')
-  //})
-  //
-  //test('POSTALCODE CHANGE fails if postal code is too long', async () => {
-  //  const newValue = 'postalCode'
-  //  const newInput = '123456'
-  //  const updatedUser = {
-  //    newValue, newInput
-  //  }
-  //  const response = await api
-  //    .put(`/api/users/${USERID}`)
-  //    .set('Authorization', `Bearer ${USERTOKEN}`)
-  //    .send({ USERID }, updatedUser)
-  //    .expect(400)
-  //    .expect('Content-Type', /application\/json/)
-  //  expect(response.body.error).toBe('invalid postal code')
-  //})
-  //
-  //test('POSTALCODE CHANGE fails if postal has non-numeric characters', async () => {
-  //  const newValue = 'postalCode'
-  //  const newInput = '1234A'
-  //  const updatedUser = {
-  //    newValue, newInput
-  //  }
-  //  const response = await api
-  //    .put(`/api/users/${USERID}`)
-  //    .set('Authorization', `Bearer ${USERTOKEN}`)
-  //    .send({ USERID }, updatedUser)
-  //    .expect(400)
-  //    .expect('Content-Type', /application\/json/)
-  //  expect(response.body.error).toBe('invalid postal code')
-  //})
 
   test('CITY CHANGE succeeds with correct values', async () => {
     const newValue = 'city'

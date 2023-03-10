@@ -100,12 +100,13 @@ usersRouter.put('/:id', async (request, response) => {
         error: 'invalid postal code'
       })
     }
-    await User.updateOne(
-      { _id: userId },
-      { $set: { postalCode: input } },
-      { new: true }
-    )
-  }
+    else{
+      await User.updateOne(
+        { _id: userId },
+        { $set: { postalCode: input } },
+        { new: true }
+      )
+    }}
   if (value === 'city'){
     await User.updateOne(
       { _id: userId },
