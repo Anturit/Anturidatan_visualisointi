@@ -421,6 +421,52 @@ describe('When there is initially one admin - user and two user - users at db : 
   })
 })
 
+describe('When user info is changed', () => {
+  test('ADDRESS CHANGE succeeds with correct values', async () => {
+    const newValue = 'address'
+    const newInput = 'TestStreet'
+    const updatedUser = {
+      newValue, newInput
+    }
+
+    await api
+      .put(`/api/users/${USERID}`)
+      .set('Authorization', `Bearer ${USERTOKEN}`)
+      .send({ USERID }, updatedUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
+  test('POSTALCODE CHANGE succeeds with correct values', async () => {
+    const newValue = 'postalCode'
+    const newInput = '00200'
+    const updatedUser = {
+      newValue, newInput
+    }
+
+    await api
+      .put(`/api/users/${USERID}`)
+      .set('Authorization', `Bearer ${USERTOKEN}`)
+      .send({ USERID }, updatedUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('CITY CHANGE succeeds with correct values', async () => {
+    const newValue = 'city'
+    const newInput = 'Espoo'
+    const updatedUser = {
+      newValue, newInput
+    }
+
+    await api
+      .put(`/api/users/${USERID}`)
+      .set('Authorization', `Bearer ${USERTOKEN}`)
+      .send({ USERID }, updatedUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
+})
+
 describe('When there is initially one admin - user and two user - users at db : users delete', () => {
 
   test('ADMIN can delete USER', async () => {
