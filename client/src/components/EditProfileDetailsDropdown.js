@@ -2,15 +2,15 @@ import React, { useState } from 'react'
 import store from '../store.js'
 import userService from '../services/userService'
 import { setNotification } from '../reducers/notificationReducer'
-
+import { useSelector } from 'react-redux'
 /**
   * Component to render dropdown menu for user to select which user details to edit.
  */
-const EditProfileDetailsDropdown = ({ userDetailsToShow }) => {
-
-  const [selectedValue, setSelectedValue] = useState(userDetailsToShow.address)
+const EditProfileDetailsDropdown = () => {
+  const [selectedValue, setSelectedValue] = useState('address')
   const [inputValue, setInputValue] = useState('')
 
+  const user_id = useSelector(state => state.loginForm.user.id)
   /**
    * Checks that no string value in user object is not an empty string.
    * @param {*} userObj
@@ -49,14 +49,14 @@ const EditProfileDetailsDropdown = ({ userDetailsToShow }) => {
   const handleSubmit = async (event) => {
     event.preventDefault()
     const updatedUser = {
-      [selectedValue]: inputValue
+      selectedValue, inputValue
     }
     if (containsEmptyFields(updatedUser)) {
       store.dispatch(setNotification('Tyhjiä kenttiä', 3500, 'alert'))
       return
     }
     try {
-      await userService.updateUserDetails(userDetailsToShow.id, updatedUser)
+      await userService.updateUserDetails(user_id, updatedUser)
       store.dispatch(setNotification('Tiedon muokkaaminen onnistui!', 15000
       ))
     } catch (error) {
@@ -70,13 +70,13 @@ const EditProfileDetailsDropdown = ({ userDetailsToShow }) => {
       <h2>Valitse muokattava tieto</h2>
       <div>
         <select name='details' id='details' onChange={handleSelectChange} data-cy='EditUserDetailsDropdown'>
-          <option key='address' value={userDetailsToShow.address}>Osoite</option>
-          <option key='postalCode' value={userDetailsToShow.postalCode}>Postinumero</option>
-          <option key='city' value={userDetailsToShow.city}>Kaupunki</option>
+          <option key='address' value='address'>Osoite</option>
+          <option key='postalCode' value='postalCode'>Postinumero</option>
+          <option key='city' value='city'>Kaupunki</option>
         </select>
       </div>
 
-      {selectedValue === userDetailsToShow.address &&
+      {selectedValue === 'address' &&
       <form onSubmit={handleSubmit} data-cy='addressForm'>
         <small>Uusi osoite</small>
         <div>
@@ -86,7 +86,7 @@ const EditProfileDetailsDropdown = ({ userDetailsToShow }) => {
       </form>
       }
 
-      {selectedValue === userDetailsToShow.postalCode &&
+      {selectedValue === 'postalCode' &&
       <form onSubmit={handleSubmit} data-cy='postalCodeForm'>
         <small>Uusi postinumero</small>
         <div>
@@ -96,15 +96,16 @@ const EditProfileDetailsDropdown = ({ userDetailsToShow }) => {
       </form>
       }
 
-      {selectedValue === userDetailsToShow.city &&
+      {selectedValue === 'city' &&
 
-        <form onSubmit={handleSubmit} data-cy='cityForm'>
-          <small>Uusi kaupunki</small>
-          <div>
-            <input type="text" value={inputValue} onChange={handleInputChange} data-cy='newCity'/>
-            <button type="submit" onClick={handleSubmit} data-cy='citySubmitButton'>Tallenna</button>
-          </div>
-        </form>}
+      <form onSubmit={handleSubmit} data-cy='cityForm'>
+        <small>Uusi kaupunki</small>
+        <div>
+          <input type="text" value={inputValue} onChange={handleInputChange} data-cy='newCity'/>
+          <button type="submit" onClick={handleSubmit} data-cy='citySubmitButton'>Tallenna</button>
+        </div>
+      </form>
+      }
     </div>
   )
 }
