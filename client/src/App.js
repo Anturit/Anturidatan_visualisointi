@@ -11,14 +11,40 @@ import SenderDropdown from './components/SenderDropdown'
 import SenderList from './components/SenderList'
 import UserList from './components/UserList'
 import userService from './services/userService'
+import jwt_decode from 'jwt-decode'
+import { setUser } from './reducers/loginFormReducer'
 
 function App() {
   const user = useSelector((state) => state.loginForm.user)
   const [senders, setSenders] = useState([])
   const dispatch = useDispatch()
 
+  const isJsonWebTokenExpired = jwt => {
+    const decodedToken = jwt_decode(jwt)
+    const expiresAtMillis = decodedToken.exp * 1000
+    return expiresAtMillis < Date.now()
+  }
+
+  /**
+  * Load user object to program memory if window.localStorage has user object with non-expired JSON web token.
+  *
+  * @param {any|function} redux store's `dispatch` function
+  * @returns {boolean} true for success
+  */
+  const loginLocalUserIfValidTokenInLocalStorage = (dispatch) => {
+    const loggedUserJSON = window.localStorage.getItem('loggedUser')
+    if (!loggedUserJSON) return false
+
+    const parsedUser = JSON.parse(loggedUserJSON)
+    if (isJsonWebTokenExpired(parsedUser.token)) return false
+
+    dispatch(setUser(parsedUser))
+    userService.setToken(parsedUser.token)
+    return true
+  }
+
   useEffect(() => {
-    userService.loginLocalUserIfInLocalStorage(dispatch)
+    loginLocalUserIfValidTokenInLocalStorage(dispatch)
   }, [])
 
   /**
