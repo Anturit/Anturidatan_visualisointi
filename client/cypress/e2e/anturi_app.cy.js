@@ -21,6 +21,16 @@ describe('Anturi app', function () {
       cy.contains(`${userUser().firstName} sisäänkirjautunut`)
     })
 
+    it('stays logged in after page refresh', function () {
+      //note that 'manual' login has to be used to ensure that program loads user details to window.localStorage
+      cy.get('[data-cy="username"]').type(userUser().username)
+      cy.get('[data-cy="password"]').type(userUser().password)
+      cy.get('[data-cy="login"]').click()
+      cy.contains(`${userUser().firstName} sisäänkirjautunut`)
+      cy.reload()
+      cy.contains(`${userUser().firstName} sisäänkirjautunut`)
+    })
+
     it('fails with wrong credentials', function () {
       cy.get('[data-cy="username"]').type('testuser')
       cy.get('[data-cy="password"]').type('wrong')
@@ -61,12 +71,13 @@ describe('Anturi app', function () {
       it('password change form is displayed', function () {
         cy.get('[data-cy="passwordChangeForm"]').should('exist')
       })
-      it('password change succeeds with valid inputs', function () {
+      it('password change succeeds with valid inputs and logouts user', function () {
         cy.get('[data-cy="oldPassword"]').type('User@user1')
         cy.get('[data-cy="newPassword"]').type('User@user2')
         cy.get('[data-cy="confirmNewPassword"]').type('User@user2')
         cy.get('[data-cy="passwordChangeButton"]').click()
         cy.contains('Salasana vaihdettu onnistuneesti!')
+        cy.contains('Kirjaudu sisään')
       })
       it('password change fails if old password is incorrect', function () {
         cy.get('[data-cy="oldPassword"]').type('wrong')

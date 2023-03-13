@@ -1,6 +1,6 @@
 import axios from 'axios'
+import { setUser } from '../reducers/loginFormReducer'
 const baseUrl = '/api/users'
-
 let token = null
 
 /**
@@ -19,6 +19,16 @@ let token = null
 
 const setToken = newToken => {
   token = `Bearer ${newToken.toString()}`
+}
+/**
+ * Essentially logouts user by removing user information from browser and website memory.
+ *
+ * @param {any|function} redux store's `dispatch` function
+ */
+const logoutLocalUser = (dispatch) => {
+  dispatch(setUser(null))
+  window.localStorage.setItem('loggedUser', '')
+  token = null
 }
 
 /**
@@ -89,4 +99,4 @@ const changePassword = async (user_id, oldPassword, newPassword, confirmNewPassw
   return response.data
 }
 
-export default { create, setToken, getUser, getAllUsers, deleteUser, changePassword }
+export default { create, setToken, getUser, getAllUsers, deleteUser, changePassword, logoutLocalUser }

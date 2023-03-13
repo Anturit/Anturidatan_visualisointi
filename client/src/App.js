@@ -2,7 +2,6 @@ import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import jwt_decode from 'jwt-decode'
 import PasswordChangeForm from './components/PasswordChangeForm'
 import RegisterForm from './components/RegisterForm'
 import Togglable from './components/Togglable'
@@ -12,6 +11,7 @@ import SenderDropdown from './components/SenderDropdown'
 import SenderList from './components/SenderList'
 import UserList from './components/UserList'
 import userService from './services/userService'
+import jwt_decode from 'jwt-decode'
 import { setUser } from './reducers/loginFormReducer'
 
 function App() {
@@ -19,21 +19,32 @@ function App() {
   const [senders, setSenders] = useState([])
   const dispatch = useDispatch()
 
+  const isJsonWebTokenExpired = jwt => {
+    const decodedToken = jwt_decode(jwt)
+    const expiresAtMillis = decodedToken.exp * 1000
+    return expiresAtMillis < Date.now()
+  }
+
   /**
-   * Function to fetch user for session and storing it to localstorage
-   * @returns user object with all fields except passwordHash.
-   */
-  useEffect(() => {
+  * Load user object to program memory if window.localStorage has user object with non-expired JSON web token.
+  *
+  * @param {any|function} redux store's `dispatch` function
+  * @returns {boolean} true for success
+  */
+  const loginLocalUserIfValidTokenInLocalStorage = (dispatch) => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
-    if (loggedUserJSON) {
-      const parsedUser = JSON.parse(loggedUserJSON)
-      const decodedToken = jwt_decode(parsedUser.token)
-      const expiresAtMillis = decodedToken.exp * 1000
-      if (expiresAtMillis > Date.now()) {
-        dispatch(setUser(parsedUser))
-        userService.setToken(parsedUser.token)
-      }
-    }
+    if (!loggedUserJSON) return false
+
+    const parsedUser = JSON.parse(loggedUserJSON)
+    if (isJsonWebTokenExpired(parsedUser.token)) return false
+
+    dispatch(setUser(parsedUser))
+    userService.setToken(parsedUser.token)
+    return true
+  }
+
+  useEffect(() => {
+    loginLocalUserIfValidTokenInLocalStorage(dispatch)
   }, [])
 
   /**
@@ -88,11 +99,7 @@ function App() {
         <Notification />
         <p>{user.firstName} sisäänkirjautunut</p>
         <button
-          onClick={() => {
-            dispatch(setUser(null))
-            window.localStorage.setItem('loggedUser', '')
-            userService.setToken(null)
-          }}
+          onClick={() => userService.logoutLocalUser(dispatch)}
           data-cy='logout'
         >
           Kirjaudu ulos
@@ -114,10 +121,7 @@ function App() {
       <Notification />
       <p>{user.firstName} sisäänkirjautunut</p>
       <button
-        onClick={() => {
-          dispatch(setUser(null))
-          window.localStorage.setItem('loggedUser', '')
-        }}
+        onClick={() => userService.logoutLocalUser(dispatch)}
         data-cy='logout'
       >
         Kirjaudu ulos
