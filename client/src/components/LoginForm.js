@@ -4,6 +4,7 @@ import userService from '../services/userService'
 import { setUser } from '../reducers/loginFormReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 /**
  * @typedef {import('../services/userService').userObject} userObject
@@ -13,7 +14,7 @@ const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
-
+  const navigate = useNavigate()
   /**
    * @param {{username: string, password: string}} credentials
    * @returns {userObject}
@@ -43,11 +44,14 @@ const LoginForm = () => {
       )
       dispatch(setUser(user))
       userService.setToken(user.token)
-      dispatch( setNotification(
+      dispatch(setNotification(
         `${user.firstName} ${user.lastName} kirjattu sisään`, 3500
       ))
       setUsername('')
       setPassword('')
+      if (user.role === 'admin') {
+        navigate('/admin')
+      }
     } catch (err) {
       console.log(err)
       if (err.response.data.error) {
