@@ -11,17 +11,22 @@ const AdminProfile = () => {
                                */
   const user = useSelector((state) => state.loginForm.user)
   const dispatch = useDispatch()
+
   // Convert expirationDate to Finnish locale date format
   //const expirationDate = new Date(user.expirationDate).toLocaleDateString('fi-FI')
+
   return (
     <>
+
       <h2>Käyttäjätiedot</h2>
-      <>{user.firstName}</>
+      {user ?
+        <>{user.firstName}</> :
+        <></> }
       <button
         onClick={() => userService.logoutLocalUser(dispatch)}
         data-cy='logout'
       >
-                Kirjaudu ulos
+        Kirjaudu ulos
       </button>
     </>
   )

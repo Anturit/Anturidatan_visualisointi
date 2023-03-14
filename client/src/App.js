@@ -1,4 +1,4 @@
-import { Routes, Route, Link,  Navigate } from 'react-router-dom'
+import { Routes, Route, Link, Navigate } from 'react-router-dom'
 
 import LoginForm from './components/LoginForm'
 //import Notification from './components/Notification'
@@ -22,6 +22,7 @@ function App() {
     padding: 5
   }
   const user = useSelector((state) => state.loginForm.user)
+  console.log('user', user)
   // const [senders, setSenders] = useState([])
   const dispatch = useDispatch()
 
@@ -67,7 +68,7 @@ function App() {
 
       <Routes>
 
-        <Route path="/admin" element={user ? <AdminProfile /> : <Navigate replace to='/login' />} />
+        <Route path="/admin" element={localStorage.getItem('loggedUser') ? <AdminProfile /> : <Navigate replace to='/login' />} />
         <Route path="/users" element={<UserList />} />
         <Route path="/login" element={<LoginForm />} />
 
