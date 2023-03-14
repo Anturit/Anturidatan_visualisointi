@@ -128,4 +128,46 @@ usersRouter.post('/:id/password_change', async (request, response) => {
 
 })
 
+usersRouter.put('/:id', async (request, response) => {
+
+  const value = request.body.selectedValue
+  const input = request.body.inputValue
+  const userId = request.params.id
+
+  if (value === 'address'){
+    await User.updateOne(
+      { _id: userId },
+      { $set: { address: input } },
+      { new: true }
+    )
+  }
+  if (value === 'postalCode'){
+
+    if (!(validator.isLength(input, { min: 5, max: 5 })
+  && validator.isNumeric(input, { no_symbols: true }))) {
+      return response.status(400).json({
+        error: 'invalid postal code'
+      })
+    }
+    else{
+      await User.updateOne(
+        { _id: userId },
+        { $set: { postalCode: input } },
+        { new: true }
+      )
+    }}
+  if (value === 'city'){
+    await User.updateOne(
+      { _id: userId },
+      { $set: { city: input } },
+      { new: true }
+    )
+  }
+
+  const changedUser = await User.findById(userId)
+  response.status(200).json(changedUser)
+
+})
+
+
 module.exports = usersRouter
