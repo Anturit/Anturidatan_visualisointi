@@ -130,8 +130,8 @@ usersRouter.post('/:id/password_change', async (request, response) => {
 
 usersRouter.put('/:id', async (request, response) => {
 
-  const userInfoType = request.body.selectedValue
-  const userInput = request.body.inputValue
+  const userInfoType = request.body.userInfoType
+  const userInput = request.body.userInput
   const userId = request.params.id
 
   if (userInfoType === 'address'){
