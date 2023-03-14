@@ -461,10 +461,10 @@ describe('When there is initially one admin - user and two user - users at db : 
 
 describe('When user info is changed', () => {
   test('ADDRESS CHANGE succeeds with correct values', async () => {
-    const newValue = 'address'
-    const newInput = 'TestStreet'
+    const userInputType = 'address'
+    const userInput = 'TestStreet'
     const updatedUser = {
-      newValue, newInput
+      userInputType, userInput
     }
 
     await api
@@ -475,10 +475,10 @@ describe('When user info is changed', () => {
       .expect('Content-Type', /application\/json/)
   })
   test('POSTALCODE CHANGE succeeds with correct values', async () => {
-    const newValue = 'postalCode'
-    const newInput = '00200'
+    const userInputType = 'postalCode'
+    const userInput = '00200'
     const updatedUser = {
-      newValue, newInput
+      userInputType, userInput
     }
 
     await api
@@ -490,10 +490,10 @@ describe('When user info is changed', () => {
   })
 
   test('CITY CHANGE succeeds with correct values', async () => {
-    const newValue = 'city'
-    const newInput = 'Espoo'
+    const userInputType = 'city'
+    const userInput = 'Espoo'
     const updatedUser = {
-      newValue, newInput
+      userInputType, userInput
     }
 
     await api
@@ -505,10 +505,10 @@ describe('When user info is changed', () => {
   })
 
   test('POSTALCODE CHANGE fails if postal code is too short', async () => {
-    const newValue = 'postalCode'
-    const newInput = '1234'
+    const userInputType = 'postalCode'
+    const userInput = '1234'
     const updatedUser = {
-      newValue, newInput
+      userInputType, userInput
     }
     const response = await api
       .put(`/api/users/${USERID}`)
@@ -520,10 +520,10 @@ describe('When user info is changed', () => {
   })
 
   test('POSTALCODE CHANGE fails if postal code is too long', async () => {
-    const newValue = 'postalCode'
-    const newInput = '123456'
+    const userInputType = 'postalCode'
+    const userInput = '123456'
     const updatedUser = {
-      newValue, newInput
+      userInputType, userInput
     }
     const response = await api
       .put(`/api/users/${USERID}`)
@@ -535,10 +535,10 @@ describe('When user info is changed', () => {
   })
 
   test('POSTALCODE CHANGE fails if postal has non-numeric characters', async () => {
-    const newValue = 'postalCode'
-    const newInput = '1234A'
+    const userInputType = 'postalCode'
+    const userInput = '1234A'
     const updatedUser = {
-      newValue, newInput
+      userInputType, userInput
     }
     const response = await api
       .put(`/api/users/${USERID}`)
