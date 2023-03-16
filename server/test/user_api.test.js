@@ -5,35 +5,44 @@ const api = supertest(app)
 
 let ADMINTOKEN = ''
 let USERTOKEN = ''
-let WRONGTOKEN = ''
+const WRONGTOKEN = 'this_is_a_wrong_token'
 
 let ADMINID = ''
 let USERID = ''
 
-beforeAll(async () => {
+/**
+ * Logins helper type of user
+ * @param {*} user object from test_helper.js
+ * @returns {string} token - for authentication
+ */
+const loginUser = async (user) => {
+  const response = await supertest(app)
+    .post('/api/login')
+    .send({
+      username: user.username,
+      password: user.password,
+    })
+  return response.body.token
+}
+
+/**
+ * Resets database and fetches authentication tokens
+ */
+const initialize = async () => {
+
   const savedUsers = await supertest(app)
     .post('/api/testing/reset')
     .expect(201)
 
-  ADMINID = savedUsers.body[2].id
+  USERTOKEN = await loginUser(helper.userUser())
+  ADMINTOKEN = await loginUser(helper.adminUser())
+
   USERID = savedUsers.body[0].id
+  ADMINID = savedUsers.body[2].id
+}
 
-  const userdata = {
-    username: 'admin@admin.com',
-    password: 'Admin@admin1',
-  }
-  const response = await supertest(app).post('/api/login').send(userdata)
-  ADMINTOKEN = response.body.token
-
-  const userdata2 = {
-    username: 'user@user.com',
-    password: 'User@user1',
-  }
-  const response2 = await supertest(app).post('/api/login').send(userdata2)
-  USERTOKEN = response2.body.token
-
-  WRONGTOKEN = 'this_is_a_wrong_token'
-
+beforeAll(async () => {
+  await initialize()
 })
 
 describe('When there is initially one admin - user and two user - users at db : users get', () => {
@@ -457,96 +466,112 @@ describe('When there is initially one admin - user and two user - users at db : 
     expect(usersAtEnd).toHaveLength(usersAtStart.length)
     expect(response.body.error).toBe('invalid token')
   })
+
+  afterAll(async () => {
+    await initialize()
+  })
 })
 
 describe('When user info is changed', () => {
   test('ADDRESS CHANGE succeeds with correct values', async () => {
     const userInputType = 'address'
     const userInput = 'TestStreet'
-    const updatedUser = {
-      userInputType, userInput
-    }
 
-    await api
+    const response = await api
       .put(`/api/users/${USERID}`)
       .set('Authorization', `Bearer ${USERTOKEN}`)
-      .send({ USERID }, updatedUser)
+      .send({
+        userInputType, userInput
+      })
       .expect(200)
       .expect('Content-Type', /application\/json/)
+    expect(response.body.address).toBe(userInput)
+    const userFromDb = await helper.userInDb(USERID)
+    expect(userFromDb.address).toBe(userInput)
   })
+
   test('POSTALCODE CHANGE succeeds with correct values', async () => {
     const userInputType = 'postalCode'
     const userInput = '00200'
-    const updatedUser = {
-      userInputType, userInput
-    }
 
-    await api
+    const response = await api
       .put(`/api/users/${USERID}`)
       .set('Authorization', `Bearer ${USERTOKEN}`)
-      .send({ USERID }, updatedUser)
+      .send({
+        userInputType, userInput
+      })
       .expect(200)
       .expect('Content-Type', /application\/json/)
+    expect(response.body.postalCode).toBe(userInput)
+    const userFromDb = await helper.userInDb(USERID)
+    expect(userFromDb.postalCode).toBe(userInput)
   })
 
   test('CITY CHANGE succeeds with correct values', async () => {
     const userInputType = 'city'
     const userInput = 'Espoo'
-    const updatedUser = {
-      userInputType, userInput
-    }
 
-    await api
+    const response = await api
       .put(`/api/users/${USERID}`)
+      .send({
+        userInputType, userInput
+      })
       .set('Authorization', `Bearer ${USERTOKEN}`)
-      .send({ USERID }, updatedUser)
       .expect(200)
       .expect('Content-Type', /application\/json/)
+    expect(response.body.city).toBe(userInput)
+    const userFromDb = await helper.userInDb(USERID)
+    expect(userFromDb.city).toBe(userInput)
   })
 
   test('POSTALCODE CHANGE fails if postal code is too short', async () => {
     const userInputType = 'postalCode'
     const userInput = '1234'
-    const updatedUser = {
-      userInputType, userInput
-    }
+
     const response = await api
       .put(`/api/users/${USERID}`)
       .set('Authorization', `Bearer ${USERTOKEN}`)
-      .send({ USERID }, updatedUser)
+      .send({
+        userInputType, userInput
+      })
       .expect(400)
       .expect('Content-Type', /application\/json/)
     expect(response.body.error).toBe('invalid postal code')
+    const userFromDb = await helper.userInDb(USERID)
+    expect(userFromDb.postalCode).not.toBe(userInput)
   })
 
   test('POSTALCODE CHANGE fails if postal code is too long', async () => {
     const userInputType = 'postalCode'
     const userInput = '123456'
-    const updatedUser = {
-      userInputType, userInput
-    }
+
     const response = await api
       .put(`/api/users/${USERID}`)
       .set('Authorization', `Bearer ${USERTOKEN}`)
-      .send({ USERID }, updatedUser)
+      .send({
+        userInputType, userInput
+      })
       .expect(400)
       .expect('Content-Type', /application\/json/)
     expect(response.body.error).toBe('invalid postal code')
+    const userFromDb = await helper.userInDb(USERID)
+    expect(userFromDb.postalCode).not.toBe(userInput)
   })
 
   test('POSTALCODE CHANGE fails if postal has non-numeric characters', async () => {
     const userInputType = 'postalCode'
     const userInput = '1234A'
-    const updatedUser = {
-      userInputType, userInput
-    }
+
     const response = await api
       .put(`/api/users/${USERID}`)
       .set('Authorization', `Bearer ${USERTOKEN}`)
-      .send({ USERID }, updatedUser)
+      .send({
+        userInputType, userInput
+      })
       .expect(400)
       .expect('Content-Type', /application\/json/)
     expect(response.body.error).toBe('invalid postal code')
+    const userFromDb = await helper.userInDb(USERID)
+    expect(userFromDb.postalCode).not.toBe(userInput)
   })
-
 })

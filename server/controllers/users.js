@@ -130,18 +130,19 @@ usersRouter.post('/:id/password_change', async (request, response) => {
 
 usersRouter.put('/:id', async (request, response) => {
 
-  const userInfoType = request.body.userInfoType
+  const userInputType = request.body.userInputType
   const userInput = request.body.userInput
   const userId = request.params.id
+  console.log(request.body)
 
-  if (userInfoType === 'address'){
+  if (['address', 'city'].includes(userInputType)){
     await User.updateOne(
       { _id: userId },
-      { $set: { address: userInput } },
+      { $set: { [userInputType]: userInput } },
       { new: true }
     )
   }
-  if (userInfoType === 'postalCode'){
+  if (userInputType === 'postalCode'){
 
     if (!(validator.isLength(userInput, { min: 5, max: 5 })
   && validator.isNumeric(userInput, { no_symbols: true }))) {
@@ -149,22 +150,15 @@ usersRouter.put('/:id', async (request, response) => {
         error: 'invalid postal code'
       })
     }
-    else{
-      await User.updateOne(
-        { _id: userId },
-        { $set: { postalCode: userInput } },
-        { new: true }
-      )
-    }}
-  if (userInfoType === 'city'){
     await User.updateOne(
       { _id: userId },
-      { $set: { city: userInput } },
+      { $set: { [userInputType]: userInput } },
       { new: true }
     )
   }
 
   const changedUser = await User.findById(userId)
+  console.log('changed', changedUser)
   response.status(200).json(changedUser)
 
 })
