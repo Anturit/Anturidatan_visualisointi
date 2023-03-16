@@ -574,4 +574,19 @@ describe('When user info is changed', () => {
     const userFromDb = await helper.userInDb(USERID)
     expect(userFromDb.postalCode).not.toBe(userInput)
   })
+
+  test('CHANGE fails if WRONG userInputType', async () => {
+    const userInputType = 'WrongType'
+    const userInput = '1234A'
+
+    const response = await api
+      .put(`/api/users/${USERID}`)
+      .set('Authorization', `Bearer ${USERTOKEN}`)
+      .send({
+        userInputType, userInput
+      })
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toBe('invalid userInputType')
+  })
 })

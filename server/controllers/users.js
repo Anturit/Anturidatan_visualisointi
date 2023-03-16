@@ -133,32 +133,26 @@ usersRouter.put('/:id', async (request, response) => {
   const userInputType = request.body.userInputType
   const userInput = request.body.userInput
   const userId = request.params.id
-  console.log(request.body)
 
-  if (['address', 'city'].includes(userInputType)){
-    await User.updateOne(
-      { _id: userId },
-      { $set: { [userInputType]: userInput } },
-      { new: true }
-    )
+  if (!['address', 'city', 'postalCode'].includes(userInputType)) {
+    return response.status(400).json({
+      error: 'invalid userInputType'
+    })
   }
-  if (userInputType === 'postalCode'){
-
-    if (!(validator.isLength(userInput, { min: 5, max: 5 })
+  if (userInputType === 'postalCode'
+  && !(validator.isLength(userInput, { min: 5, max: 5 })
   && validator.isNumeric(userInput, { no_symbols: true }))) {
-      return response.status(400).json({
-        error: 'invalid postal code'
-      })
-    }
-    await User.updateOne(
-      { _id: userId },
-      { $set: { [userInputType]: userInput } },
-      { new: true }
-    )
+    return response.status(400).json({
+      error: 'invalid postal code'
+    })
   }
 
+  await User.updateOne(
+    { _id: userId },
+    { $set: { [userInputType]: userInput } },
+    { new: true }
+  )
   const changedUser = await User.findById(userId)
-  console.log('changed', changedUser)
   response.status(200).json(changedUser)
 
 })
