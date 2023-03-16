@@ -51,6 +51,8 @@ const LoginForm = () => {
       setPassword('')
       if (user.role === 'admin') {
         navigate('/admin')
+      } else {
+        navigate('/user')
       }
     } catch (err) {
       console.log(err)

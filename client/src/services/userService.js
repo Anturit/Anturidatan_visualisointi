@@ -62,9 +62,11 @@ const getUser = async (user_id) => {
  * @returns {Array.<userObject>} array of user objects
  */
 const getAllUsers = async () => {
+
   const config = {
     headers: { Authorization: token }
   }
+  console.log('config, getAllusers servicessä', config)
   const response = await axios.get(`${baseUrl}/`, config)
   return response.data
 }

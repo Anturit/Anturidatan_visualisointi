@@ -1,5 +1,7 @@
-import { useState, useEffect,  useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
+import jwt_decode from 'jwt-decode'
 import { setNotification } from '../reducers/notificationReducer'
+import { setUser } from '../reducers/loginFormReducer'
 import {
   Checkbox,
   IconButton,
@@ -18,7 +20,21 @@ const UserList = () => {
 
   const dispatch = useDispatch()
 
+  const isJsonWebTokenExpired = jwt => {
+    const decodedToken = jwt_decode(jwt)
+    const expiresAtMillis = decodedToken.exp * 1000
+    return expiresAtMillis < Date.now()
+  }
+
   useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedUser')
+    if (loggedUserJSON) {
+      const parsedUser = JSON.parse(loggedUserJSON)
+      if (!isJsonWebTokenExpired(parsedUser.token)) {
+        dispatch(setUser(parsedUser))
+        userService.setToken(parsedUser.token)
+      }
+    }
     userService
       .getAllUsers()
       .then((users) => {
@@ -27,12 +43,12 @@ const UserList = () => {
   }, [])
 
   /**
-  * {
-  *   accessorKey / accessorFn: get table cell data
-  *   header: corresponding header to cell data in column
-  * }
-  * @returns {Array.<Object>}array of objects for individual column construction
-  */
+* {
+*   accessorKey / accessorFn: get table cell data
+*   header: corresponding header to cell data in column
+* }
+* @returns {Array.<Object>}array of objects for individual column construction
+*/
   const columns = useMemo(
     () => [
       {

@@ -1,7 +1,4 @@
-import { useSelector } from 'react-redux'
-import { useDispatch } from 'react-redux'
-import userService from '../services/userService'
-
+//import { useSelector } from 'react-redux'
 
 const AdminProfile = () => {
   /**
@@ -9,8 +6,8 @@ const AdminProfile = () => {
                                * @const
                                * @type {userObject}
                                */
-  const user = useSelector((state) => state.loginForm.user)
-  const dispatch = useDispatch()
+  //const user = useSelector((state) => state.loginForm.user)
+
 
   // Convert expirationDate to Finnish locale date format
   //const expirationDate = new Date(user.expirationDate).toLocaleDateString('fi-FI')
@@ -18,16 +15,8 @@ const AdminProfile = () => {
   return (
     <>
 
-      <h2>Käyttäjätiedot</h2>
-      {user ?
-        <>{user.firstName}</> :
-        <></> }
-      <button
-        onClick={() => userService.logoutLocalUser(dispatch)}
-        data-cy='logout'
-      >
-        Kirjaudu ulos
-      </button>
+      <h2>Käyttäjienhallinta</h2>
+      <>Admin kirjautunut</>
     </>
   )
 }
