@@ -1,28 +1,18 @@
-import { Routes, Route, Link, Navigate } from 'react-router-dom'
-import Notification from './components/Notification'
-import LoginForm from './components/LoginForm'
+import { Routes, Route,  Navigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-/* import PasswordChangeForm from './components/PasswordChangeForm'
-import RegisterForm from './components/RegisterForm'
-import Togglable from './components/Togglable'
-import UserProfile from './components/UserProfile'
-import senderService from './services/senderService'
-import SenderDropdown from './components/SenderDropdown'
-import SenderList from './components/SenderList' */
-import UserList from './components/UserList'
-import userService from './services/userService'
-import jwt_decode from 'jwt-decode'
 import { setUser } from './reducers/loginFormReducer'
 import AdminProfile from './components/AdminProfile'
 import UserProfile from './components/UserProfile'
+import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
+import UserList from './components/UserList'
+import userService from './services/userService'
+import jwt_decode from 'jwt-decode'
 
 function App() {
   const user = useSelector((state) => state.loginForm.user)
-  console.log('user', user)
-  const padding = {
-    padding: 5
-  }
+
   const dispatch = useDispatch()
 
   const isJsonWebTokenExpired = jwt => {
@@ -43,32 +33,30 @@ function App() {
     }
   }, [])
 
-
-
-  //const navigate = useNavigate()
+  /*   const padding = {
+    padding: 5
+  } */
 
   return (
     <div>
-      <Link style={padding} to="/users">Käyttäjät</Link>
-      <Link style={padding} to="/create_user">Luo käyttäjä</Link>
       <Notification />
-      <button
-        onClick={() => userService.logoutLocalUser(dispatch)}
-        data-cy='logout'
-      >
-        Kirjaudu ulos
-      </button>
       {user
         ?
-        <></>
+        <>
+          <button
+            onClick={() => userService.logoutLocalUser(dispatch)}
+            data-cy='logout'
+          >
+            Kirjaudu ulos
+          </button></>
 
-        : <Link style={padding} to="/login">login</Link>
+        : <></>
       }
 
       <Routes>
         <Route path="/admin" element={localStorage.getItem('loggedUser') ? <AdminProfile /> : <Navigate replace to='/login' />} />
-        <Route path="/users" element={<UserList />} />
-        <Route path="/user" element={<UserProfile />} />
+        <Route path="/users" element={localStorage.getItem('loggedUser') ? <UserList /> : <Navigate replace to='/login' />} />
+        <Route path="/user" element={localStorage.getItem('loggedUser') ? <UserProfile /> : <Navigate replace to='/login' />} />
         <Route path="/login" element={<LoginForm />} />
       </Routes>
       <div>

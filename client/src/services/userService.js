@@ -1,5 +1,4 @@
 import axios from 'axios'
-//import { useNavigate } from 'react-router-dom'
 import { setUser } from '../reducers/loginFormReducer'
 const baseUrl = '/api/users'
 let token = null
@@ -26,6 +25,7 @@ const setToken = newToken => {
  *
  * @param {any|function} redux store's `dispatch` function
  */
+
 const logoutLocalUser = (dispatch) => {
   dispatch(setUser(null))
   window.localStorage.setItem('loggedUser', '')

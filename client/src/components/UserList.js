@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from 'react'
-import jwt_decode from 'jwt-decode'
 import { setNotification } from '../reducers/notificationReducer'
 import { setUser } from '../reducers/loginFormReducer'
 import {
@@ -8,11 +7,12 @@ import {
   Tooltip,
   Box,
 } from '@mui/material'
+import { useSelector, useDispatch } from 'react-redux'
+import { setUsers } from '../reducers/usersReducer'
 import { Delete } from '@mui/icons-material'
 import MaterialReactTable from 'material-react-table'
 import userService from '../services/userService'
-import { useSelector, useDispatch } from 'react-redux'
-import { setUsers } from '../reducers/usersReducer'
+import jwt_decode from 'jwt-decode'
 
 const UserList = () => {
   const users = useSelector((state) => state.users)

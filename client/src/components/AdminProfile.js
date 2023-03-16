@@ -1,4 +1,5 @@
-//import { useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 const AdminProfile = () => {
   /**
@@ -6,17 +7,18 @@ const AdminProfile = () => {
                                * @const
                                * @type {userObject}
                                */
-  //const user = useSelector((state) => state.loginForm.user)
+  const user = useSelector((state) => state.loginForm.user)
 
-
-  // Convert expirationDate to Finnish locale date format
-  //const expirationDate = new Date(user.expirationDate).toLocaleDateString('fi-FI')
+  const padding = {
+    padding: 5
+  }
 
   return (
     <>
-
+      <Link style={padding} to="/users">Käyttäjät</Link>
+      <Link style={padding} to="/create_user">Luo käyttäjä</Link>
       <h2>Käyttäjienhallinta</h2>
-      <>Admin kirjautunut</>
+      <>Admin {user.username} kirjautunut</>
     </>
   )
 }

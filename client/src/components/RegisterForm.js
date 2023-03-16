@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import registerService from '../services/userService.js'
+import userService from '../services/userService.js'
 import { setNotification } from '../reducers/notificationReducer.js'
 import PasswordFeedback from './PasswordFeedback.js'
 import { useDispatch } from 'react-redux'
@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux'
  * @typedef {import('../services/userService').userObject} userObject
  */
 
-const RegisterForm = ( ) => {
+const RegisterForm = () => {
   const roles = ['admin', 'user']
   const [selectedRole, setSelectedRole] = useState(roles[1])
   const [expirationDate, setExpirationDate] = useState(new Date)
@@ -37,7 +37,7 @@ const RegisterForm = ( ) => {
     return false
   }
 
-  const createUserObjectFromStates = () =>  ({
+  const createUserObjectFromStates = () => ({
     username: newEmail,
     password: newPassword,
     firstName: newFirstName,
@@ -98,7 +98,7 @@ const RegisterForm = ( ) => {
       return
     }
     try {
-      await registerService.create(userObject)
+      await userService.create(userObject)
       dispatch(setNotification(
         `Käyttäjän luonti onnistui! Käyttäjänimi: ${newEmail} Salasana: ${newPassword}`, 15000
       ))
@@ -120,7 +120,7 @@ const RegisterForm = ( ) => {
           <select
             value={selectedRole}
             data-cy='role'
-            onChange ={(e) => setSelectedRole(e.target.value)}>
+            onChange={(e) => setSelectedRole(e.target.value)}>
             {roles.map((value) => (
               <option
                 value={value}
@@ -150,7 +150,7 @@ const RegisterForm = ( ) => {
             placeholder='esim. Matti'
             data-cy='firstName'
             value={newFirstName}
-            onChange={(e) => setNewFirstName(e.target.value)}/>
+            onChange={(e) => setNewFirstName(e.target.value)} />
         </div>
         <small>Sukunimi</small>
         <div>
@@ -158,7 +158,7 @@ const RegisterForm = ( ) => {
             placeholder='esim. Meikäläinen'
             value={newSurname}
             data-cy='lastName'
-            onChange={(e) => setNewSurname(e.target.value)}/>
+            onChange={(e) => setNewSurname(e.target.value)} />
         </div>
         <div>
           <label><h3>Sähköposti</h3></label>
@@ -167,7 +167,7 @@ const RegisterForm = ( ) => {
             placeholder='esim. testi@email.fi'
             value={newEmail} id='newEmail'
             data-cy='email'
-            onChange={(e) => setNewEmail(e.target.value)}/>
+            onChange={(e) => setNewEmail(e.target.value)} />
         </div>
         <div>
           <label><h3>Osoite</h3></label>
@@ -177,7 +177,7 @@ const RegisterForm = ( ) => {
               placeholder='esim. Kauppakatu 29'
               value={newAddressLine}
               data-cy='address'
-              onChange={(e) => setNewAddressLine(e.target.value)}/>
+              onChange={(e) => setNewAddressLine(e.target.value)} />
           </div>
           <small>Postinumero</small>
           <div>
@@ -185,7 +185,7 @@ const RegisterForm = ( ) => {
               placeholder='esim. 40100'
               value={newPostcode}
               data-cy='postalCode'
-              onChange={(e) => setNewPostcode(e.target.value)}/>
+              onChange={(e) => setNewPostcode(e.target.value)} />
           </div>
           <small>Kaupunki</small>
           <div>
@@ -193,7 +193,7 @@ const RegisterForm = ( ) => {
               placeholder='esim. Jyväskylä'
               value={newCity}
               data-cy='city'
-              onChange={(e) => setNewCity(e.target.value)}/>
+              onChange={(e) => setNewCity(e.target.value)} />
           </div>
         </div>
         <label><h3>Salasana</h3></label>
@@ -203,8 +203,8 @@ const RegisterForm = ( ) => {
             value={newPassword}
             data-cy='password'
             onFocus={() => setShowPasswordSecurityFeedback(true)}
-            onChange={(e) => setNewPassword(e.target.value)}/>
-          {showPasswordSecurityFeedback && <PasswordFeedback password={newPassword}/>}
+            onChange={(e) => setNewPassword(e.target.value)} />
+          {showPasswordSecurityFeedback && <PasswordFeedback password={newPassword} />}
         </div>
         <p>
           <button type="submit" data-cy='addUser' onClick={submit}>Lisää uusi käyttäjä</button>
@@ -215,4 +215,3 @@ const RegisterForm = ( ) => {
 }
 
 export default RegisterForm
-
