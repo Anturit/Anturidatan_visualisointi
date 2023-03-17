@@ -52,7 +52,7 @@ function App() {
     } else {
       navigate('/user')
     }
- 
+
   }, [])
   const padding = {
     padding: 5
