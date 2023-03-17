@@ -1,18 +1,21 @@
-import { Routes, Route,  Navigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setUser } from './reducers/loginFormReducer'
 import AdminProfile from './components/AdminProfile'
 import UserProfile from './components/UserProfile'
+import RegisterForm from './components/RegisterForm'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import UserList from './components/UserList'
+import Home from './components/Home'
 import userService from './services/userService'
 import jwt_decode from 'jwt-decode'
+import { Link } from 'react-router-dom'
 
 function App() {
   const user = useSelector((state) => state.loginForm.user)
-
+  console.log('user appissa',user)
   const dispatch = useDispatch()
 
   const isJsonWebTokenExpired = jwt => {
@@ -20,8 +23,14 @@ function App() {
     const expiresAtMillis = decodedToken.exp * 1000
     return expiresAtMillis < Date.now()
   }
+  /*   useEffect(() => {
+    if (user) {
+      dispatch(setUser(user))
+    }
+  }, [user]) */
 
   useEffect(() => {
+    console.log('useEffect')
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const parsedUser = JSON.parse(loggedUserJSON)
@@ -32,10 +41,9 @@ function App() {
       }
     }
   }, [])
-
-  /*   const padding = {
+  const padding = {
     padding: 5
-  } */
+  }
 
   return (
     <div>
@@ -48,17 +56,28 @@ function App() {
             data-cy='logout'
           >
             Kirjaudu ulos
-          </button></>
+          </button>
+          <Link style={padding} to="/">Etusivu</Link>
+          { (user.role === 'admin') &&
+          <>
+            <Link style={padding} to="/users">Käyttäjät</Link>
+            <Link style={padding} to="/register">Luo käyttäjä</Link>
+          </>
+          }
+          <Routes>
 
-        : <></>
+            <Route path="/admin" element={<AdminProfile />} />
+            <Route path="/user" element={<UserProfile />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/users" element={<UserList />} />
+            <Route path="/register" element={<RegisterForm />} />
+
+          </Routes>
+        </>
+        : <LoginForm />
       }
 
-      <Routes>
-        <Route path="/admin" element={localStorage.getItem('loggedUser') ? <AdminProfile /> : <Navigate replace to='/login' />} />
-        <Route path="/users" element={localStorage.getItem('loggedUser') ? <UserList /> : <Navigate replace to='/login' />} />
-        <Route path="/user" element={localStorage.getItem('loggedUser') ? <UserProfile /> : <Navigate replace to='/login' />} />
-        <Route path="/login" element={<LoginForm />} />
-      </Routes>
+
       <div>
         <br />
         <em>Anturi app, demo 2023</em>
