@@ -7,6 +7,11 @@ const usersInDb = async () => {
   return users.map((u) => u.toJSON())
 }
 
+const userInDb = async (id) => {
+  const user = await User.findById(id)
+  return user.toJSON()
+}
+
 const sendersInDb = async () => {
   const senders = await Sender.find({})
   return senders.map((s) => s.toJSON())
@@ -106,6 +111,7 @@ const bigSender = () => ({
 
 
 module.exports = {
+  userInDb,
   usersInDb,
   sendersInDb,
   userUser,
