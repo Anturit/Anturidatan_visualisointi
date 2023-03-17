@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
 import { setNotification } from '../reducers/notificationReducer'
-import { setUser } from '../reducers/loginFormReducer'
 import {
   Checkbox,
   IconButton,
@@ -12,29 +11,14 @@ import { setUsers } from '../reducers/usersReducer'
 import { Delete } from '@mui/icons-material'
 import MaterialReactTable from 'material-react-table'
 import userService from '../services/userService'
-import jwt_decode from 'jwt-decode'
+
 
 const UserList = () => {
   const users = useSelector((state) => state.users)
   const [userDeletionAllowed, setUserDeletionAllowed] = useState(false)
-
   const dispatch = useDispatch()
 
-  const isJsonWebTokenExpired = jwt => {
-    const decodedToken = jwt_decode(jwt)
-    const expiresAtMillis = decodedToken.exp * 1000
-    return expiresAtMillis < Date.now()
-  }
-
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedUser')
-    if (loggedUserJSON) {
-      const parsedUser = JSON.parse(loggedUserJSON)
-      if (!isJsonWebTokenExpired(parsedUser.token)) {
-        dispatch(setUser(parsedUser))
-        userService.setToken(parsedUser.token)
-      }
-    }
     userService
       .getAllUsers()
       .then((users) => {

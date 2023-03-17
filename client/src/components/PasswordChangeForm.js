@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import PasswordFeedback from './PasswordFeedback'
+import { useNavigate } from 'react-router-dom'
 import { setNotification } from '../reducers/notificationReducer.js'
 import userService from '../services/userService'
-import  { useNavigate } from 'react-router-dom'
+import PasswordFeedback from './PasswordFeedback'
+
 const PasswordChangeForm = () => {
   const [oldPassword, setOldPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')

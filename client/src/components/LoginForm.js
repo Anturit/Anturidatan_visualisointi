@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import axios from 'axios'
-import userService from '../services/userService'
 import { setUser } from '../reducers/loginFormReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import userService from '../services/userService'
 
 /**
  * @typedef {import('../services/userService').userObject} userObject

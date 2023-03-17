@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import userService from '../services/userService.js'
+import { useDispatch } from 'react-redux'
 import { setNotification } from '../reducers/notificationReducer.js'
 import PasswordFeedback from './PasswordFeedback.js'
-import { useDispatch } from 'react-redux'
+import userService from '../services/userService.js'
 
 /**
  * @typedef {import('../services/userService').userObject} userObject
