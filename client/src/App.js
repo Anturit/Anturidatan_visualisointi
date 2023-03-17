@@ -30,20 +30,29 @@ function App() {
 
   const navigate = useNavigate()
 
+
+  /**
+  * Fetch user from window.localStorage.
+  * If jwt token valid:
+  *   Save user.token to userService and user to redux state.
+  *   Change Url according to user role
+  */
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
-    if (loggedUserJSON) {
-      const parsedUser = JSON.parse(loggedUserJSON)
-      if (!isJsonWebTokenExpired(parsedUser.token)) {
-        dispatch(setUser(parsedUser))
-        userService.setToken(parsedUser.token)
-      }
-      if (parsedUser.role === 'admin') {
-        navigate('/admin')
-      } else {
-        navigate('/user')
-      }
+    if (!loggedUserJSON) return
+
+    const parsedUser = JSON.parse(loggedUserJSON)
+    if (isJsonWebTokenExpired(parsedUser.token)) return
+    dispatch(setUser(parsedUser))
+    userService.setToken(parsedUser.token)
+
+    if (parsedUser.role === 'admin') {
+      navigate('/admin')
+    } else {
+      navigate('/user')
     }
+ 
   }, [])
   const padding = {
     padding: 5
