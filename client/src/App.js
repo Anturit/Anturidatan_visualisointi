@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setUser } from './reducers/loginFormReducer'
 import {
+  useLocation,
   useNavigate,
   Link,
   Routes,
@@ -29,7 +30,7 @@ function App() {
   }
 
   const navigate = useNavigate()
-
+  const location = useLocation()
 
   /**
   * Fetch user from window.localStorage.
@@ -48,8 +49,10 @@ function App() {
     userService.setToken(parsedUser.token)
 
     if (parsedUser.role === 'admin') {
+      if (['/admin', '/users', '/register'].includes(location.pathname)) return
       navigate('/admin')
     } else {
+      if (['/user', '/userprofile'].includes(location.pathname)) return
       navigate('/user')
     }
 
