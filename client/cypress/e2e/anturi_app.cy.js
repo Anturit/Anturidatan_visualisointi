@@ -16,9 +16,7 @@ describe('Anturi app', function () {
       cy.get('[data-cy="username"]').type(userUser().username)
       cy.get('[data-cy="password"]').type(userUser().password)
       cy.get('[data-cy="login"]').click()
-
-      //add proper name to check, when name in notification works
-      cy.contains(`${userUser().firstName} sisäänkirjautunut`)
+      cy.get('[data-cy="logout"]').should('contain', `${userUser().firstName}`)
     })
 
     it('stays logged in after page refresh', function () {
@@ -26,9 +24,9 @@ describe('Anturi app', function () {
       cy.get('[data-cy="username"]').type(userUser().username)
       cy.get('[data-cy="password"]').type(userUser().password)
       cy.get('[data-cy="login"]').click()
-      cy.contains(`${userUser().firstName} sisäänkirjautunut`)
+      cy.get('[data-cy="logout"]').should('contain', `${userUser().firstName}`)
       cy.reload()
-      cy.contains(`${userUser().firstName} sisäänkirjautunut`)
+      cy.get('[data-cy="logout"]').should('contain', `${userUser().firstName}`)
     })
 
     it('fails with wrong credentials', function () {
@@ -65,6 +63,7 @@ describe('Anturi app', function () {
     })
     describe('and edit user information form is opened', function () {
       beforeEach(function () {
+        cy.visit('/userprofile')
         cy.contains('Muokkaa tietoja').click()
       })
 
@@ -133,36 +132,40 @@ describe('Anturi app', function () {
     beforeEach(function () {
       cy.login({ username: 'admin@admin.com', password: 'Admin@admin1' })
     })
-    it('togglable register form is displayed', function () {
-      cy.get('[data-cy="open-togglable-registerForm"]')
-    })
-    it('User List is displayed', function () {
-      const pageContainsUserFields = (user) => {
-        cy.contains(user.username)
-        cy.contains(user.firstName)
-        cy.contains(user.lastName)
-        cy.contains(user.address)
-        cy.contains(user.postalCode)
-        cy.contains(user.city)
-        cy.contains(user.role)
-        const formattedDate = `${user.expirationDate.getDate()}/${user.expirationDate.getMonth()}/${user.expirationDate.getFullYear()}`
-        cy.contains(formattedDate)
-      }
-      [adminUser(), userUser(), expiredUser()]
-        .forEach(user => pageContainsUserFields(user))
-    })
-    it('user deletion succeeds when deletion mode is enabled', function () {
-      cy.get('[data-cy="enableDeletion"]').click()
-      cy.get('[data-cy="deleteUser user@user.com"]').click()
-      cy.contains('Käyttäjä UserTest poistettu')
-    })
-    it('user deletion fails when deletion mode is disabled', function () {
-      cy.get('[data-cy="deleteUser user@user.com"]').click()
-      cy.contains('Käyttäjä UserTest poistettu').should('not.exist')
-    })
-    describe('and registeration form is opened', function () {
+
+    describe('and userlist is open', function () {
       beforeEach(function () {
-        cy.contains('Lisää käyttäjä').click()
+        cy.visit('/users')
+      })
+      it('User List is displayed', function () {
+        const pageContainsUserFields = (user) => {
+          cy.contains(user.username)
+          cy.contains(user.firstName)
+          cy.contains(user.lastName)
+          cy.contains(user.address)
+          cy.contains(user.postalCode)
+          cy.contains(user.city)
+          cy.contains(user.role)
+          const formattedDate = `${user.expirationDate.getDate()}/${user.expirationDate.getMonth()}/${user.expirationDate.getFullYear()}`
+          cy.contains(formattedDate)
+        }
+        [adminUser(), userUser(), expiredUser()]
+          .forEach(user => pageContainsUserFields(user))
+      })
+      it('user deletion succeeds when deletion mode is enabled', function () {
+        cy.get('[data-cy="enableDeletion"]').click()
+        cy.get('[data-cy="deleteUser user@user.com"]').click()
+        cy.contains('Käyttäjä UserTest poistettu')
+      })
+      it('user deletion fails when deletion mode is disabled', function () {
+        cy.get('[data-cy="deleteUser user@user.com"]').click()
+        cy.contains('Käyttäjä UserTest poistettu').should('not.exist')
+      })
+    })
+
+    describe('and user registeration form is open', function () {
+      beforeEach(function () {
+        cy.visit('/register')
       })
       it('while writing a password app shows correct validation information', function () {
         cy.get('[data-cy="password"]').type('aaaa')
@@ -247,7 +250,7 @@ describe('Anturi app', function () {
         cy.get('[data-cy="addUser"]').click()
         cy.contains('Käyttäjän luonti onnistui!')
         cy.login({ username: 'testi@testi.net', password: userUser().password })
-        cy.contains('sisäänkirjautunut')
+        cy.get('[data-cy="logout"]').should('contain', `${userUser().firstName}`)
       })
       it('registeration fails if some field is empty', function () {
         cy.get('[data-cy="addUser"]').click()
