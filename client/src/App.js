@@ -77,11 +77,12 @@ function App() {
           { user.role === 'admin'
             ?
             <>
+              <Link style={padding} to="/userprofile">Omat tiedot</Link>
               <Link style={padding} to="/users">Käyttäjät</Link>
               <Link style={padding} to="/register">Luo käyttäjä</Link>
             </>
             :
-            <Link style={padding} to="/userprofile">Käyttäjätiedot</Link>
+            <Link style={padding} to="/userprofile">Omat tiedot</Link>
           }
           <Routes>
 
