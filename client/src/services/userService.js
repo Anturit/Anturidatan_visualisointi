@@ -25,6 +25,7 @@ const setToken = newToken => {
  *
  * @param {any|function} redux store's `dispatch` function
  */
+
 const logoutLocalUser = (dispatch) => {
   dispatch(setUser(null))
   window.localStorage.setItem('loggedUser', '')
@@ -61,9 +62,11 @@ const getUser = async (user_id) => {
  * @returns {Array.<userObject>} array of user objects
  */
 const getAllUsers = async () => {
+
   const config = {
     headers: { Authorization: token }
   }
+  console.log('config, getAllusers servicessä', config)
   const response = await axios.get(`${baseUrl}/`, config)
   return response.data
 }

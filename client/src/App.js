@@ -1,144 +1,109 @@
-import LoginForm from './components/LoginForm'
-import Notification from './components/Notification'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import PasswordChangeForm from './components/PasswordChangeForm'
-import RegisterForm from './components/RegisterForm'
-import Togglable from './components/Togglable'
+import { setUser } from './reducers/loginFormReducer'
+import {
+  useLocation,
+  useNavigate,
+  Link,
+  Routes,
+  Route,
+  Navigate
+} from 'react-router-dom'
+import AdminProfile from './components/AdminProfile'
 import UserProfile from './components/UserProfile'
-import senderService from './services/senderService'
-import SenderDropdown from './components/SenderDropdown'
-import SenderList from './components/SenderList'
+import RegisterForm from './components/RegisterForm'
+import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
 import UserList from './components/UserList'
 import userService from './services/userService'
 import jwt_decode from 'jwt-decode'
-import { setUser } from './reducers/loginFormReducer'
+import UserMainView from './components/UserMainView'
+
 
 function App() {
   const user = useSelector((state) => state.loginForm.user)
-  const [senders, setSenders] = useState([])
   const dispatch = useDispatch()
-
   const isJsonWebTokenExpired = jwt => {
     const decodedToken = jwt_decode(jwt)
     const expiresAtMillis = decodedToken.exp * 1000
     return expiresAtMillis < Date.now()
   }
 
+  const navigate = useNavigate()
+  const location = useLocation()
+
   /**
-  * Load user object to program memory if window.localStorage has user object with non-expired JSON web token.
-  *
-  * @param {any|function} redux store's `dispatch` function
-  * @returns {boolean} true for success
+  * Fetch user from window.localStorage.
+  * If jwt token valid:
+  *   Save user.token to userService and user to redux state.
+  *   Change Url according to user role
   */
-  const loginLocalUserIfValidTokenInLocalStorage = (dispatch) => {
+
+  useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
-    if (!loggedUserJSON) return false
+    if (!loggedUserJSON) return
 
     const parsedUser = JSON.parse(loggedUserJSON)
-    if (isJsonWebTokenExpired(parsedUser.token)) return false
-
+    if (isJsonWebTokenExpired(parsedUser.token)) return
     dispatch(setUser(parsedUser))
     userService.setToken(parsedUser.token)
-    return true
-  }
 
-  useEffect(() => {
-    loginLocalUserIfValidTokenInLocalStorage(dispatch)
+    if (parsedUser.role === 'admin') {
+      if (['/admin', '/users', '/register'].includes(location.pathname)) return
+      navigate('/admin')
+    } else {
+      if (['/user', '/userprofile'].includes(location.pathname)) return
+      navigate('/user')
+    }
+
   }, [])
-
-  /**
-   * Function to fetch sender logs for user
-   * @returns sender object with all fields.
-   */
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await senderService.getOneSenderLogs(
-        user.senderDeviceIds[0],
-        user.token
-      )
-      setSenders(data)
-    }
-    if (user) {
-      if (user.role === 'user') {
-        fetchData()
-      }
-    }
-  }, [user])
-
-  /**
-   * Function to fetch sender logs for user
-   * @returns sender object with all fields.
-   * @param {string} id
-   * @param {string} token
-   * @returns {Object} sender
-   */
-  const fetchSenderById = async (id) => {
-    const sender = await senderService.getOneSenderLogs(id, user.token)
-    setSenders(sender)
+  const padding = {
+    padding: 5
   }
 
-  /**
-   * If user is not logged in, show login form
-   */
-  if (user === null) {
-    return (
-      <>
-        <Notification />
-        <LoginForm />
-      </>
-    )
-  }
-
-  /**
-   * If user is logged in as admin, show admin view
-   */
-  if (user.role === 'admin') {
-    return (
-      <div>
-        <Notification />
-        <p>{user.firstName} sisäänkirjautunut</p>
-        <button
-          onClick={() => userService.logoutLocalUser(dispatch)}
-          data-cy='logout'
-        >
-          Kirjaudu ulos
-        </button>
-        <p></p>
-        <Togglable buttonLabel='Lisää käyttäjä' id='registerForm'>
-          <RegisterForm />
-        </Togglable>
-        <UserList />
-      </div>
-    )
-  }
-
-  /**
-   * If user is logged in as user, show user view
-   */
   return (
     <div>
       <Notification />
-      <p>{user.firstName} sisäänkirjautunut</p>
-      <button
-        onClick={() => userService.logoutLocalUser(dispatch)}
-        data-cy='logout'
-      >
-        Kirjaudu ulos
-      </button>
-      <UserProfile />
-      <Togglable buttonLabel='Muokkaa tietoja' id='editForm'>
-        <PasswordChangeForm />
-      </Togglable>
-      <Togglable buttonLabel='Näytä laitteet' id='senderList'>
-        <div>
-          {user.senderDeviceIds.length > 1 &&
-            <SenderDropdown senderDeviceIds={user.senderDeviceIds} fetchSenderById={fetchSenderById} />
+      {user
+        ?
+        <>
+          <button
+            onClick={() => userService.logoutLocalUser(dispatch)}
+            data-cy='logout'
+          >
+            Kirjaudu ulos käyttäjältä {user.firstName} {user.lastName}
+          </button>
+          <Link style={padding} to="/">Etusivu</Link>
+          { user.role === 'admin'
+            ?
+            <>
+              <Link style={padding} to="/users">Käyttäjät</Link>
+              <Link style={padding} to="/register">Luo käyttäjä</Link>
+            </>
+            :
+            <Link style={padding} to="/userprofile">Käyttäjätiedot</Link>
           }
-          <SenderList senders={senders} />
-        </div>
-      </Togglable>
-    </div>
+          <Routes>
+
+            <Route path="/admin" element={<AdminProfile />} />
+            <Route path="/user" element={<UserMainView />} />
+            <Route path="/userprofile" element={<UserProfile />} />
+            <Route path="/users" element={<UserList />} />
+            <Route path="/register" element={<RegisterForm />} />
+            <Route path="/" element={user.role === 'admin'
+              ? <Navigate replace to="/admin" />
+              : <Navigate replace to="/user" />}/>
+          </Routes>
+        </>
+        : <LoginForm />
+      }
+
+
+      <div>
+        <br />
+        <em>Anturi app, demo 2023</em>
+      </div>
+    </div >
   )
 }
 
