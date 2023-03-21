@@ -76,6 +76,42 @@ describe('Anturi app', function () {
         cy.contains('Muokkaa tietoja').click()
       })
 
+      it.only('dropwdown for changing user information is displayed', function () {
+        cy.get('[data-cy="EditUserDetailsDropdown"]').should('exist')
+      })
+      it.only('address can be changed successfully', function () {
+        cy.get('[data-cy="EditUserDetailsDropdown"]').select('Osoite')
+        cy.get('[data-cy="newAddress"]').type('Testikatu 1')
+        cy.get('[data-cy="addressSubmitButton"]').click()
+        cy.contains('Tiedon muokkaaminen onnistui!')
+        cy.contains('Osoite: Testikatu 1')
+      })
+      it.only('postal code can be changed successfully', function () {
+        cy.get('[data-cy="EditUserDetailsDropdown"]').select('Postinumero')
+        cy.get('[data-cy="newPostalCode"]').type('00000')
+        cy.get('[data-cy="postalCodeSubmitButton"]').click()
+        cy.contains('Tiedon muokkaaminen onnistui!')
+        cy.contains('Postinumero: 00000')
+      })
+      it.only('city can be changed successfully', function () {
+        cy.get('[data-cy="EditUserDetailsDropdown"]').select('Kaupunki')
+        cy.get('[data-cy="newCity"]').type('Jyväskylä')
+        cy.get('[data-cy="citySubmitButton"]').click()
+        cy.contains('Tiedon muokkaaminen onnistui!')
+        cy.contains('Kaupunki: Jyväskylä')
+      })
+      it.only('postal code change fails with invalid postal code', function () {
+        cy.get('[data-cy="EditUserDetailsDropdown"]').select('Postinumero')
+        cy.get('[data-cy="newPostalCode"]').type('0000A')
+        cy.get('[data-cy="postalCodeSubmitButton"]').click()
+        cy.contains('Virheellinen postinumero!')
+      })
+      it.only('user information change fails with empty field', function () {
+        cy.get('[data-cy="EditUserDetailsDropdown"]').select('Kaupunki')
+        cy.get('[data-cy="citySubmitButton"]').click()
+        cy.contains('Tyhjiä kenttiä')
+      })
+
       it('password change form is displayed', function () {
         cy.get('[data-cy="passwordChangeForm"]').should('exist')
       })
