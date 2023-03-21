@@ -7,7 +7,7 @@ describe('Anturi app', function () {
     cy.visit('/')
   })
 
-  it('front page can be opened', function () {
+  it('front page contains login', function () {
     cy.contains('Kirjaudu sisään')
   })
 
@@ -44,10 +44,19 @@ describe('Anturi app', function () {
       cy.contains('Käyttäjän lisenssi vanhentunut')
     })
   })
-
+  const clickHrefAndRefresh = (route, href=route) => {
+    cy.get(`[href="${href}"]`).click()
+    cy.url().should('include', route)
+    cy.reload()
+    cy.url().should('include', route)
+  }
   describe('when logged in as user', function () {
     beforeEach(function () {
       cy.login({ username: 'user@user.com', password: 'User@user1' })
+    })
+    it('can change route with navigation bar and stays in route after refresh', function () {
+      clickHrefAndRefresh('/userprofile')
+      clickHrefAndRefresh('/user', '/')
     })
 
     it('user can log out', function () {
@@ -132,7 +141,12 @@ describe('Anturi app', function () {
     beforeEach(function () {
       cy.login({ username: 'admin@admin.com', password: 'Admin@admin1' })
     })
-
+    it('can change route with navigation bar and stays in route after refresh', function () {
+      ['/users', '/register', '/userprofile'].forEach(
+        route => clickHrefAndRefresh(route)
+      )
+      clickHrefAndRefresh('/admin', '/')
+    })
     describe('and userlist is open', function () {
       beforeEach(function () {
         cy.visit('/users')
