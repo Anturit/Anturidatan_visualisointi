@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux'
 import Togglable from './Togglable'
 import PasswordChangeForm from './PasswordChangeForm'
+import EditProfileDetailsDropdown from './EditProfileDetailsDropdown'
 
 /**
  * @typedef {import('../services/userService').userObject} userObject
@@ -26,6 +27,7 @@ const UserProfile = () => {
       <p data-cy="profile_city">Kaupunki: {user.city}</p>
       <p data-cy="profile_expiration_Date">Sopimus voimassa {new Date(user.expirationDate).toLocaleDateString('fi-FI')} asti. </p>
       <Togglable buttonLabel='Muokkaa tietoja' id='editForm'>
+        <EditProfileDetailsDropdown userDetailsToShow={user} />
         <PasswordChangeForm />
       </Togglable>
     </>
