@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 
-const AdminProfile = () => {
+const AdminMainView = () => {
   /**
                                * Renders user details from user object imported from Redux store.
                                * @const
@@ -16,4 +16,4 @@ const AdminProfile = () => {
   )
 }
 
-export default AdminProfile
+export default AdminMainView
