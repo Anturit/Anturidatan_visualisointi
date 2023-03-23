@@ -183,6 +183,88 @@ describe('Anturi app', function () {
       )
       clickHrefAndRefresh('/admin', '/')
     })
+    describe('and edit user information form is opened', function () {
+      beforeEach(function () {
+        cy.visit('/userprofile')
+        cy.contains('Muokkaa tietoja').click()
+      })
+
+      it('dropwdown for changing user information is displayed', function () {
+        cy.get('[data-cy="EditUserDetailsDropdown"]').should('exist')
+      })
+      it('address can be changed successfully', function () {
+        cy.get('[data-cy="EditUserDetailsDropdown"]').select('Osoite')
+        cy.get('[data-cy="newAddress"]').type('Testikatu 1')
+        cy.get('[data-cy="addressSubmitButton"]').click()
+        cy.contains('Tiedon muokkaaminen onnistui!')
+        cy.contains('Osoite: Testikatu 1')
+      })
+      it('postal code can be changed successfully', function () {
+        cy.get('[data-cy="EditUserDetailsDropdown"]').select('Postinumero')
+        cy.get('[data-cy="newPostalCode"]').type('00000')
+        cy.get('[data-cy="postalCodeSubmitButton"]').click()
+        cy.contains('Tiedon muokkaaminen onnistui!')
+        cy.contains('Postinumero: 00000')
+      })
+      it('city can be changed successfully', function () {
+        cy.get('[data-cy="EditUserDetailsDropdown"]').select('Kaupunki')
+        cy.get('[data-cy="newCity"]').type('Jyväskylä')
+        cy.get('[data-cy="citySubmitButton"]').click()
+        cy.contains('Tiedon muokkaaminen onnistui!')
+        cy.contains('Kaupunki: Jyväskylä')
+      })
+      it('postal code change fails with invalid postal code', function () {
+        cy.get('[data-cy="EditUserDetailsDropdown"]').select('Postinumero')
+        cy.get('[data-cy="newPostalCode"]').type('0000A')
+        cy.get('[data-cy="postalCodeSubmitButton"]').click()
+        cy.contains('Virheellinen postinumero!')
+      })
+      it('user information change fails with empty field', function () {
+        cy.get('[data-cy="EditUserDetailsDropdown"]').select('Kaupunki')
+        cy.get('[data-cy="citySubmitButton"]').click()
+        cy.contains('Tyhjiä kenttiä')
+      })
+
+      it('password change form is displayed', function () {
+        cy.get('[data-cy="passwordChangeForm"]').should('exist')
+      })
+      it('password change succeeds with valid inputs and logouts user', function () {
+        cy.get('[data-cy="oldPassword"]').type('Admin@admin1')
+        cy.get('[data-cy="newPassword"]').type('Admin@admin2')
+        cy.get('[data-cy="confirmNewPassword"]').type('Admin@admin2')
+        cy.get('[data-cy="passwordChangeButton"]').click()
+        cy.contains('Salasana vaihdettu onnistuneesti!')
+        cy.contains('Kirjaudu sisään')
+      })
+      it('password change fails if old password is incorrect', function () {
+        cy.get('[data-cy="oldPassword"]').type('wrong')
+        cy.get('[data-cy="newPassword"]').type('User@user2')
+        cy.get('[data-cy="confirmNewPassword"]').type('User@user2')
+        cy.get('[data-cy="passwordChangeButton"]').click()
+        cy.contains('Vanha salasana väärin!')
+      })
+      it('password change fails if new password is invalid', function () {
+        cy.get('[data-cy="oldPassword"]').type('Admin@admin1')
+        cy.get('[data-cy="newPassword"]').type('User@user')
+        cy.get('[data-cy="confirmNewPassword"]').type('User@user')
+        cy.get('[data-cy="passwordChangeButton"]').click()
+        cy.contains('Uusi salasana ei täytä salasanavaatimuksia!')
+      })
+      it('password change fails if new password and confirmation do not match', function () {
+        cy.get('[data-cy="oldPassword"]').type('Admin@admin1')
+        cy.get('[data-cy="newPassword"]').type('User@user2')
+        cy.get('[data-cy="confirmNewPassword"]').type('User@user3')
+        cy.get('[data-cy="passwordChangeButton"]').click()
+        cy.contains('Uudet salasanat eivät täsmää!')
+      })
+      it('password change fails if new password is the same as old password', function () {
+        cy.get('[data-cy="oldPassword"]').type('Admin@admin1')
+        cy.get('[data-cy="newPassword"]').type('Admin@admin1')
+        cy.get('[data-cy="confirmNewPassword"]').type('Admin@admin1')
+        cy.get('[data-cy="passwordChangeButton"]').click()
+        cy.contains('Uusi salasana ei voi olla sama kuin vanha salasana!')
+      })
+    })
     describe('and userlist is open', function () {
       beforeEach(function () {
         cy.visit('/users')
