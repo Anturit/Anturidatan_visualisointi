@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { setUser } from '../reducers/loginFormReducer'
 const baseUrl = '/api/users'
-let token = null
+let config = null
 
 /**
  * @typedef {Object} userObject - object with all fields except passwordHash:
@@ -17,9 +17,18 @@ let token = null
 *
 */
 
-const setToken = newToken => {
-  token = `Bearer ${newToken.toString()}`
+/**
+ * Set new config
+ * @param {string} token - Authentication token
+ */
+const setToken = (token) => {
+  config = {
+    headers: { Authorization: `bearer ${token}` }
+  }
 }
+
+const removeToken = () => config = null
+
 /**
  * Essentially logouts user by removing user information from browser and website memory.
  *
@@ -29,7 +38,6 @@ const setToken = newToken => {
 const logoutLocalUser = (dispatch) => {
   dispatch(setUser(null))
   window.localStorage.setItem('loggedUser', '')
-  token = null
 }
 
 /**
@@ -39,9 +47,6 @@ const logoutLocalUser = (dispatch) => {
  * @returns {userObject} user object without password field
 */
 const create = async newObject => {
-  const config = {
-    headers: { Authorization: token },
-  }
   const response = await axios.post(baseUrl, newObject, config)
   return response.data
 }
@@ -52,7 +57,6 @@ const create = async newObject => {
  * @returns {userObject} userObject
 */
 const getUser = async (user_id) => {
-  const config = { headers: { Authorization: token }, }
   const response = await axios.get(`${baseUrl}/${user_id}`, config)
   return response.data
 }
@@ -62,10 +66,6 @@ const getUser = async (user_id) => {
  * @returns {Array.<userObject>} array of user objects
  */
 const getAllUsers = async () => {
-
-  const config = {
-    headers: { Authorization: token }
-  }
   console.log('config, getAllusers servicessä', config)
   const response = await axios.get(`${baseUrl}/`, config)
   return response.data
@@ -76,9 +76,6 @@ const getAllUsers = async () => {
  * @returns {Object.<string, string>} contains message about successful/failed deletion
 */
 const deleteUser = async (user_id) => {
-  const config = {
-    headers: { Authorization: token },
-  }
   const response = await axios.delete(`${baseUrl}/${user_id}`, config)
   return response.data
 }
@@ -91,9 +88,6 @@ const deleteUser = async (user_id) => {
  * @returns {Object.<string, string>} contains message about successful/failed password change
 */
 const changePassword = async (user_id, oldPassword, newPassword, confirmNewPassword) => {
-  const config = {
-    headers: { Authorization: token },
-  }
   const response = await axios.post(`${baseUrl}/${user_id}/password_change`, {
     oldPassword: oldPassword,
     newPassword: newPassword,
@@ -110,11 +104,10 @@ const changePassword = async (user_id, oldPassword, newPassword, confirmNewPassw
 */
 
 const updateUserDetails = async (user_id, newObject) => {
-  const config = {
-    headers: { Authorization: token },
-  }
   const response = await axios.put(`${baseUrl}/${user_id}`, newObject, config)
   return response.data
 }
 
-export default { create, setToken, getUser, getAllUsers, deleteUser, changePassword, logoutLocalUser, updateUserDetails }
+export default {
+  create, setToken, getUser, getAllUsers, deleteUser, changePassword, logoutLocalUser, updateUserDetails, removeToken
+}
