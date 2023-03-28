@@ -29,8 +29,7 @@ const UserMainView = () => {
     if (user) {
       const fetchSenderData = async () => {
         const data = await senderService.getOneSenderLogs(
-          user.senderDeviceIds[0],
-          user.token
+          user.senderDeviceIds[0]
         )
         setSenders(data)
       }
@@ -46,7 +45,7 @@ const UserMainView = () => {
    * @returns {Object} sender
    */
   const fetchSenderById = async (id) => {
-    const sender = await senderService.getOneSenderLogs(id, user.token)
+    const sender = await senderService.getOneSenderLogs(id)
     setSenders(sender)
   }
   return (

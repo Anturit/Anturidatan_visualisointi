@@ -1,13 +1,24 @@
 import axios from 'axios'
 const baseUrl = '/api/senders'
+let config = null
+
+/**
+ * Set new config
+ * @param {string} token - Authentication token
+ */
+const setToken = (token) => {
+  config = {
+    headers: { Authorization: `bearer ${token}` }
+  }
+}
+const removeToken = () => config = null
 
 /**
  * Function that fetches all senders from the server
  * @param {string} token - Authorization token
  * @returns {Array.<Object>} - Array of sender objects
  */
-const getAll = async (token) => {
-  const config = { headers: { Authorization: `bearer ${token}` }, }
+const getAll = async () => {
   const response = await axios.get(baseUrl, config)
   return response.data
 }
@@ -18,15 +29,14 @@ const getAll = async (token) => {
  * @param {string} token - Authorization token
  * @returns {Object} - Sender object
 */
-const getOneSenderLogs = async (id, token) => {
-  const config = { headers: { Authorization: `bearer ${token}` }, }
+const getOneSenderLogs = async (id) => {
   const response = await axios.get(`${ baseUrl }/${id}`, config)
   return response.data
 }
 
-const senderService = {
+export default {
   getAll,
   getOneSenderLogs,
+  removeToken,
+  setToken
 }
-
-export default senderService
