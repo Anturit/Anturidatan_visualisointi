@@ -91,11 +91,45 @@ describe('When there is initially two senders at db', () => {
     expect(response.body.error).toContain('this user is not the owner of the device')
   })
 
-  test('get sender by "device" succees if USER login and USER owns the device', async () => {
+  test('get sender by "device" succeeds if USER login and USER owns the device', async () => {
     await api
       .get('/api/senders/E00208B4')
       .set('Authorization', `Bearer ${USERTOKEN}`)
       .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('delete existing sender succeeds if ADMIN login', async () => {
+    await api
+      .delete('/api/senders/E00208B4')
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .expect(204)
+  })
+  test('delete existing sender fails if USER login', async () => {
+    await api
+      .delete('/api/senders/E00208B4')
+      .set('Authorization', `Bearer ${USERTOKEN}`)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+  })
+  test('delete existing sender fails if not login', async () => {
+    await api
+      .delete('/api/senders/E00208B4')
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+  })
+  test('delete existing sender fails if id missing', async () => {
+    await api
+      .delete('/api/senders/')
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .expect(404)
+      .expect('Content-Type', /application\/json/)
+  })
+  test('delete non-existing sender fails if ADMIN login', async () => {
+    await api
+      .delete('/api/senders/E00208B4DONTEXIST')
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .expect(404)
       .expect('Content-Type', /application\/json/)
   })
 })

@@ -8,6 +8,7 @@ senderRouter.get('/', adminCredentialsValidator, async (request, response) => {
   response.json(senders)
 })
 
+// User and Admin route to get all sender logs from a device
 senderRouter.get('/:id', async (request, response) => {
   const user = request.user
 
@@ -24,5 +25,17 @@ senderRouter.get('/:id', async (request, response) => {
   }
   response.json(device)
 })
+
+// Admin only route to delete all senders from a device
+senderRouter.delete('/:id', adminCredentialsValidator, async (request, response) => {
+  const device = await Sender.findOne({ device: request.params.id })
+
+  if (!request.params.id || !device) {
+    return response.status(404).json({ error: 'device id missing or not found' })
+  }
+  await Sender.deleteMany({ device: { $in: request.params.id } })
+  response.status(204).end()
+})
+
 
 module.exports = senderRouter
