@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import PasswordFeedback from './PasswordFeedback'
+import { useNavigate } from 'react-router-dom'
 import { setNotification } from '../reducers/notificationReducer.js'
 import userService from '../services/userService'
+import PasswordFeedback from './PasswordFeedback'
 
 const PasswordChangeForm = () => {
   const [oldPassword, setOldPassword] = useState('')
@@ -12,7 +13,7 @@ const PasswordChangeForm = () => {
 
   const dispatch = useDispatch()
   const user_id = useSelector(state => state.loginForm.user.id)
-
+  const navigate = useNavigate()
   const errorMessagesInFinnish = [
     ['old password does not match user password', 'Vanha salasana väärin!'],
     ['password confirmation does not match with new password', 'Uudet salasanat eivät täsmää!'],
@@ -38,7 +39,9 @@ const PasswordChangeForm = () => {
     event.preventDefault()
     try {
       await userService.changePassword(user_id, oldPassword, newPassword, confirmNewPassword)
-      dispatch(setNotification('Salasana vaihdettu onnistuneesti!'))
+      dispatch(setNotification('Salasana vaihdettu onnistuneesti!\nKirjaudu sisään uudella salasanalla.', 10000))
+      userService.logoutLocalUser(dispatch)
+      navigate('/login')
     } catch (error) {
       dispatch(setNotification(
         getErrorMessageInFinnish(error.response.data.error), 3500, 'alert'
@@ -47,7 +50,7 @@ const PasswordChangeForm = () => {
   }
 
   return (
-    <div data-cy='passwordChangeForm'>
+    <div data-cy='passwordChangeForm' style={{ paddingBottom: '1em' }}>
       <form onSubmit={submit}>
         <h2>Vaihda salasana</h2>
         <small>Vanha salasana</small>
@@ -70,7 +73,7 @@ const PasswordChangeForm = () => {
             onChange={(e) => setNewPassword(e.target.value)}
             onFocus={() => setShowPasswordSecurityFeedback(true)}
           />
-          {showPasswordSecurityFeedback && <PasswordFeedback password={newPassword}/>}
+          {showPasswordSecurityFeedback && <PasswordFeedback password={newPassword} />}
         </div>
         <small>Vahvista uusi salasana</small>
         <div>
@@ -82,9 +85,12 @@ const PasswordChangeForm = () => {
             onChange={(e) => setConfirmNewPassword(e.target.value)}
           />
         </div>
+        {(newPassword === confirmNewPassword)
+          ? <small>Onnistunut salasanan vaihto aiheuttaa automaattisen uloskirjautumisen</small>
+          : <small>Uusi salasana ja vahvista uusi salasana eivät täsmää</small>
+        }
         <br />
         <button data-cy='passwordChangeButton' type="submit">Vaihda salasana</button>
-        <p></p>
       </form>
     </div>
   )

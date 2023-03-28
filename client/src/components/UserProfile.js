@@ -1,14 +1,23 @@
 import { useSelector } from 'react-redux'
+import Togglable from './Togglable'
+import PasswordChangeForm from './PasswordChangeForm'
+import EditProfileDetailsDropdown from './EditProfileDetailsDropdown'
+
+/**
+ * @typedef {import('../services/userService').userObject} userObject
+ */
 
 const UserProfile = () => {
   /**
    * Renders user details from user object imported from Redux store.
+   * @const
+   * @type {userObject}
    */
   const user = useSelector((state) => state.loginForm.user)
-  // Convert expirationDate to Finnish locale date format
-  const expirationDate = new Date(user.expirationDate).toLocaleDateString('fi-FI')
+
+
   return (
-    <div>
+    <>
       <h2>Käyttäjätiedot</h2>
       <p data-cy="profile_firstname">Etunimi: {user.firstName}</p>
       <p data-cy="profile_last_name">Sukunimi: {user.lastName}</p>
@@ -16,8 +25,12 @@ const UserProfile = () => {
       <p data-cy="profile_address">Osoite: {user.address}</p>
       <p data-cy="profile_postcode">Postinumero: {user.postalCode}</p>
       <p data-cy="profile_city">Kaupunki: {user.city}</p>
-      <p data-cy="profile_expiration_Date">Sopimus voimassa {expirationDate} asti. </p>
-    </div>
+      <p data-cy="profile_expiration_Date">Sopimus voimassa {new Date(user.expirationDate).toLocaleDateString('fi-FI')} asti. </p>
+      <Togglable buttonLabel='Muokkaa tietoja' id='editForm'>
+        <EditProfileDetailsDropdown userDetailsToShow={user} />
+        <PasswordChangeForm />
+      </Togglable>
+    </>
   )
 }
 

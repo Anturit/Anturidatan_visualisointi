@@ -1,38 +1,38 @@
 import { useState } from 'react'
-import axios from 'axios'
-import userService from '../services/userService'
 import { setUser } from '../reducers/loginFormReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import userService from '../services/userService'
+
+/**
+ * @typedef {import('../services/userService').userObject} userObject
+ */
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+  /**
+   * @param {{username: string, password: string}} credentials
+   * @returns {userObject}
+   */
   const login = async credentials => {
-    /**
-    *@returns user object with all fields except passwordHash:
-    *{* @param {Object} user
-     * @param {string} user.username
-     * @param {string} user.firstName
-     * @param {string} user.lastname
-     * @param {string} user.address
-     * @param {string} user.postalCode
-     * @param {string} user.city
-     * @param {string} user.role
-     * @param {Date} user.expirationDate
-    *  @param {list} user.senderDeviceIds
-    *}
-    */
+
     const res = await axios.post(
       '/api/login/', credentials
     )
     return res.data
   }
+
+  /**
+  * Function to fetch user for session and storing it to localstorage
+  * @param {onSubmit} loginEvent - The observable event.
+  * @listens onSubmit
+  */
   const handleLogin = async (loginEvent) => {
-    /**
-    * Function to fetch user for session and storing it to localstorage
-   */
     loginEvent.preventDefault()
     try {
       const user = await login(
@@ -44,11 +44,16 @@ const LoginForm = () => {
       )
       dispatch(setUser(user))
       userService.setToken(user.token)
-      dispatch( setNotification(
+      dispatch(setNotification(
         `${user.firstName} ${user.lastName} kirjattu sisään`, 3500
       ))
       setUsername('')
       setPassword('')
+      if (user.role === 'admin') {
+        navigate('/admin')
+      } else {
+        navigate('/user')
+      }
     } catch (err) {
       console.log(err)
       if (err.response.data.error) {
@@ -72,7 +77,7 @@ const LoginForm = () => {
   return (
     <form onSubmit={handleLogin}>
       <div>
-                käyttäjänimi
+        käyttäjänimi
         <input
           type={'text'}
           value={username}
@@ -83,7 +88,7 @@ const LoginForm = () => {
         />
       </div>
       <div>
-                salasana
+        salasana
         <input
           type={'password'}
           value={password}

@@ -19,14 +19,14 @@ const TRANSLATE = {
 }
 Object.freeze(TRANSLATE)
 
+/**
+ * Creates a chart of specified measurement parameter from all sensors of one sender device
+ * @param {string} parameter - Measurement paramenter to be made a chart of
+ * @param {Array.<string>} ids - Array of sensor ids
+ * @param {Array.<Object>} logs - Array of measurement logs
+ * @returns {JSX.Element} JSX element of chart of a measurement
+ */
 const SensorChart = ({ parameter, ids, logs }) => {
-  /**
-   * Creates a chart of specified measurement parameter from all sensors of one sender device
-   * @param {string} parameter - Measurement paramenter to be made a chart of
-   * @param {string[]} ids - Array of sensor ids
-   * @param {Object[]} logs - Array of measurement logs
-   * @returns {JSX.Element} JSX element of chart of a measurement
-   */
 
   // Creates a linechart of a measurement and maps all sensors as different lines
   return (

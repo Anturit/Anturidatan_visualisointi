@@ -9,13 +9,12 @@ const groupByDeviceID = (senders) => {
   return groupBy(senders, 'device')
 }
 
+/**
+ * Create a new array of Objects, where data with same timestamp are contained in same Object
+ * @param {Array.<Object>} logs - Array of measurement logs
+ * @returns {Array.<Object>} Array of measurement logs, where logs with same timestamp are in same object
+ */
 const combineObjectsByDate = (logs) => {
-  /**
-   * Create a new array of Objects, where data with same timestamp are contained in same Object
-   * @param {Object[]} logs - Array of measurement logs
-   * @returns {Object[]} Array of measurement logs, where logs with same timestamp are in same object
-   */
-
   const formattedData =
     chain(logs)
       .groupBy('date')
@@ -26,17 +25,17 @@ const combineObjectsByDate = (logs) => {
 }
 
 
+/**
+ * Create a new array of Objects, where:
+ * datetime microsecond values are truncated off,
+ * sensor_id and measurement parameter object keys are combined as single keys and measurement value stays as a value eg.
+ * "sen_id": 6a and "temperature": 28.0 => "6a_temperature": 28.0
+ * "sen_id": 6a and "pressure": 12000.0 => "6a_pressure": 12000.0
+ * @param {Array.<Object>} logs - Array of measurement logs
+ * @param {Array.<string>} measurementParameters - Array of parameters that were measured
+ * @returns {Array.<Object>} Array of measurement logs, where sensor id and measurement parameter are combined as new keys
+ */
 const combineSensorIdAndMeasurementParameter = ( logs, measurementParameters ) => {
-  /**
-   * Create a new array of Objects, where:
-   * datetime microsecond values are truncated off,
-   * sensor_id and measurement parameter object keys are combined as single keys and measurement value stays as a value eg.
-   * "sen_id": 6a and "temperature": 28.0 => "6a_temperature": 28.0
-   * "sen_id": 6a and "pressure": 12000.0 => "6a_pressure": 12000.0
-   * @param {Object[]} logs - Array of measurement logs
-   * @param {string[]} measurementParameters - Array of parameters that were measured
-   * @returns {Object[]} Array of measurement logs, where sensor id and measurement parameter are combined as new keys
-   */
 
   const formattedData = logs
     // Sorts data by ascending date
@@ -58,26 +57,35 @@ const combineSensorIdAndMeasurementParameter = ( logs, measurementParameters ) =
   return formattedData
 }
 
-// Get unique list of Object keys of measurement parametres that are not filtered out by SUPPRESS
+/** Get unique list of Object keys of measurement parametres that are not filtered out by SUPPRESS
+ * @param {Array.<Object>} logs
+ * @returns {Array.<string>} - Array of unique measurement parameters
+ */
 const getMeasurementParameters = (logs) =>  {
   return [ ...new Set(logs.flatMap(Object.keys).filter(item => !SUPPRESS.includes(item))) ]
 }
 
+/**
+ * Function to get unique list of sensor ids of specified sensor type
+ * Big sensor = contains measurements of temperature, humidity etc..
+ * Small sensor = contains only one measurement parameter
+ * @param {Array.<Object>} logs - Array of measurement logs
+ * @param {boolean} smallSensor - Specify sensor type, true if small sensor
+ * @returns {Array.<string>} Array of unique ids of specified sensor type
+ */
 const getSmallSensorIds = (logs, smallSensor = false) => {
-  /**
-   * Function to get unique list of sensor ids of specified sensor type
-   * Big sensor = contains measurements of temperature, humidity etc..
-   * Small sensor = contains only one measurement parameter
-   * @param {Object[]} logs - Array of measurement logs
-   * @param {boolean} smallSensor - Specify sensor type, true if small sensor
-   * @returns {string[]} Array of unique ids of specified sensor type
-   */
   return [ ...new Set( logs
     .filter(sensor => smallSensor ? sensor['measurement'] : !sensor['measurement'])
     .map(obj => obj['sen_id']))
   ]
 }
 
+/**
+ * Combines sensor logs by their measurements parameters and ids, then groups them by timestamp
+ * @param {Array.<Object>} logs - Array of measurement logs
+ * @param {Array.<string>} measurementsParameters - Array of unique measurement parameters
+ * @returns {Array.<Object>} Array measurement logs
+ */
 const formatData = (logs, measurementParameters) => {
   return (
     combineObjectsByDate(

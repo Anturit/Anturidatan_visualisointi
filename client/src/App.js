@@ -1,41 +1,70 @@
-import LoginForm from './components/LoginForm'
-import Notification from './components/Notification'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import jwt_decode from 'jwt-decode'
-import PasswordChangeForm from './components/PasswordChangeForm'
-import RegisterForm from './components/RegisterForm'
-import Togglable from './components/Togglable'
+import { setUser } from './reducers/loginFormReducer'
+import {
+  useLocation,
+  useNavigate,
+  Link,
+  Routes,
+  Route,
+  Navigate
+} from 'react-router-dom'
+import AdminMainView from './components/AdminMainView'
 import UserProfile from './components/UserProfile'
+<<<<<<< HEAD
 import senderService from './services/senderService'
 import SenderDropdown from './components/SenderDropdown'
 import EditProfileDetailsDropdown from './components/EditProfileDetailsDropdown'
 import SenderList from './components/SenderList'
+=======
+import RegisterForm from './components/RegisterForm'
+import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
+>>>>>>> 5acc32b22ac1898c91d5b11aa487f7376f27daa4
 import UserList from './components/UserList'
 import userService from './services/userService'
-import { setUser } from './reducers/loginFormReducer'
+import jwt_decode from 'jwt-decode'
+import UserMainView from './components/UserMainView'
+
 
 function App() {
   const user = useSelector((state) => state.loginForm.user)
-  const [senders, setSenders] = useState([])
   const dispatch = useDispatch()
+  const isJsonWebTokenExpired = jwt => {
+    const decodedToken = jwt_decode(jwt)
+    const expiresAtMillis = decodedToken.exp * 1000
+    return expiresAtMillis < Date.now()
+  }
+
+  const navigate = useNavigate()
+  const location = useLocation()
 
   /**
-   * Function to fetch user for session and storing it to localstorage
-   * @returns user object with all fields except passwordHash.
-   */
+  * Fetch user from window.localStorage.
+  * If jwt token valid:
+  *   Save user.token to userService and user to redux state.
+  *   Change Url according to user role
+  */
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
-    if (loggedUserJSON) {
-      const parsedUser = JSON.parse(loggedUserJSON)
-      const decodedToken = jwt_decode(parsedUser.token)
-      const expiresAtMillis = decodedToken.exp * 1000
-      if (expiresAtMillis > Date.now()) {
-        dispatch(setUser(parsedUser))
-        userService.setToken(parsedUser.token)
-      }
+    if (!loggedUserJSON) return
+
+    const parsedUser = JSON.parse(loggedUserJSON)
+    if (isJsonWebTokenExpired(parsedUser.token)) return
+    dispatch(setUser(parsedUser))
+    userService.setToken(parsedUser.token)
+
+    if (parsedUser.role === 'admin') {
+      if (['/admin', '/users', '/register', '/userprofile'].includes(location.pathname)) return
+      navigate('/admin')
+    } else {
+      if (['/user', '/userprofile'].includes(location.pathname)) return
+      navigate('/user')
     }
+
   }, [])
+<<<<<<< HEAD
 
   /**
    * Function to fetch sender logs for user
@@ -134,11 +163,56 @@ function App() {
         <div>
           {user.senderDeviceIds.length > 1 &&
             <SenderDropdown senderDeviceIds={user.senderDeviceIds} fetchSenderById={fetchSenderById} />
+=======
+  const padding = {
+    padding: 5
+  }
+
+  return (
+    <div>
+      <Notification />
+      {user
+        ?
+        <>
+          <button
+            onClick={() => userService.logoutLocalUser(dispatch)}
+            data-cy='logout'
+          >
+            Kirjaudu ulos käyttäjältä {user.firstName} {user.lastName}
+          </button>
+          <Link style={padding} to="/">Etusivu</Link>
+          { user.role === 'admin'
+            ?
+            <>
+              <Link style={padding} to="/userprofile">Omat tiedot</Link>
+              <Link style={padding} to="/users">Käyttäjät</Link>
+              <Link style={padding} to="/register">Luo käyttäjä</Link>
+            </>
+            :
+            <Link style={padding} to="/userprofile">Omat tiedot</Link>
+>>>>>>> 5acc32b22ac1898c91d5b11aa487f7376f27daa4
           }
-          <SenderList senders={senders} />
-        </div>
-      </Togglable>
-    </div>
+          <Routes>
+
+            <Route path="/admin" element={<AdminMainView />} />
+            <Route path="/user" element={<UserMainView />} />
+            <Route path="/userprofile" element={<UserProfile />} />
+            <Route path="/users" element={<UserList />} />
+            <Route path="/register" element={<RegisterForm />} />
+            <Route path="/" element={user.role === 'admin'
+              ? <Navigate replace to="/admin" />
+              : <Navigate replace to="/user" />}/>
+          </Routes>
+        </>
+        : <LoginForm />
+      }
+
+
+      <div>
+        <br />
+        <em>Anturi app, demo 2023</em>
+      </div>
+    </div >
   )
 }
 
