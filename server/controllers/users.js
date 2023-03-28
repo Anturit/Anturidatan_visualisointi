@@ -157,5 +157,32 @@ usersRouter.put('/:id', async (request, response) => {
 
 })
 
+usersRouter.put('/:id/addSenderDevice', adminCredentialsValidator, async (request, response) => {
+  const senderDeviceId = request.body.senderDeviceId
+
+  if (!senderDeviceId) {
+    return response.status(400).json({
+      error: 'sender device id must be given'
+    })
+  }
+
+  const userId = request.params.id
+  const user = await User.findById(userId)
+
+  if (user.senderDeviceIds.includes(senderDeviceId)) {
+    return response.status(400).json({
+      error: 'sender device id already added to user'
+    })
+  }
+
+  await User.updateOne(
+    { _id: userId },
+    { $push: { senderDeviceIds: senderDeviceId } },
+    { new: true }
+  )
+
+  const changedUser = await User.findById(userId)
+  response.status(200).json(changedUser)
+})
 
 module.exports = usersRouter
