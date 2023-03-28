@@ -50,7 +50,7 @@ const LoginForm = () => {
       setUsername('')
       setPassword('')
       if (user.role === 'admin') {
-        navigate('/admin')
+        navigate('/users')
       } else {
         navigate('/user')
       }

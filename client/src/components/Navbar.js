@@ -3,76 +3,50 @@ import { useSelector } from 'react-redux'
 import {
   AppBar,
   Toolbar,
-  CssBaseline,
   Typography,
-  makeStyles,
-  useTheme,
-  useMediaQuery,
-} from '@material-ui/core'
+} from '@mui/material'
 import { Link } from 'react-router-dom'
-import DrawerComponent from './DrawerComponent'
 import Logo from '../assets/kymppi_logo.png'
-
-const useStyles = makeStyles((theme) => ({
-  navlinks: {
-    marginLeft: theme.spacing(5),
-    display: 'flex',
-  },
-  logo: {
-    flexGrow: '1',
-    cursor: 'pointer',
-  },
-  link: {
-    textDecoration: 'none',
-    color: 'white',
-    fontSize: '20px',
-    marginLeft: theme.spacing(20),
-    '&:hover': {
-      color: 'yellow',
-      borderBottom: '1px solid white',
-    },
-  },
-}))
+import Box from '@mui/material/Box'
 
 function Navbar() {
   const user = useSelector((state) => state.loginForm.user)
-  const classes = useStyles()
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  console.log(user)
 
   return (
-    <AppBar position='static'>
-      <CssBaseline />
-      <Toolbar>
-        <Typography variant='h4' className={classes.logo}>
-
-          <Link to='/' className={classes.link}>
-            <img src={Logo} alt="logo" className={classes.logo} />
-          </Link>
-        </Typography>
-        {isMobile ? (
-          <DrawerComponent />
-        ) : (
-          <div className={classes.navlinks}>
-
-            <Link to='/userprofile' className={classes.link}>
-              Omat tiedot
-            </Link>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
+        <Toolbar>
+          <>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              <Link to='/' >
+                <img src={Logo} alt="logo" />
+              </Link>
+            </Typography>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} >
+              <Link to='/userprofile' style={{ textDecoration: 'none' , color:'inherit' }}  >
+                {'Omat tiedot'}
+              </Link>
+            </Typography>
             {user.role === 'admin' && (
               <>
-                <Link to='/users' className={classes.link}>
-                  Käyttäjät
-                </Link>
-
-                <Link to='/register' className={classes.link}>
-                  Luo käyttäjä
-                </Link>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} >
+                  <Link to='/users' style={{ textDecoration: 'none' , color:'inherit' }}>
+                    Käyttäjät
+                  </Link>
+                </Typography>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} >
+                  <Link to='/register' style={{ textDecoration: 'none' , color:'inherit' }}>
+                    Luo käyttäjä
+                  </Link>
+                </Typography>
               </>
             )}
-          </div>
-        )}
-      </Toolbar>
-    </AppBar>
+          </>
+        </Toolbar>
+      </AppBar>
+    </Box>
   )
 }
 export default Navbar
+

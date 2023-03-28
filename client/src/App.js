@@ -8,7 +8,6 @@ import {
   Route,
   Navigate
 } from 'react-router-dom'
-import AdminMainView from './components/AdminMainView'
 import UserProfile from './components/UserProfile'
 import RegisterForm from './components/RegisterForm'
 import Notification from './components/Notification'
@@ -49,8 +48,8 @@ function App() {
     userService.setToken(parsedUser.token)
 
     if (parsedUser.role === 'admin') {
-      if (['/admin', '/users', '/register', '/userprofile'].includes(location.pathname)) return
-      navigate('/admin')
+      if (['/users', '/register', '/userprofile'].includes(location.pathname)) return
+      navigate('/')
     } else {
       if (['/user', '/userprofile'].includes(location.pathname)) return
       navigate('/user')
@@ -70,13 +69,12 @@ function App() {
             data-cy='logout'>Kirjaudu ulos käyttäjältä {user.firstName} {user.lastName}</Button>
           <Notification />
           <Routes>
-            <Route path="/admin" element={<AdminMainView />} />
             <Route path="/user" element={<UserMainView />} />
             <Route path="/userprofile" element={<UserProfile />} />
             <Route path="/users" element={<UserList />} />
             <Route path="/register" element={<RegisterForm />} />
             <Route path="/" element={user.role === 'admin'
-              ? <Navigate replace to="/admin" />
+              ? <Navigate replace to="/users" />
               : <Navigate replace to="/user" />}/>
           </Routes>
         </>
