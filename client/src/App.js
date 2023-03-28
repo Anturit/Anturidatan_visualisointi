@@ -4,7 +4,6 @@ import { setUser } from './reducers/loginFormReducer'
 import {
   useLocation,
   useNavigate,
-  Link,
   Routes,
   Route,
   Navigate
@@ -18,7 +17,8 @@ import UserList from './components/UserList'
 import userService from './services/userService'
 import jwt_decode from 'jwt-decode'
 import UserMainView from './components/UserMainView'
-
+import Navbar from './components/Navbar'
+import Button from '@mui/material/Button'
 
 function App() {
   const user = useSelector((state) => state.loginForm.user)
@@ -57,9 +57,7 @@ function App() {
     }
 
   }, [])
-  const padding = {
-    padding: 5
-  }
+
 
   return (
     <div>
@@ -67,25 +65,11 @@ function App() {
       {user
         ?
         <>
-          <button
-            onClick={() => userService.logoutLocalUser(dispatch)}
-            data-cy='logout'
-          >
-            Kirjaudu ulos käyttäjältä {user.firstName} {user.lastName}
-          </button>
-          <Link style={padding} to="/">Etusivu</Link>
-          { user.role === 'admin'
-            ?
-            <>
-              <Link style={padding} to="/userprofile">Omat tiedot</Link>
-              <Link style={padding} to="/users">Käyttäjät</Link>
-              <Link style={padding} to="/register">Luo käyttäjä</Link>
-            </>
-            :
-            <Link style={padding} to="/userprofile">Omat tiedot</Link>
-          }
+          <Navbar />
+          <Button variant="contained" onClick={() => userService.logoutLocalUser(dispatch)}
+            data-cy='logout'>Kirjaudu ulos käyttäjältä {user.firstName} {user.lastName}</Button>
+          <Notification />
           <Routes>
-
             <Route path="/admin" element={<AdminMainView />} />
             <Route path="/user" element={<UserMainView />} />
             <Route path="/userprofile" element={<UserProfile />} />
@@ -98,8 +82,6 @@ function App() {
         </>
         : <LoginForm />
       }
-
-
       <div>
         <br />
         <em>Anturi app, demo 2023</em>

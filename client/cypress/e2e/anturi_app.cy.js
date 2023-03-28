@@ -45,7 +45,9 @@ describe('Anturi app', function () {
     })
   })
   const clickHrefAndRefresh = (route, href=route) => {
-    cy.get(`[href="${href}"]`).click()
+    cy.get('[data-cy="menuicon"]').click()
+    //navbar icon hides href, force true necessary
+    cy.get(`[href="${href}"]`).click({force:true})
     cy.url().should('include', route)
     cy.reload()
     cy.url().should('include', route)
