@@ -4,12 +4,10 @@ import { setUser } from './reducers/loginFormReducer'
 import {
   useLocation,
   useNavigate,
-  Link,
   Routes,
   Route,
   Navigate
 } from 'react-router-dom'
-import AdminMainView from './components/AdminMainView'
 import UserProfile from './components/UserProfile'
 import RegisterForm from './components/RegisterForm'
 import Notification from './components/Notification'
@@ -18,7 +16,8 @@ import UserList from './components/UserList'
 import userService from './services/userService'
 import jwt_decode from 'jwt-decode'
 import UserMainView from './components/UserMainView'
-
+import Navbar from './components/Navbar'
+import Button from '@mui/material/Button'
 
 function App() {
   const user = useSelector((state) => state.loginForm.user)
@@ -49,17 +48,15 @@ function App() {
     userService.setToken(parsedUser.token)
 
     if (parsedUser.role === 'admin') {
-      if (['/admin', '/users', '/register', '/userprofile'].includes(location.pathname)) return
-      navigate('/admin')
+      if (['/users', '/register', '/userprofile'].includes(location.pathname)) return
+      navigate('/')
     } else {
       if (['/user', '/userprofile'].includes(location.pathname)) return
       navigate('/user')
     }
 
   }, [])
-  const padding = {
-    padding: 5
-  }
+
 
   return (
     <div>
@@ -67,39 +64,22 @@ function App() {
       {user
         ?
         <>
-          <button
-            onClick={() => userService.logoutLocalUser(dispatch)}
-            data-cy='logout'
-          >
-            Kirjaudu ulos käyttäjältä {user.firstName} {user.lastName}
-          </button>
-          <Link style={padding} to="/">Etusivu</Link>
-          { user.role === 'admin'
-            ?
-            <>
-              <Link style={padding} to="/userprofile">Omat tiedot</Link>
-              <Link style={padding} to="/users">Käyttäjät</Link>
-              <Link style={padding} to="/register">Luo käyttäjä</Link>
-            </>
-            :
-            <Link style={padding} to="/userprofile">Omat tiedot</Link>
-          }
+          <Navbar />
+          <Button variant="contained" onClick={() => userService.logoutLocalUser(dispatch)}
+            data-cy='logout'>Kirjaudu ulos käyttäjältä {user.firstName} {user.lastName}</Button>
+          <Notification />
           <Routes>
-
-            <Route path="/admin" element={<AdminMainView />} />
             <Route path="/user" element={<UserMainView />} />
             <Route path="/userprofile" element={<UserProfile />} />
             <Route path="/users" element={<UserList />} />
             <Route path="/register" element={<RegisterForm />} />
             <Route path="/" element={user.role === 'admin'
-              ? <Navigate replace to="/admin" />
+              ? <Navigate replace to="/users" />
               : <Navigate replace to="/user" />}/>
           </Routes>
         </>
         : <LoginForm />
       }
-
-
       <div>
         <br />
         <em>Anturi app, demo 2023</em>

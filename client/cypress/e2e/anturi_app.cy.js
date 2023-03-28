@@ -45,6 +45,8 @@ describe('Anturi app', function () {
     })
   })
   const clickHrefAndRefresh = (route, href=route) => {
+    //cy.get('[data-cy="menuicon"]').click()
+    //navbar icon hides href, force true necessary
     cy.get(`[href="${href}"]`).click()
     cy.url().should('include', route)
     cy.reload()
@@ -181,7 +183,7 @@ describe('Anturi app', function () {
       ['/users', '/register', '/userprofile'].forEach(
         route => clickHrefAndRefresh(route)
       )
-      clickHrefAndRefresh('/admin', '/')
+      clickHrefAndRefresh('/')
     })
     describe('and edit user information form is opened', function () {
       beforeEach(function () {
