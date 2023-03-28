@@ -11,16 +11,9 @@ import {
 } from 'react-router-dom'
 import AdminMainView from './components/AdminMainView'
 import UserProfile from './components/UserProfile'
-<<<<<<< HEAD
-import senderService from './services/senderService'
-import SenderDropdown from './components/SenderDropdown'
-import EditProfileDetailsDropdown from './components/EditProfileDetailsDropdown'
-import SenderList from './components/SenderList'
-=======
 import RegisterForm from './components/RegisterForm'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
->>>>>>> 5acc32b22ac1898c91d5b11aa487f7376f27daa4
 import UserList from './components/UserList'
 import userService from './services/userService'
 import jwt_decode from 'jwt-decode'
@@ -64,106 +57,6 @@ function App() {
     }
 
   }, [])
-<<<<<<< HEAD
-
-  /**
-   * Function to fetch sender logs for user
-   * @returns sender object with all fields.
-   */
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await senderService.getOneSenderLogs(
-        user.senderDeviceIds[0],
-        user.token
-      )
-      setSenders(data)
-    }
-    if (user) {
-      if (user.role === 'user') {
-        fetchData()
-      }
-    }
-  }, [user])
-
-
-  /**
-   * Function to fetch sender logs for user
-   * @returns sender object with all fields.
-   * @param {string} id
-   * @param {string} token
-   * @returns {Object} sender
-   */
-  const fetchSenderById = async (id) => {
-    const sender = await senderService.getOneSenderLogs(id, user.token)
-    setSenders(sender)
-  }
-
-
-  /**
-   * If user is not logged in, show login form
-   */
-  if (user === null) {
-    return (
-      <>
-        <Notification />
-        <LoginForm />
-      </>
-    )
-  }
-
-  /**
-   * If user is logged in as admin, show admin view
-   */
-  if (user.role === 'admin') {
-    return (
-      <div>
-        <Notification />
-        <p>{user.firstName} sisäänkirjautunut</p>
-        <button
-          onClick={() => {
-            dispatch(setUser(null))
-            window.localStorage.setItem('loggedUser', '')
-            userService.setToken(null)
-          }}
-          data-cy='logout'
-        >
-          Kirjaudu ulos
-        </button>
-        <p></p>
-        <Togglable buttonLabel='Lisää käyttäjä' id='registerForm'>
-          <RegisterForm />
-        </Togglable>
-        <UserList />
-      </div>
-    )
-  }
-
-  /**
-   * If user is logged in as user, show user view
-   */
-  return (
-    <div>
-      <Notification />
-      <p>{user.firstName} sisäänkirjautunut</p>
-      <button
-        onClick={() => {
-          dispatch(setUser(null))
-          window.localStorage.setItem('loggedUser', '')
-        }}
-        data-cy='logout'
-      >
-        Kirjaudu ulos
-      </button>
-      <UserProfile />
-      <Togglable buttonLabel='Muokkaa tietoja' id='editForm'>
-        <EditProfileDetailsDropdown userDetailsToShow={user}/>
-        <PasswordChangeForm />
-      </Togglable>
-      <Togglable buttonLabel='Näytä laitteet' id='senderList'>
-        <div>
-          {user.senderDeviceIds.length > 1 &&
-            <SenderDropdown senderDeviceIds={user.senderDeviceIds} fetchSenderById={fetchSenderById} />
-=======
   const padding = {
     padding: 5
   }
@@ -190,7 +83,6 @@ function App() {
             </>
             :
             <Link style={padding} to="/userprofile">Omat tiedot</Link>
->>>>>>> 5acc32b22ac1898c91d5b11aa487f7376f27daa4
           }
           <Routes>
 
