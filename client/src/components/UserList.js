@@ -4,19 +4,34 @@ import {
   Checkbox,
   IconButton,
   Tooltip,
-  Box,
+  Box
 } from '@mui/material'
 import { useSelector, useDispatch } from 'react-redux'
 import { setUsers } from '../reducers/usersReducer'
-import { Delete } from '@mui/icons-material'
+import { Delete, ShowChart } from '@mui/icons-material'
 import MaterialReactTable from 'material-react-table'
 import userService from '../services/userService'
+import Modal from '@mui/material/Modal'
+import Typography from '@mui/material/Typography'
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 500,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 5,
+}
 
 const UserList = () => {
   const users = useSelector((state) => state.users)
   const [userDeletionAllowed, setUserDeletionAllowed] = useState(false)
   const dispatch = useDispatch()
+  const [open, setOpen] = useState(false)
+  const handleClose = () => setOpen(false)
 
   useEffect(() => {
     userService
@@ -88,37 +103,67 @@ const UserList = () => {
     }
   }
 
-  return <MaterialReactTable
-    columns={columns}
-    data={users}
-    enableRowActions
-    displayColumnDefOptions={{
-      'mrt-row-actions': {
-        header: 'Poista',
-        size: 5,
-      },
-    }}
-    renderRowActions={({ row }) => (
-      <Tooltip arrow placement="right" title="Poista">
-        <IconButton
-          data-cy={`deleteUser ${row.original.username}`}
-          color={userDeletionAllowed ? 'error' : '#e0e0e0'}
-          onClick={() => userDeletionAllowed && removeUser(row.original)}
+  return (
+    <div>
+      <MaterialReactTable
+        columns={columns}
+        data={users}
+        enableRowActions
+        displayColumnDefOptions={{
+          'mrt-row-actions': {
+            header: 'Toiminnot',
+            size: 100,
+          },
+        }}
+        renderRowActions={({ row }) => (
+          <Box>
+            <Tooltip arrow placement="right" title="Poista">
+              <IconButton
+                data-cy={`deleteUser ${row.original.username}`}
+                color={userDeletionAllowed ? 'error' : '#e0e0e0'}
+                onClick={() => userDeletionAllowed && removeUser(row.original)}
+              >
+                <Delete />
+              </IconButton>
+            </Tooltip>
+            <Tooltip arrow placement="right" title="Näytä lähettimet">
+              <IconButton
+                onClick={() => setOpen(true)}
+                color={'primary'}
+              >
+                <ShowChart />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        )}
+        renderTopToolbarCustomActions={() => (
+          <Box sx={{ display: 'flex', gap: '1rem' }}>
+            <p>Käyttäjien poisto sallittu</p>
+            <Checkbox
+              data-cy='enableDeletion'
+              onChange={() => setUserDeletionAllowed(!userDeletionAllowed)}
+            />
+          </Box>
+        )}
+      />
+      {open && (
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
         >
-          <Delete />
-        </IconButton>
-      </Tooltip>
-    )}
-    renderTopToolbarCustomActions={() => (
-      <Box sx={{ display: 'flex', gap: '1rem' }}>
-        <p>Käyttäjien poisto sallittu</p>
-        <Checkbox
-          data-cy='enableDeletion'
-          onChange={() => setUserDeletionAllowed(!userDeletionAllowed)}
-        />
-      </Box>
-    )}
-  />
+          <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Käyttäjä
+            </Typography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            </Typography>
+          </Box>
+        </Modal>
+      )}
+    </div>
+  )
 }
 
 export default UserList
