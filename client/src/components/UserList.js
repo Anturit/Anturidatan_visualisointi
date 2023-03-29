@@ -31,6 +31,7 @@ const UserList = () => {
   const [userDeletionAllowed, setUserDeletionAllowed] = useState(false)
   const dispatch = useDispatch()
   const [open, setOpen] = useState(false)
+  const [user, setUser] = useState(null)
   const handleClose = () => setOpen(false)
 
   useEffect(() => {
@@ -128,7 +129,7 @@ const UserList = () => {
             </Tooltip>
             <Tooltip arrow placement="right" title="Näytä lähettimet">
               <IconButton
-                onClick={() => setOpen(true)}
+                onClick={() => {setUser(row.original) ; setOpen(true)}}
                 color={'primary'}
               >
                 <ShowChart />
@@ -150,14 +151,14 @@ const UserList = () => {
         <Modal
           open={open}
           onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
+          user={user}
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Käyttäjä
+            <Typography variant="h6" component="h2">
+              Käyttäjän {user.firstName} anturit
             </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            <Typography sx={{ mt: 2 }}>
+              {user.senderDeviceIds.join(', ')}
             </Typography>
           </Box>
         </Modal>
