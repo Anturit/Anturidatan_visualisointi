@@ -12,26 +12,15 @@ import { Delete, ShowChart } from '@mui/icons-material'
 import MaterialReactTable from 'material-react-table'
 import userService from '../services/userService'
 import Modal from '@mui/material/Modal'
-import Typography from '@mui/material/Typography'
+import UserListSenders from './UserListSenders'
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 500,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 5,
-}
 
 const UserList = () => {
   const users = useSelector((state) => state.users)
   const [userDeletionAllowed, setUserDeletionAllowed] = useState(false)
   const dispatch = useDispatch()
   const [open, setOpen] = useState(false)
-  const [user, setUser] = useState(null)
+  const [currentRow, setCurrentRow] = useState(null)
   const handleClose = () => setOpen(false)
 
   useEffect(() => {
@@ -129,7 +118,8 @@ const UserList = () => {
             </Tooltip>
             <Tooltip arrow placement="right" title="Näytä lähettimet">
               <IconButton
-                onClick={() => {setUser(row.original) ; setOpen(true)}}
+                data-cy={`show senders of ${row.original.username}`}
+                onClick={() => {setCurrentRow(row.original) ; setOpen(true)}}
                 color={'primary'}
               >
                 <ShowChart />
@@ -151,16 +141,8 @@ const UserList = () => {
         <Modal
           open={open}
           onClose={handleClose}
-          user={user}
         >
-          <Box sx={style}>
-            <Typography variant="h6" component="h2">
-              Käyttäjän {user.firstName} anturit
-            </Typography>
-            <Typography sx={{ mt: 2 }}>
-              {user.senderDeviceIds.join(', ')}
-            </Typography>
-          </Box>
+          <UserListSenders row={currentRow} />
         </Modal>
       )}
     </div>

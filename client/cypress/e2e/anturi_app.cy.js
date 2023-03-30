@@ -295,6 +295,10 @@ describe('Anturi app', function () {
         cy.get('[data-cy="deleteUser user@user.com"]').click()
         cy.contains('Käyttäjä UserTest poistettu').should('not.exist')
       })
+      it('users senders are shown when show senders icon is clicked', function () {
+        cy.get('[data-cy="show senders of user@user.com"]').click()
+        cy.contains('E00208B4')
+      })
     })
 
     describe('and user registeration form is open', function () {
