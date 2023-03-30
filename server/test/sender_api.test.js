@@ -43,7 +43,7 @@ describe('When there is initially two senders at db', () => {
   test('get all senders fails if USER login', async () => {
     const response = await api
       .get('/api/senders')
-      .set('Authorization', `Bearer ${ USERTOKEN }`)
+      .set('Authorization', `Bearer ${USERTOKEN}`)
       .expect(401)
       .expect('Content-Type', /application\/json/)
     expect(response.body.error).toContain('you don´t have rights for this operation')
@@ -97,5 +97,71 @@ describe('When there is initially two senders at db', () => {
       .set('Authorization', `Bearer ${USERTOKEN}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
+  })
+
+  test('POST senders fails if USER auth', async () => {
+    const initialSenders = await helper.sendersInDb()
+    const response = await api
+      .post('/api/senders')
+      .set('Authorization', `Bearer ${USERTOKEN}`)
+      .send([
+        helper.smallSender(),
+        helper.bigSender(),
+      ])
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toContain('you don´t have rights for this operation')
+    expect(await helper.sendersInDb())
+      .toHaveLength(initialSenders.length)
+  })
+
+  test('POST senders fails if not array', async () => {
+    const initialSenders = await helper.sendersInDb()
+    const response = await api
+      .post('/api/senders')
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send(helper.smallSender())
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toContain('request content must be an array')
+    expect(await helper.sendersInDb())
+      .toHaveLength(initialSenders.length)
+  })
+
+  test('POST senders fails if invalidly formatted content', async () => {
+    const initialSenders = await helper.sendersInDb()
+    const response = await api
+      .post('/api/senders')
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send([
+        helper.smallSender(),
+        { name: 'should fail' },
+      ])
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).not.toBe('')
+    expect(await helper.sendersInDb())
+      .toHaveLength(initialSenders.length)
+  })
+  test('POST senders works if ADMIN auth', async () => {
+    const initialSenders = await helper.sendersInDb()
+    const senders = [
+      helper.smallSender(),
+      helper.bigSender(),
+    ].map((sender) => {
+      return {
+        ...sender,
+        date: sender.date.toISOString(),
+      }
+    })
+
+    await api
+      .post('/api/senders')
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send(senders)
+      .expect(201)
+
+    expect(await helper.sendersInDb())
+      .toHaveLength(initialSenders.length + 2)
   })
 })
