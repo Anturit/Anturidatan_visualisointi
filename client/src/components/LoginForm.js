@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import userService from '../services/userService'
+import Notification from './Notification'
 
 /**
  * @typedef {import('../services/userService').userObject} userObject
@@ -75,33 +76,36 @@ const LoginForm = () => {
   }
 
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        käyttäjänimi
-        <input
-          type={'text'}
-          value={username}
-          id='username'
-          name='username'
-          data-cy='username'
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        salasana
-        <input
-          type={'password'}
-          value={password}
-          id='password'
-          name='password'
-          data-cy='password'
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <div>
-        <button type="submit" data-cy="login">Kirjaudu sisään</button>
-      </div>
-    </form>
+    <>
+      <Notification/>
+      <form onSubmit={handleLogin}>
+        <div>
+          käyttäjänimi
+          <input
+            type={'text'}
+            value={username}
+            id='username'
+            name='username'
+            data-cy='username'
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
+        <div>
+          salasana
+          <input
+            type={'password'}
+            value={password}
+            id='password'
+            name='password'
+            data-cy='password'
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <div>
+          <button type="submit" data-cy="login">Kirjaudu sisään</button>
+        </div>
+      </form>
+    </>
   )
 }
 

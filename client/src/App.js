@@ -60,7 +60,6 @@ function App() {
 
   return (
     <div>
-      <Notification />
       {user
         ?
         <>
