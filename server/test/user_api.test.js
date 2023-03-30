@@ -662,3 +662,92 @@ describe('When sender device is added to user', () => {
     expect(userFromDb.senderDeviceIds).toHaveLength(lengthAtStart)
   })
 })
+
+describe('When sender device is removed from user', () => {
+
+  test('Sender device removal succeeds with correct values', async () => {
+    const userAtStart = await helper.userInDb(USERID)
+    const lengthAtStart = userAtStart.senderDeviceIds.length
+
+    await api
+        .put(`/api/users/${USERID}/deleteSenderDevice`)
+        .set('Authorization', `Bearer ${ADMINTOKEN}`)
+        .send({
+          senderDeviceId: 'E00208B4'
+        })
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+      const userFromDb = await helper.userInDb(USERID)
+      expect(userFromDb.senderDeviceIds).not.toContain('E00208B4')
+      expect(userFromDb.senderDeviceIds).toHaveLength(lengthAtStart - 1)
+  })
+
+  test('Sender device removal fails with invalid token', async () => {
+    const userAtStart = await helper.userInDb(USERID)
+    const lengthAtStart = userAtStart.senderDeviceIds.length
+
+    const response = await api
+      .put(`/api/users/${USERID}/deleteSenderDevice`)
+      .set('Authorization', `Bearer ${USERTOKEN}`)
+      .send({
+        senderDeviceId: 'E00208B4'
+      })
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toBe('you don´t have rights for this operation')
+
+    const userFromDb = await helper.userInDb(USERID)
+    expect(userFromDb.senderDeviceIds).toHaveLength(lengthAtStart)
+  })
+
+  test('Sender device removal fails if sender device id is not given', async () => {
+    const userAtStart = await helper.userInDb(USERID)
+    const lengthAtStart = userAtStart.senderDeviceIds.length
+
+    const response = await api
+      .put(`/api/users/${USERID}/deleteSenderDevice`)
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send({})
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toBe('sender device id must be given')
+
+    const userFromDb = await helper.userInDb(USERID)
+    expect(userFromDb.senderDeviceIds).toHaveLength(lengthAtStart)
+  })
+
+  test('Sender device removal fails if sender device id is not in user', async () => {
+    const userAtStart = await helper.userInDb(USERID)
+    const lengthAtStart = userAtStart.senderDeviceIds.length
+
+    const response = await api
+      .put(`/api/users/${USERID}/deleteSenderDevice`)
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send({
+        senderDeviceId: '123456e9ff989'
+      })
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toBe('sender device id not found in user')
+
+    const userFromDb = await helper.userInDb(USERID)
+    expect(userFromDb.senderDeviceIds).toHaveLength(lengthAtStart)
+  })
+
+  test('Sender device removal fails with wrong token', async () => {
+    const userAtStart = await helper.userInDb(USERID)
+    const lengthAtStart = userAtStart.senderDeviceIds.length
+    const response = await api
+
+      .put(`/api/users/${USERID}/deleteSenderDevice`)
+      .set('Authorization', `Bearer ${WRONGTOKEN}`)
+      .send({
+        senderDeviceId: 'E00208B4'
+      })
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toBe('invalid token')
+    const userFromDb = await helper.userInDb(USERID)
+    expect(userFromDb.senderDeviceIds).toHaveLength(lengthAtStart)
+  })
+})

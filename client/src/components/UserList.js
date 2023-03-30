@@ -14,13 +14,24 @@ import userService from '../services/userService'
 import Modal from '@mui/material/Modal'
 import UserListSenders from './UserListSenders'
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 500,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 5,
+}
 
 const UserList = () => {
   const users = useSelector((state) => state.users)
   const [userDeletionAllowed, setUserDeletionAllowed] = useState(false)
   const dispatch = useDispatch()
   const [open, setOpen] = useState(false)
-  const [currentRow, setCurrentRow] = useState(null)
+  const [user, setUser] = useState(null)
   const handleClose = () => setOpen(false)
 
   useEffect(() => {
@@ -105,28 +116,30 @@ const UserList = () => {
             size: 100,
           },
         }}
-        renderRowActions={({ row }) => (
-          <Box>
-            <Tooltip arrow placement="right" title="Poista">
-              <IconButton
-                data-cy={`deleteUser ${row.original.username}`}
-                color={userDeletionAllowed ? 'error' : '#e0e0e0'}
-                onClick={() => userDeletionAllowed && removeUser(row.original)}
-              >
-                <Delete />
-              </IconButton>
-            </Tooltip>
-            <Tooltip arrow placement="right" title="Näytä lähettimet">
-              <IconButton
-                data-cy={`show senders of ${row.original.username}`}
-                onClick={() => {setCurrentRow(row.original) ; setOpen(true)}}
-                color={'primary'}
-              >
-                <ShowChart />
-              </IconButton>
-            </Tooltip>
-          </Box>
-        )}
+        renderRowActions={({ row }) => {
+          return (
+            <Box>
+              <Tooltip arrow placement="right" title="Poista">
+                <IconButton
+                  data-cy={`deleteUser ${row.original.username}`}
+                  color={userDeletionAllowed ? 'error' : '#e0e0e0'}
+                  onClick={() => userDeletionAllowed && removeUser(row.original)}
+                >
+                  <Delete />
+                </IconButton>
+              </Tooltip>
+              <Tooltip arrow placement="right" title="Näytä lähettimet">
+                <IconButton
+                  data-cy={`show senders of ${row.original.username}`}
+                  onClick={() => { setUser(row.original); setOpen(true) }}
+                  color={'primary'}
+                >
+                  <ShowChart />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          )
+        }}
         renderTopToolbarCustomActions={() => (
           <Box sx={{ display: 'flex', gap: '1rem' }}>
             <p>Käyttäjien poisto sallittu</p>
@@ -142,7 +155,9 @@ const UserList = () => {
           open={open}
           onClose={handleClose}
         >
-          <UserListSenders row={currentRow} />
+          <Box sx={style}>
+            <UserListSenders user={user}/>
+          </Box>
         </Modal>
       )}
     </div>
