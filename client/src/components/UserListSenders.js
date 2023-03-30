@@ -1,41 +1,42 @@
-import { Box , IconButton } from '@mui/material'
+import { IconButton } from '@mui/material'
+import { useState } from 'react'
 import Typography from '@mui/material/Typography'
 import { Delete } from '@mui/icons-material'
+import TextField from '@mui/material/TextField'
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 500,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 5,
-}
 
-const UserListSenders = (row) => {
-  console.log(row)
+const UserListSenders = ({ user }) => {
+  const [senderId, SetsenderdId]  = useState('')
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    SetsenderdId(event.target.value)
+    console.log(senderId)
+  }
   return (
     <>
-      <Box sx={style}>
-        <Typography variant="h6" component="h2">
-          Käyttäjän {row.row.firstName} anturit
-        </Typography>
-        <Typography sx={{ mt: 2 }}>
-          {
-            row.row.senderDeviceIds.map((senderDeviceId, index) => (
-              <li key={index}>
-                {senderDeviceId}
-                <IconButton
-                >
-                  <Delete />
-                </IconButton>
-              </li>
-            ))
-          }
-        </Typography>
-      </Box>
+
+      <Typography variant="h6" component="h2">
+          Käyttäjän {user.firstName} anturit
+      </Typography>
+      <Typography sx={{ mt: 2 }}>
+        {
+          user.senderDeviceIds.map((senderDeviceId, index) => (
+            <li key={index}>
+              {senderDeviceId}
+              <IconButton
+              >
+                <Delete />
+              </IconButton>
+            </li>
+          ))
+        }
+      </Typography>
+
+      <form onSubmit={handleSubmit}>
+        <TextField label="Lisää lähetin" onChange={({ target }) => SetsenderdId(target.value)}/>
+      </form>
+
     </>
   )
 }
