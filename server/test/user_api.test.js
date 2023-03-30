@@ -590,3 +590,75 @@ describe('When user info is changed', () => {
     expect(response.body.error).toBe('invalid userInputType')
   })
 })
+
+describe('When sender device is added to user', () => {
+  test('SENDER DEVICE ADDITION succeeds with correct values', async () => {
+    const userAtStart = await helper.userInDb(USERID)
+    const lengthAtStart = userAtStart.senderDeviceIds.length
+
+    const response = await api
+      .put(`/api/users/${USERID}/addSenderDevice`)
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send({
+        senderDeviceId: '123456789'
+      })
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.senderDeviceIds).toContain('123456789')
+
+    const userFromDb = await helper.userInDb(USERID)
+    expect(userFromDb.senderDeviceIds).toHaveLength(lengthAtStart + 1)
+  })
+
+  test('SENDER DEVICE ADDITION fails with invalid token', async () => {
+    const userAtStart = await helper.userInDb(USERID)
+    const lengthAtStart = userAtStart.senderDeviceIds.length
+
+    const response = await api
+      .put(`/api/users/${USERID}/addSenderDevice`)
+      .set('Authorization', `Bearer ${USERTOKEN}`)
+      .send({
+        senderDeviceId: '123456789'
+      })
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toBe('you don´t have rights for this operation')
+
+    const userFromDb = await helper.userInDb(USERID)
+    expect(userFromDb.senderDeviceIds).toHaveLength(lengthAtStart)
+  })
+
+  test('SENDER DEVICE ADDITION fails if sender device id is not given', async () => {
+    const userAtStart = await helper.userInDb(USERID)
+    const lengthAtStart = userAtStart.senderDeviceIds.length
+
+    const response = await api
+      .put(`/api/users/${USERID}/addSenderDevice`)
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send({})
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toBe('sender device id must be given')
+
+    const userFromDb = await helper.userInDb(USERID)
+    expect(userFromDb.senderDeviceIds).toHaveLength(lengthAtStart)
+  })
+
+  test('SENDER DEVICE ADDITION fails if sender device id already added to user', async () => {
+    const userAtStart = await helper.userInDb(USERID)
+    const lengthAtStart = userAtStart.senderDeviceIds.length
+
+    const response = await api
+      .put(`/api/users/${USERID}/addSenderDevice`)
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send({
+        senderDeviceId: 'E00208B4'
+      })
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toBe('sender device id already added to user')
+
+    const userFromDb = await helper.userInDb(USERID)
+    expect(userFromDb.senderDeviceIds).toHaveLength(lengthAtStart)
+  })
+})
