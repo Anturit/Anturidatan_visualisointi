@@ -91,7 +91,7 @@ describe('When there is initially two senders at db', () => {
     expect(response.body.error).toContain('this user is not the owner of the device')
   })
 
-  test('get sender by "device" succees if USER login and USER owns the device', async () => {
+  test('get sender by "device" succeeds if USER login and USER owns the device', async () => {
     await api
       .get('/api/senders/E00208B4')
       .set('Authorization', `Bearer ${USERTOKEN}`)

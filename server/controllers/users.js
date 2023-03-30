@@ -185,4 +185,31 @@ usersRouter.put('/:id/addSenderDevice', adminCredentialsValidator, async (reques
   response.status(200).json(changedUser)
 })
 
+usersRouter.put('/:id/deleteSenderDevice', adminCredentialsValidator, async (request, response) => {
+  const senderDeviceId = request.body.senderDeviceId
+  const userId = request.params.id
+  const user = await User.findById(userId)
+
+  if (!senderDeviceId) {
+    return response.status(400).json({
+      error: 'sender device id must be given'
+    })
+  }
+
+  if (!user.senderDeviceIds.includes(senderDeviceId)) {
+    return response.status(400).json({
+      error: 'sender device id not found in user'
+    })
+  }
+
+  await User.updateOne(
+    { _id: userId },
+    { $pull: { senderDeviceIds: senderDeviceId } },
+    { new: true }
+  )
+
+  return response.status(200).json({ message: 'sender device id was deleted successfully' })
+
+})
+
 module.exports = usersRouter

@@ -8,6 +8,7 @@ senderRouter.get('/', adminCredentialsValidator, async (request, response) => {
   response.json(senders)
 })
 
+// User and Admin route to get all sender logs from a device
 senderRouter.get('/:id', async (request, response) => {
   const user = request.user
 
@@ -24,5 +25,6 @@ senderRouter.get('/:id', async (request, response) => {
   }
   response.json(device)
 })
+
 
 module.exports = senderRouter
