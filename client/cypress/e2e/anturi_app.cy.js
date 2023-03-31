@@ -299,7 +299,7 @@ describe('Anturi app', function () {
         cy.get('[data-cy="show senders of user@user.com"]').click()
         cy.contains('E00208B4')
       })
-      describe.only('and show senders icon is clicked', function () {
+      describe('and show senders icon is clicked', function () {
         beforeEach(function () {
           cy.get('[data-cy="show senders of user@user.com"]').click()
         })
