@@ -108,6 +108,12 @@ const updateUserDetails = async (user_id, newObject) => {
   return response.data
 }
 
+const removeSenderDeviceId = async (user_id, senderDeviceId) => {
+  const response = await axios.put(`${baseUrl}/${user_id}/deleteSenderDevice`, { senderDeviceId: senderDeviceId }, config)
+  console.log(response, 'hello')
+  return response.data
+}
+
 export default {
-  create, setToken, getUser, getAllUsers, deleteUser, changePassword, logoutLocalUser, updateUserDetails, removeToken
+  create, setToken, getUser, getAllUsers, deleteUser, changePassword, logoutLocalUser, updateUserDetails, removeToken, removeSenderDeviceId
 }
