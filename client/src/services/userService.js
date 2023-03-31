@@ -108,6 +108,42 @@ const updateUserDetails = async (user_id, newObject) => {
   return response.data
 }
 
+
+/**
+ * Remove sender device id from user's list of sender devices
+ * @param {string} user_id
+ * @param {string} senderDeviceId
+ * @returns {userObject} user object
+*/
+
+const removeSenderDevice = async (user_id, senderDeviceId) => {
+  const response = await axios.put(`${baseUrl}/${user_id}/deleteSenderDevice`, { senderDeviceId: senderDeviceId }, config)
+  console.log(response, 'hello')
+
+}
+
+/**
+ * Add sender device id to user's list of sender devices
+ * @param {string} userId
+ * @param {string} senderDeviceId
+ * @returns {userObject} user object
+*/
+
+const addSenderDevice = async (userId, senderDeviceId) => {
+  const response = await axios.put(`${baseUrl}/${userId}/addSenderDevice`, { senderDeviceId }, config)
+  return response.data
+}
+
 export default {
-  create, setToken, getUser, getAllUsers, deleteUser, changePassword, logoutLocalUser, updateUserDetails, removeToken
+  create,
+  setToken,
+  getUser,
+  getAllUsers,
+  deleteUser,
+  changePassword,
+  logoutLocalUser,
+  updateUserDetails,
+  removeToken,
+  removeSenderDevice,
+  addSenderDevice
 }
