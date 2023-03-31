@@ -299,7 +299,37 @@ describe('Anturi app', function () {
         cy.get('[data-cy="show senders of user@user.com"]').click()
         cy.contains('E00208B4')
       })
+      describe.only('and show senders icon is clicked', function () {
+        beforeEach(function () {
+          cy.get('[data-cy="show senders of user@user.com"]').click()
+        })
+        it('sender device addition to user succeeds with valid sender device id', function () {
+          cy.get('[data-cy="addSender"]').type('123456789{enter}')
+          cy.contains('123456789')
+          cy.contains('Lähetin 123456789 lisätty käyttäjälle UserTest')
+        })
+        it('sender device addition to user fails when sender device id is not typed', function () {
+          cy.get('[data-cy="addSender"]').type('{enter}')
+          cy.contains('Lähettimen tunnus puuttuu')
+        })
+        it('sender device addition to user fails when sender device id is already added to user', function () {
+          cy.get('[data-cy="addSender"]').type('E00208B4{enter}')
+          cy.contains('Lähetin on jo lisätty käyttäjälle UserTest')
+        })
+        it('sender device deletion from user succeeds', function () {
+          cy.get('[data-cy^="deleteSender"]').eq(0).click()
+          cy.contains('Lähetin E00208B4 poistettu käyttäjältä UserTest')
+        })
+        it('sender can be added and deleted from user without refreshing the page', function () {
+          cy.get('[data-cy="addSender"]').type('123456789{enter}')
+          cy.contains('Lähetin 123456789 lisätty käyttäjälle UserTest')
+          cy.contains('Lähetin 123456789')
+          const deviceIndexToDelete = 1
+          cy.get('[data-cy^="deleteSender"]').eq(deviceIndexToDelete).click()
+          cy.contains('Lähetin 123456789 poistettu käyttäjältä UserTest')
+      })
     })
+  })
 
     describe('and user registeration form is open', function () {
       beforeEach(function () {
