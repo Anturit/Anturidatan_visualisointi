@@ -37,18 +37,34 @@ const UserListSenders = ({ user }) => {
     }
   }
 
+  const handleDeleteDevice = (index) => {
+    try {
+      const senderDeviceId = senderDeviceIds[index]
+      userService.removeSenderDevice(user.id, senderDeviceId)
+      const updatedSenderDeviceIds = senderDeviceIds.filter((id, i) => i !== index)
+      setSenderDeviceIds(updatedSenderDeviceIds)
+      dispatch(setNotification(`Lähetin ${senderDeviceId} poistettu käyttäjältä ${user.firstName}`, 3500, 'success'))
+    } catch (err) {
+      if (err.response.data.error === 'sender device id not found') {
+        dispatch(setNotification('Lähetintä ei löytynyt', 3500, 'alert'))
+      }
+      if (err.response.data.error === 'sender device id not found in user') {
+        dispatch(setNotification('Lähetin ei löytynyt käyttäjältä', 3500, 'alert'))
+      }
+    }
+  }
+
   return (
     <>
       <Typography variant="h6" component="h2">
-          Käyttäjän {user.firstName} anturit
+          Käyttäjän {user.firstName} lähettimet
       </Typography>
-      <Typography sx={{ mt: 2 }}>
+      <Typography sx={{ mt: 2 }} data-cy="senderDeviceList">
         {
           senderDeviceIds.map((senderDeviceId, index) => (
-            <li key={index}>
+            <li key={index} data-cy={`senderDevice-${index}`}>
               {senderDeviceId}
-              <IconButton
-              >
+              <IconButton onClick={() => handleDeleteDevice(index)} data-cy='deleteSender'>
                 <Delete />
               </IconButton>
             </li>
