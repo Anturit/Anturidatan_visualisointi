@@ -8,12 +8,21 @@ import { setNotification } from '../reducers/notificationReducer'
 import { setUsers } from '../reducers/usersReducer'
 import userService from '../services/userService'
 
+/**
+ * Lists selected user's senders to admin on /users route
+ * @param {Object} user
+ * @returns {JSX.Element} renders inside Modal component
+ */
 const UserListSenders = ({ user }) => {
   const [senderDeviceIds, setSenderDeviceIds] = useState(user.senderDeviceIds)
   const users = useSelector((state) => state.users)
   const dispatch = useDispatch()
   const textFieldRef = useRef(null)
 
+  /**
+   * Event handler for adding new sender to user
+   * @param {onSubmit} event
+   */
   const handleSenderDeviceAddition = async (event) => {
     event.preventDefault()
     const senderDeviceId = textFieldRef.current.value
@@ -40,7 +49,7 @@ const UserListSenders = ({ user }) => {
   return (
     <>
       <Typography variant="h6" component="h2">
-          Käyttäjän {user.firstName} anturit
+          Käyttäjän {user.firstName} lähettimet
       </Typography>
       <Typography sx={{ mt: 2 }}>
         {
