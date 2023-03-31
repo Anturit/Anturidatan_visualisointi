@@ -33,7 +33,7 @@ const SensorChart = ({ parameter, ids, logs }) => {
     <div>
       <p><b>{ TRANSLATE[parameter] }</b></p>
       <LineChart
-        width={500}
+        width={600}
         height={300}
         data={logs}
         margin={{
