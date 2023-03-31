@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from 'react'
-import { setNotification } from '../reducers/notificationReducer'
 import {
   Checkbox,
   IconButton,
@@ -7,6 +6,7 @@ import {
   Box
 } from '@mui/material'
 import { useSelector, useDispatch } from 'react-redux'
+import { setNotification } from '../reducers/notificationReducer'
 import { setUsers } from '../reducers/usersReducer'
 import { Delete, ShowChart } from '@mui/icons-material'
 import MaterialReactTable from 'material-react-table'
@@ -32,6 +32,7 @@ const UserList = () => {
   const dispatch = useDispatch()
   const [open, setOpen] = useState(false)
   const [user, setUser] = useState(null)
+  const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
   useEffect(() => {
@@ -131,7 +132,7 @@ const UserList = () => {
               <Tooltip arrow placement="right" title="Näytä lähettimet">
                 <IconButton
                   data-cy={`show senders of ${row.original.username}`}
-                  onClick={() => { setUser(row.original); setOpen(true) }}
+                  onClick={() => { setUser(row.original); handleOpen() }}
                   color={'primary'}
                 >
                   <ShowChart />
@@ -156,7 +157,7 @@ const UserList = () => {
           onClose={handleClose}
         >
           <Box sx={style}>
-            <UserListSenders user={user}/>
+            <UserListSenders user={user} />
           </Box>
         </Modal>
       )}
@@ -165,4 +166,3 @@ const UserList = () => {
 }
 
 export default UserList
-
