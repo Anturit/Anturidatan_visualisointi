@@ -327,9 +327,9 @@ describe('Anturi app', function () {
           const deviceIndexToDelete = 1
           cy.get('[data-cy^="deleteSender"]').eq(deviceIndexToDelete).click()
           cy.contains('Lähetin 123456789 poistettu käyttäjältä UserTest')
+        })
       })
     })
-  })
 
     describe('and user registeration form is open', function () {
       beforeEach(function () {
