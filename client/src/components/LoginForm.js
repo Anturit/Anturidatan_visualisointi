@@ -6,7 +6,12 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import userService from '../services/userService'
 import Notification from './Notification'
-
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+//import Typography from '@mui/material/Typography'
+import Container from '@mui/material/Container'
+import Logo from '../assets/kymppilogo_square.png'
 /**
  * @typedef {import('../services/userService').userObject} userObject
  */
@@ -16,6 +21,7 @@ const LoginForm = () => {
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
   const navigate = useNavigate()
+
   /**
    * @param {{username: string, password: string}} credentials
    * @returns {userObject}
@@ -35,6 +41,7 @@ const LoginForm = () => {
   */
   const handleLogin = async (loginEvent) => {
     loginEvent.preventDefault()
+
     try {
       const user = await login(
         { username, password }
@@ -77,34 +84,65 @@ const LoginForm = () => {
 
   return (
     <>
-      <Notification/>
-      <form onSubmit={handleLogin}>
-        <div>
-          käyttäjänimi
-          <input
-            type={'text'}
-            value={username}
-            id='username'
-            name='username'
-            data-cy='username'
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          salasana
-          <input
-            type={'password'}
-            value={password}
-            id='password'
-            name='password'
-            data-cy='password'
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <div>
-          <button type="submit" data-cy="login">Kirjaudu sisään</button>
-        </div>
-      </form>
+
+      <Container>
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <img src={Logo} style={{ width: 200, height: 200 }} alt="Kymppiremontit ogo" />
+          <Notification/>
+        </Box>
+      </Container>
+      <Container component="main" maxWidth="xs">
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+
+          <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id='username'
+              name='username'
+              data-cy='username'
+              onChange={({ target }) => setUsername(target.value)}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Salasana"
+              type="password"
+              name="password"
+              id='password'
+              data-cy='password'
+              onChange={({ target }) => setPassword(target.value)}
+              autoComplete="current-password"
+            />
+            <Button
+              type="submit"
+              color="error"
+              data-cy="login"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+            Kirjaudu sisään
+            </Button >
+          </Box>
+        </Box>
+      </Container>
     </>
   )
 }
