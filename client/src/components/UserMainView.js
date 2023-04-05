@@ -1,67 +1,60 @@
 import { useSelector } from 'react-redux'
 import { useState, useEffect, useMemo } from 'react'
-import {
-  Box,
-  Slider
-} from '@mui/material'
+import { Box } from '@mui/material'
 import SenderDropdown from './SenderDropdown'
 import SenderList from './SenderList'
 import senderService from '../services/senderService'
+import TimePeriodMenu from './TimePeriodMenu'
 
 /**
  * @typedef {import('../services/userService').userObject} userObject
- */
+*/
 
 const UserMainView = () => {
   /**
    * Renders user details from user object imported from Redux store.
    * @const
    * @type {userObject}
-   */
+  */
   const user = useSelector((state) => state.loginForm.user)
 
   const [senders, setSenders] = useState([])
   const [sliderValue, setSliderValue] = useState(4)
+  const [selectedDate, setSelectedDate] = useState(new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDate(),
+    0, 0, 0, 0
+  ))
 
-  const filterSenders = (senders, sliderValue) => {
-    if (sliderValue === 4) return senders
+  const getCurrentWeek = (date) => {
+    const startDate = new Date(date.getFullYear(), 0, 1)
+    var days = Math.floor((date - startDate) /
+        (24 * 60 * 60 * 1000))
 
-    const sortedSenders = senders
-      .sort((a,b) => new Date(a.date) - new Date(b.date))
-    const lastSender = sortedSenders[senders.length - 1]
-    const decreaseValue = {
-      1: 24*60*60*1000, // 1 day in milliseconds
-      2: 7*24*60*60*1000, // 1 week in milliseconds
-      3: 31*7*24*60*60*1000, // 1 month in milliseconds
-    }
-    const timeToCompare = (new Date(lastSender.date)).getTime() - decreaseValue[sliderValue]
-    return sortedSenders
-      .filter(
-        (sender) => (timeToCompare) < (new Date(sender.date)).getTime()
-      )
+    return Math.ceil(days / 7)
+  }
+  const senderFilter = (senderDate) => {
+    const sameDay = senderDate.getDay() === selectedDate.getDay()
+    const sameWeek = getCurrentWeek(senderDate) === getCurrentWeek(selectedDate)
+    const sameMonth = senderDate.getMonth() === selectedDate.getMonth()
+    const sameYear = senderDate.getFullYear() === selectedDate.getFullYear()
+    if ( !sameYear ) return false
+    if ( sliderValue <= 3 && !sameMonth) return false
+    if ( sliderValue <= 2 && !sameWeek) return false
+    if ( sliderValue <= 1 && !sameDay) return false
+    return true
+  }
+  const filterSenders = (senders) => {
+    if (senders.length === 0) return senders
+    return senders.filter(
+      sender => senderFilter(new Date(sender.date))
+    )
   }
   const visibleSenders = useMemo(
-    () => filterSenders(senders, sliderValue),
-    [senders, sliderValue]
+    () => filterSenders(senders),
+    [senders, sliderValue, selectedDate]
   )
-  // Convert expirationDate to Finnish locale date format
-  //const expirationDate = new Date(user.expirationDate).toLocaleDateString('fi-FI')
-
-  /**
-   * Function to fetch sender logs for user
-   * @returns sender object with all fields.
-   */
-  useEffect(() => {
-    if (user) {
-      const fetchSenderData = async () => {
-        const data = await senderService.getOneSenderLogs(
-          user.senderDeviceIds[0]
-        )
-        setSenders(data)
-      }
-      fetchSenderData()
-    }
-  }, [user])
 
   /**
    * Function to fetch sender logs for user
@@ -71,41 +64,42 @@ const UserMainView = () => {
    * @returns {Object} sender
    */
   const fetchSenderById = async (id) => {
-    const sender = await senderService.getOneSenderLogs(id)
-    setSenders(sender)
-  }
-  const label = (value) => ({
-    1: 'päivä',
-    2: 'viikko',
-    3: 'kuukausi',
-    4: 'koko aika'
-  }[value])
+    const data = await senderService.getOneSenderLogs(id)
+    const dataByDateAscending = data
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    setSenders(dataByDateAscending)
+    setSelectedDate(
+      new Date(dataByDateAscending[dataByDateAscending.length-1].date)
+    )
 
-  const handleSliderChange = (event, newValue) => {
-    if (typeof newValue === 'number') {
-      setSliderValue(newValue)
-    }
+    console.log('last sender', dataByDateAscending[dataByDateAscending.length - 1].date)
+    console.log('first sender', dataByDateAscending[0].date)
   }
+
+  /**
+   * Function to fetch sender logs for user
+   * @returns sender object with all fields.
+   */
+  useEffect(() => {
+    fetchSenderById(user.senderDeviceIds[0])
+  }, [])
 
   return (
     <>
-      <Box maxWidth="sm">
+      <Box maxWidth="sm" p={2}>
         {user.senderDeviceIds.length > 1 &&
         <SenderDropdown
           senderDeviceIds={user.senderDeviceIds}
           fetchSenderById={fetchSenderById}
         />
         }
-        <Slider
-          value={sliderValue}
-          min={1}
-          step={1}
-          max={4}
-          track={false}
-          getAriaValueText={label}
-          valueLabelFormat={label}
-          valueLabelDisplay="on"
-          onChange={handleSliderChange}
+        <TimePeriodMenu
+          senders={senders}
+          visibleSenders={visibleSenders}
+          sliderValue={sliderValue}
+          setSliderValue={setSliderValue}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
         />
         <SenderList senders={visibleSenders} />
       </Box>
