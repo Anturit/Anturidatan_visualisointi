@@ -1,8 +1,8 @@
-const SenderDropdown = ({ senderDeviceIds, fetchSenderById })  => {
+const SenderDropdown = ({ senderDeviceIds, setSelectedSenderId })  => {
 
   const handleSenderChange = (event) => {
     event.preventDefault()
-    fetchSenderById(event.target.value)
+    setSelectedSenderId(event.target.value)
   }
 
   return (
