@@ -6,7 +6,7 @@ import {
   Typography,
 } from '@mui/material'
 import { Link } from 'react-router-dom'
-import Logo from '../assets/kymppi_logo.png'
+import Logo from '../assets/kymppilogo_square_small.png'
 import Box from '@mui/material/Box'
 
 function Navbar() {
@@ -15,7 +15,7 @@ function Navbar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar style={{ backgroundColor: '#e60d2e' }} position="static">
         <Toolbar>
           <>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>

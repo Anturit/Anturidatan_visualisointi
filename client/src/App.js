@@ -64,7 +64,7 @@ function App() {
         ?
         <>
           <Navbar />
-          <Button variant="contained" onClick={() => userService.logoutLocalUser(dispatch)}
+          <Button  sx={{ bgcolor: 'gray' }} variant="contained" onClick={() => userService.logoutLocalUser(dispatch)}
             data-cy='logout'>Kirjaudu ulos käyttäjältä {user.firstName} {user.lastName}</Button>
           <Notification />
           <Routes>
