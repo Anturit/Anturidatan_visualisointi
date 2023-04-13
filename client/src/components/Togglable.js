@@ -1,5 +1,5 @@
 import { useState } from 'react'
-
+import Button from '@mui/material/Button'
 /**
  * Function that creates Toggleable component
   * @param {Object} props - Props object containing children, buttonLabel and id.
@@ -23,15 +23,15 @@ const Togglable = (props) => {
   return (
     <>
       <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility} data-cy={`open-togglable-${props.id}`}>
+        <Button color="secondary" variant="contained" onClick={toggleVisibility} data-cy={`open-togglable-${props.id}`}>
           {props.buttonLabel}
-        </button>
+        </Button>
       </div>
       <div style={showWhenVisible}>
         {props.children}
-        <button onClick={toggleVisibility} data-cy={`close-togglable-${props.id}`}>
+        <Button color="secondary" variant="contained"   onClick={toggleVisibility} data-cy={`close-togglable-${props.id}`}>
           Peruuta
-        </button>
+        </Button>
       </div>
     </>
   )

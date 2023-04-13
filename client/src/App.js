@@ -18,6 +18,7 @@ import jwt_decode from 'jwt-decode'
 import UserMainView from './components/UserMainView'
 import Navbar from './components/Navbar'
 import Button from '@mui/material/Button'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
 
 function App() {
   const user = useSelector((state) => state.loginForm.user)
@@ -56,15 +57,24 @@ function App() {
     }
 
   }, [])
-
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#e60d2e'
+      },
+      secondary: {
+        main: '#75787b'
+      }
+    }
+  })
 
   return (
     <div>
       {user
         ?
-        <>
+        <><ThemeProvider theme={theme}>
           <Navbar />
-          <Button variant="contained" onClick={() => userService.logoutLocalUser(dispatch)}
+          <Button  color="secondary" variant="contained" onClick={() => userService.logoutLocalUser(dispatch)}
             data-cy='logout'>Kirjaudu ulos käyttäjältä {user.firstName} {user.lastName}</Button>
           <Notification />
           <Routes>
@@ -76,6 +86,7 @@ function App() {
               ? <Navigate replace to="/users" />
               : <Navigate replace to="/user" />}/>
           </Routes>
+        </ThemeProvider>
         </>
         : <LoginForm />
       }

@@ -6,7 +6,7 @@ import {
   Typography,
 } from '@mui/material'
 import { Link } from 'react-router-dom'
-import Logo from '../assets/kymppi_logo.png'
+import Logo from '../assets/kymppilogo_square_small.png'
 import Box from '@mui/material/Box'
 
 function Navbar() {
