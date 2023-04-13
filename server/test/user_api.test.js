@@ -591,6 +591,41 @@ describe('When user info is changed', () => {
   })
 })
 
+describe.only('When user expiration date is changed', () => {
+  test('EXPIRATION DATE CHANGE succeeds with correct values', async () => {
+    const response = await api
+      .put(`/api/users/${USERID}/changeExpirationDate`)
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send({
+        newExpirationDate: '3000-04-20T06:12:00.000Z'
+      })
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.expirationDate).toBe('3000-04-20T06:12:00.000Z')
+  })
+
+  test('EXPIRATION DATE CHANGE fails with invalid token', async () => {
+    const response = await api
+      .put(`/api/users/${USERID}/changeExpirationDate`)
+      .set('Authorization', `Bearer ${USERTOKEN}`)
+      .send({
+        newExpirationDate: '3000-04-20T06:12:00.000Z'
+      })
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toBe('you don´t have rights for this operation')
+  })
+
+  test('EXPIRATION DATE CHANGE fails if new expiration date is not given', async () => {
+    const response = await api
+      .put(`/api/users/${USERID}/changeExpirationDate`)
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toBe('new expiration date must be given')
+  })
+})
+
 describe('When sender device is added to user', () => {
   test('SENDER DEVICE ADDITION succeeds with correct values', async () => {
     const userAtStart = await helper.userInDb(USERID)
@@ -670,16 +705,16 @@ describe('When sender device is removed from user', () => {
     const lengthAtStart = userAtStart.senderDeviceIds.length
 
     await api
-        .put(`/api/users/${USERID}/deleteSenderDevice`)
-        .set('Authorization', `Bearer ${ADMINTOKEN}`)
-        .send({
-          senderDeviceId: 'E00208B4'
-        })
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
-      const userFromDb = await helper.userInDb(USERID)
-      expect(userFromDb.senderDeviceIds).not.toContain('E00208B4')
-      expect(userFromDb.senderDeviceIds).toHaveLength(lengthAtStart - 1)
+      .put(`/api/users/${USERID}/deleteSenderDevice`)
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send({
+        senderDeviceId: 'E00208B4'
+      })
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const userFromDb = await helper.userInDb(USERID)
+    expect(userFromDb.senderDeviceIds).not.toContain('E00208B4')
+    expect(userFromDb.senderDeviceIds).toHaveLength(lengthAtStart - 1)
   })
 
   test('Sender device removal fails with invalid token', async () => {
