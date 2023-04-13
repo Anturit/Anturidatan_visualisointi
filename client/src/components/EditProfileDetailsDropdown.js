@@ -3,9 +3,7 @@ import userService from '../services/userService'
 import { setNotification } from '../reducers/notificationReducer'
 import { useSelector, useDispatch } from 'react-redux'
 import { setUser } from '../reducers/loginFormReducer'
-import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
-import MenuItem from '@material-ui/core/menuitem'
+
 /**
   * Component to render dropdown menu for user to select which user details to edit.
  */
@@ -78,103 +76,45 @@ const EditProfileDetailsDropdown = () => {
     <div>
       <h2>Valitse muokattava tieto</h2>
       <div>
-        <TextField
-          select
-          label="Valitse tieto"
-          value={userInputType}
-          onChange={handleSelectChange}
-          data-cy='EditUserDetailsDropdown'
-          fullWidth
-          variant="outlined"
-        >
-          <MenuItem value='address'>Osoite</MenuItem>
-          <MenuItem value='postalCode'>Postinumero</MenuItem>
-          <MenuItem value='city'>Kaupunki</MenuItem>
-        </TextField>
+        <select name='details' id='details' onChange={handleSelectChange} data-cy='EditUserDetailsDropdown'>
+          <option key='address' value='address'>Osoite</option>
+          <option key='postalCode' value='postalCode'>Postinumero</option>
+          <option key='city' value='city'>Kaupunki</option>
+        </select>
       </div>
 
       {userInputType === 'address' &&
-        <form onSubmit={handleSubmit} data-cy='addressForm'>
-          <small>Uusi osoite</small>
-          <div>
-            <TextField
-              type="text"
-              value={userInput}
-              onChange={handleInputChange}
-              label="Uusi osoite"
-              data-cy='newAddress'
-              fullWidth
-              variant="outlined"
-            />
-            <Button
-              type="submit"
-              onClick={handleSubmit}
-              data-cy='addressSubmitButton'
-              variant="contained"
-              color="primary"
-              fullWidth
-            >
-              Tallenna
-            </Button>
-          </div>
-        </form>
+      <form onSubmit={handleSubmit} data-cy='addressForm'>
+        <small>Uusi osoite</small>
+        <div>
+          <input type="text" value={userInput} onChange={handleInputChange} data-cy='newAddress'/>
+          <button type="submit" onClick={handleSubmit} data-cy='addressSubmitButton'>Tallenna</button>
+        </div>
+      </form>
       }
 
       {userInputType === 'postalCode' &&
-        <form onSubmit={handleSubmit} data-cy='postalCodeForm'>
-          <small>Uusi postinumero</small>
-          <div>
-            <TextField
-              type="text"
-              value={userInput}
-              onChange={handleInputChange}
-              label="Uusi postinumero"
-              data-cy='newPostalCode'
-              fullWidth
-              variant="outlined"
-            />
-            <Button
-              type="submit"
-              onClick={handleSubmit}
-              data-cy='postalCodeSubmitButton'
-              variant="contained"
-              color="primary"
-              fullWidth
-            >
-              Tallenna
-            </Button>
-          </div>
-        </form>
+      <form onSubmit={handleSubmit} data-cy='postalCodeForm'>
+        <small>Uusi postinumero</small>
+        <div>
+          <input type="text" value={userInput} onChange={handleInputChange} data-cy='newPostalCode'/>
+          <button type="submit" onClick={handleSubmit} data-cy='postalCodeSubmitButton'>Tallenna</button>
+        </div>
+      </form>
       }
 
       {userInputType === 'city' &&
-        <form onSubmit={handleSubmit} data-cy='cityForm'>
-          <small>Uusi kaupunki</small>
-          <div>
-            <TextField
-              type="text"
-              value={userInput}
-              onChange={handleInputChange}
-              label="Uusi kaupunki"
-              data-cy='newCity'
-              fullWidth
-              variant="outlined"
-            />
-            <Button
-              type="submit"
-              onClick={handleSubmit}
-              data-cy='citySubmitButton'
-              variant="contained"
-              color="primary"
-              fullWidth
-            >
-              Tallenna
-            </Button>
-          </div>
-        </form>
+
+      <form onSubmit={handleSubmit} data-cy='cityForm'>
+        <small>Uusi kaupunki</small>
+        <div>
+          <input type="text" value={userInput} onChange={handleInputChange} data-cy='newCity'/>
+          <button type="submit" onClick={handleSubmit} data-cy='citySubmitButton'>Tallenna</button>
+        </div>
+      </form>
       }
     </div>
-  );
+  )
 }
 
-export default EditProfileDetailsDropdown;
+export default EditProfileDetailsDropdown
