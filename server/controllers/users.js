@@ -157,6 +157,26 @@ usersRouter.put('/:id', async (request, response) => {
 
 })
 
+usersRouter.put('/:id/changeExpirationDate', adminCredentialsValidator, async (request, response) => {
+  const userId = request.params.id
+  const newExpirationDate = request.body.newExpirationDate
+
+  if (!newExpirationDate) {
+    return response.status(400).json({
+      error: 'new expiration date must be given'
+    })
+  }
+
+  await User.updateOne(
+    { _id: userId },
+    { $set: { expirationDate: newExpirationDate } },
+    { new: true }
+  )
+
+  const changedUser = await User.findById(userId)
+  response.status(200).json(changedUser)
+})
+
 usersRouter.put('/:id/addSenderDevice', adminCredentialsValidator, async (request, response) => {
   const senderDeviceId = request.body.senderDeviceId
 
