@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import Togglable from './Togglable'
 import PasswordChangeForm from './PasswordChangeForm'
 import EditProfileDetailsDropdown from './EditProfileDetailsDropdown'
-
+import Typography from '@mui/material/Typography'
 /**
  * @typedef {import('../services/userService').userObject} userObject
  */
@@ -18,7 +18,9 @@ const UserProfile = () => {
 
   return (
     <>
-      <h2>Käyttäjätiedot</h2>
+      <Typography align="center"variant="h2" component="h2">
+         Käyttäjätiedot
+      </Typography>
       <p data-cy="profile_firstname">Etunimi: {user.firstName}</p>
       <p data-cy="profile_last_name">Sukunimi: {user.lastName}</p>
       <p data-cy="profile_username">Käyttäjätunnus: {user.username}</p>
