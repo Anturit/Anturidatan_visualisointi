@@ -21,7 +21,6 @@ const UserProfile = () => {
       <Typography align="center"variant="h2" component="h2">
          Käyttäjätiedot
       </Typography>
-      <h2>Käyttäjätiedot</h2>
       <p data-cy="profile_firstname">Etunimi: {user.firstName}</p>
       <p data-cy="profile_last_name">Sukunimi: {user.lastName}</p>
       <p data-cy="profile_username">Käyttäjätunnus: {user.username}</p>
