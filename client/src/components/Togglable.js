@@ -23,13 +23,13 @@ const Togglable = (props) => {
   return (
     <>
       <div style={hideWhenVisible}>
-        <Button sx={{ bgcolor: 'gray', color:'white' }} onClick={toggleVisibility} data-cy={`open-togglable-${props.id}`}>
+        <Button color="secondary" variant="contained" onClick={toggleVisibility} data-cy={`open-togglable-${props.id}`}>
           {props.buttonLabel}
         </Button>
       </div>
       <div style={showWhenVisible}>
         {props.children}
-        <Button sx={{ bgcolor: 'gray', color:'white' }}  onClick={toggleVisibility} data-cy={`close-togglable-${props.id}`}>
+        <Button color="secondary" variant="contained"   onClick={toggleVisibility} data-cy={`close-togglable-${props.id}`}>
           Peruuta
         </Button>
       </div>
