@@ -30,8 +30,6 @@ senderRouter.get('/:id/:year', async (request, response) => {
   const year = request.params.year
   const start= new Date(year, 0, 1, 0, 0, 0, 1)
   const end = new Date(year, 11, 31, 23, 59, 59, 998)
-  console.log(start)
-  console.log(end)
 
   if (user.role === 'user' && !user.senderDeviceIds.includes(request.params.id)) {
     return response.status(401).json({ error: 'this user is not the owner of the device' })
