@@ -34,9 +34,15 @@ const getOneSenderLogs = async (id) => {
   return response.data
 }
 
+const getOneSenderLogsFromYear = async (id, year) => {
+  const response = axios.get(`${baseUrl}/${id}/${year}`, config)
+  return response.data
+}
+
 export default {
   getAll,
   getOneSenderLogs,
+  getOneSenderLogsFromYear,
   removeToken,
   setToken
 }

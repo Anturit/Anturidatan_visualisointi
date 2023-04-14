@@ -591,7 +591,7 @@ describe('When user info is changed', () => {
   })
 })
 
-describe.only('When user expiration date is changed', () => {
+describe('When user expiration date is changed', () => {
   test('EXPIRATION DATE CHANGE succeeds with correct values', async () => {
     const response = await api
       .put(`/api/users/${USERID}/changeExpirationDate`)
