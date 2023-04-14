@@ -34,9 +34,24 @@ const getOneSenderLogs = async (id) => {
   return response.data
 }
 
+const getOneSenderLogsFromYear = async (id, year) => {
+  try {
+    const response = await axios.get(`${baseUrl}/${id}/${year}`, config)
+    return response.data
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      console.log('No data during this time period')
+      return []
+    } else {
+      console.log('Error fetching data:', error)
+    }
+  }
+}
+
 export default {
   getAll,
   getOneSenderLogs,
+  getOneSenderLogsFromYear,
   removeToken,
   setToken
 }
