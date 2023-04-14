@@ -42,7 +42,7 @@ const combineSensorIdAndMeasurementParameter = ( logs, measurementParameters ) =
     .sort((a,b) => (a.date > b.date) ? 1 : ((b.date > a.date) ? -1 : 0))
     .map((obj) => {
       const dataPoint = {}
-      dataPoint['date'] = format(roundToNearestMinutes(parseISO(obj['date']), { nearestTo: 1 }), 'HH:mm dd-MM-yyyy')
+      dataPoint['date'] = format(roundToNearestMinutes(parseISO(obj['date']), { nearestTo: 1 }), 'yyyy-MM-dd HH:mm')
 
       // If measurement has a value maps new Object keys from sensor ids and measurement parameter and assigns measurement value
       for (const parameter of measurementParameters) {
