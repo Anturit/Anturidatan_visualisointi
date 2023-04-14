@@ -1,8 +1,11 @@
+import React from 'react'
 import { useSelector } from 'react-redux'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 import Togglable from './Togglable'
 import PasswordChangeForm from './PasswordChangeForm'
 import EditProfileDetailsDropdown from './EditProfileDetailsDropdown'
-import Typography from '@mui/material/Typography'
+
 /**
  * @typedef {import('../services/userService').userObject} userObject
  */
@@ -15,24 +18,42 @@ const UserProfile = () => {
    */
   const user = useSelector((state) => state.loginForm.user)
 
-
   return (
-    <>
-      <Typography align="center"variant="h2" component="h2">
-         Käyttäjätiedot
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Typography align="center" variant="h2" component="h2">
+        Käyttäjätiedot
       </Typography>
-      <p data-cy="profile_firstname">Etunimi: {user.firstName}</p>
-      <p data-cy="profile_last_name">Sukunimi: {user.lastName}</p>
-      <p data-cy="profile_username">Käyttäjätunnus: {user.username}</p>
-      <p data-cy="profile_address">Osoite: {user.address}</p>
-      <p data-cy="profile_postcode">Postinumero: {user.postalCode}</p>
-      <p data-cy="profile_city">Kaupunki: {user.city}</p>
-      <p data-cy="profile_expiration_Date">Sopimus voimassa {new Date(user.expirationDate).toLocaleDateString('fi-FI')} asti. </p>
-      <Togglable buttonLabel='Muokkaa tietoja' id='editForm'>
-        <EditProfileDetailsDropdown userDetailsToShow={user} />
-        <PasswordChangeForm />
-      </Togglable>
-    </>
+      <Box sx={{ mt: 2 }}>
+        <Typography variant="h6" component="h2">
+          Etunimi: {user.firstName}
+        </Typography>
+        <Typography variant="h6" component="h2">
+          Sukunimi: {user.lastName}
+        </Typography>
+        <Typography variant="h6" component="h2">
+          Käyttäjätunnus: {user.username}
+        </Typography>
+        <Typography variant="h6" component="h2">
+          Osoite: {user.address}
+        </Typography>
+        <Typography variant="h6" component="h2">
+          Postinumero: {user.postalCode}
+        </Typography>
+        <Typography variant="h6" component="h2">
+          Kaupunki: {user.city}
+        </Typography>
+        <Typography variant="h6" component="h2">
+          Sopimus voimassa{' '}
+          {new Date(user.expirationDate).toLocaleDateString('fi-FI')} asti.
+        </Typography>
+      </Box>
+      <Box sx={{ mt: 2 }}>
+        <Togglable buttonLabel='Muokkaa tietoja' id='editForm'>
+          <EditProfileDetailsDropdown userDetailsToShow={user} />
+          <PasswordChangeForm />
+        </Togglable>
+      </Box>
+    </Box>
   )
 }
 
