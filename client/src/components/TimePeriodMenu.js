@@ -5,6 +5,13 @@ import {
   Typography
 } from '@mui/material'
 import {
+  getISOWeek,
+  isSameDay,
+  isSameISOWeek,
+  isSameMonth,
+  isSameYear
+} from 'date-fns'
+import {
   KeyboardArrowLeft,
   KeyboardArrowRight
 } from '@mui/icons-material'
@@ -15,7 +22,7 @@ export default function TimePeriodMenu(
   { selectedSenderId, setVisibleSenders }
 ) {
   const [senders, setSenders] = useState([])
-  const [sliderValue, setSliderValue] = useState(4)
+  const [sliderValue, setSliderValue] = useState(1)
   const [selectedDate, setSelectedDate] = useState(new Date(
     new Date().getFullYear(),
     new Date().getMonth(),
@@ -25,23 +32,13 @@ export default function TimePeriodMenu(
   const [matchingRegion, setMathingRegion] = useState({
     first:0, last:0
   })
-
-  /**
-   * Returns week number of given date
-   * returns 0 if date is in last week of the previous year
-   * returns 1 if date is in first full week of the year
-   * returns 52 or 53 if date is in last week of the year
-   * @param {Date} date
-   * @returns {number} week number
-   */
-  const getWeekNumber = (date) => {
-    const startDate = new Date(date.getFullYear(), 0, 1)
-    var days = Math.floor((date - startDate) /
-        (24 * 60 * 60 * 1000))
-
-    return Math.ceil(days / 7)
+  const SCALE = {
+    day: 1,
+    week: 2,
+    month: 3,
+    year: 4,
   }
-
+  Object.freeze(SCALE)
 
   /**
    * Returns date label in finnish
@@ -52,29 +49,26 @@ export default function TimePeriodMenu(
     const dayOfMonth = date.getDate()
     const month = date.getMonth() + 1
     const year = date.getFullYear()
-    const week = getWeekNumber(date)
+    const week = getISOWeek(date)
     const dayOfWeek = date.getDay()
     const dayNames = [ 'sunnuntai', 'maanantai', 'tiistai', 'keskiviikko', 'torstai', 'perjantai', 'lauantai',]
     const monthNames = ['tammikuu', 'helmikuu', 'maaliskuu', 'huhtikuu', 'toukokuu', 'kesäkuu', 'heinäkuu', 'elokuu', 'syyskuu', 'lokakuu', 'marraskuu', 'joulukuu']
     const dateLabel = {
-      1: `${dayNames[dayOfWeek]} ${dayOfMonth}.${month}.${year}`,
-      2: `${week}. viikko ${year}`,
-      3: `${monthNames[month - 1]} ${year}`,
-      4: `${year}`
+      [SCALE.day]:   `${dayNames[dayOfWeek]} ${dayOfMonth}.${month}.${year}`,
+      [SCALE.week]:  `${week}. viikko ${year}`,
+      [SCALE.month]: `${monthNames[month - 1]} ${year}`,
+      [SCALE.year]:  `${year}`
     }
     return dateLabel[sliderValue]
   }
 
   const senderLogMatcher = (senderDate) => {
-    const sameDay = senderDate.getDay() === selectedDate.getDay()
-    const sameWeek = getWeekNumber(senderDate) === getWeekNumber(selectedDate)
-    const sameMonth = senderDate.getMonth() === selectedDate.getMonth()
-    const sameYear = senderDate.getFullYear() === selectedDate.getFullYear()
-    if ( !sameYear ) return false
-    if ( sliderValue <= 3 && !sameMonth) return false
-    if ( sliderValue <= 2 && !sameWeek) return false
-    if ( sliderValue <= 1 && !sameDay) return false
-    return true
+    return {
+      [SCALE.day]:   isSameDay(senderDate, selectedDate),
+      [SCALE.week]:  isSameISOWeek(senderDate, selectedDate),
+      [SCALE.month]: isSameMonth(senderDate, selectedDate),
+      [SCALE.year]:  isSameYear(senderDate, selectedDate)
+    }[sliderValue]
   }
   const findMatchingRegion = (senders) => {
     if (senders.length === 0) return senders
