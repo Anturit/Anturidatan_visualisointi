@@ -27,6 +27,8 @@ export default function TimePeriodMenu(
     first:0, last:0
   })
 
+  console.log(visibleSenders)
+
   /**
    * Format date to finnish intl format, example: to 30.3.2023
    * @param {date} date
@@ -108,9 +110,11 @@ export default function TimePeriodMenu(
    */
   const fetchSenderById = async (id) => {
     const selectedYear = selectedDate.getFullYear()
-    const data = await senderService.getOneSenderLogsFromYear(id, selectedYear).catch((err) => console.log(err))
-    setSenders(data)
-    setSelectedDate(new Date(data[data.length-1].date))
+    const data = await senderService.getOneSenderLogsFromYear(id, selectedYear).catch(() => setSenders([]))
+    if (data !== undefined) {
+      setSenders(data)
+      setSelectedDate(new Date(data[data.length-1].date))
+    }
   }
 
   useEffect(() => {
@@ -129,7 +133,6 @@ export default function TimePeriodMenu(
 
   const increaseDate = () => {
     const currentYear = new Date().getFullYear()
-    console.log(senders.length)
     const nextYear= new Date()
     nextYear.setFullYear(selectedDate.getFullYear() + 1)
     sliderValue !== 4

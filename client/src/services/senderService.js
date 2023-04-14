@@ -35,7 +35,7 @@ const getOneSenderLogs = async (id) => {
 }
 
 const getOneSenderLogsFromYear = async (id, year) => {
-  const response = axios.get(`${baseUrl}/${id}/${year}`, config)
+  const response = await axios.get(`${baseUrl}/${id}/${year}`, config)
   return response.data
 }
 
