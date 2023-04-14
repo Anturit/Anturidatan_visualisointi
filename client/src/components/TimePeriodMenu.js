@@ -109,12 +109,8 @@ export default function TimePeriodMenu(
   const fetchSenderById = async (id) => {
     const selectedYear = selectedDate.getFullYear()
     const data = await senderService.getOneSenderLogsFromYear(id, selectedYear).catch((err) => console.log(err))
-    if (data.length > 0) {
-      setSenders(data)
-      setSelectedDate(
-        new Date(data[data.length-1].date)
-      )
-    }
+    setSenders(data)
+    setSelectedDate(new Date(data[data.length-1].date))
   }
 
   useEffect(() => {
