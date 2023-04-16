@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 import {
   LineChart,
   Line,
@@ -9,7 +10,6 @@ import {
 } from 'recharts'
 import {
   format,
-  differenceInDays,
   startOfDay,
   endOfDay,
   addHours,
@@ -17,13 +17,16 @@ import {
   addMonths,
   getDaysInMonth,
   startOfWeek,
-  endOfWeek,
+  startOfISOWeek,
+  endOfISOWeek,
   startOfMonth,
   getMonth,
   endOfMonth,
-  differenceInMonths,
   startOfYear,
-  endOfYear
+  endOfYear,
+  isSameDay,
+  isSameISOWeek,
+  isSameMonth
 } from 'date-fns'
 const COLORS = ['blue', 'crimson', 'green', 'purple', 'black']
 
@@ -104,7 +107,7 @@ const domain = (logsWithDates, scale) => {
     if (scale === SCALE.day)
       return [startOfDay(start), endOfDay(start)]
     if (scale === SCALE.week)
-      return [startOfWeek(start, { weekStartsOn : 1 }), endOfWeek(start, { weekStartsOn : 1 })]
+      return [startOfISOWeek(start), endOfISOWeek(start)]
     if (scale === SCALE.month) {
       return [startOfMonth(start), endOfMonth(start)]
     }
@@ -123,9 +126,9 @@ const domain = (logsWithDates, scale) => {
 const getScale = (logsWithDates) => {
   const start = logsWithDates[0].date
   const end = logsWithDates[logsWithDates.length - 1].date
-  if (differenceInDays(end, start) <= 1) return SCALE.day
-  if (differenceInDays(end, start) <= 7) return SCALE.week
-  if (differenceInMonths(end, start) <= 1) return SCALE.month
+  if (isSameDay(end, start)) return SCALE.day
+  if (isSameISOWeek(end, start)) return SCALE.week
+  if (isSameMonth(end, start)) return SCALE.month
   return SCALE.year
 }
 
@@ -166,7 +169,9 @@ const SensorChart = ({ parameter, ids, logs }) => {
           tickFormatter={(tick) => tickFormatter(tick, scale)}
         />
         <YAxis />
-        <Tooltip />
+        <Tooltip
+          labelFormatter={(value) => format(value, "dd/MM/yyyy 'klo' HH:mm")}
+        />
         <Legend />
         {ids
           .map((id, i) =>
