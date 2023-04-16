@@ -18,10 +18,29 @@ senderRouter.get('/:id', async (request, response) => {
 
   const device = await Sender
     .find({ device: { $in: request.params.id } })
-    .sort({ date: 'descending' })
-
+    .sort({ date: 'ascending' })
   if (device.length === 0){
     return response.status(400).json({ error: 'there´s no device with this id' })
+  }
+  response.json(device)
+})
+
+senderRouter.get('/:id/:year', async (request, response) => {
+  const user = request.user
+  const year = request.params.year
+  const start= new Date(year, 0, 1, 0, 0, 0, 1)
+  const end = new Date(year, 11, 31, 23, 59, 59, 998)
+
+  if (user.role === 'user' && !user.senderDeviceIds.includes(request.params.id)) {
+    return response.status(401).json({ error: 'this user is not the owner of the device' })
+  }
+
+  const device = await Sender
+    .find({ device: { $in: request.params.id }, date: { $gte: start, $lte: end } })
+    .sort({ date: 'ascending' })
+
+  if (device.length === 0){
+    return response.status(404).json({ error: 'no data found for the given year' })
   }
   response.json(device)
 })

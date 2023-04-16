@@ -33,6 +33,7 @@ const UserMainView = () => {
         }
         <TimePeriodMenu
           selectedSenderId={selectedSenderId}
+          visibleSenders={visibleSenders}
           setVisibleSenders={setVisibleSenders}
         />
         <SenderList senders={visibleSenders} />
