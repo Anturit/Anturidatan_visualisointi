@@ -8,6 +8,12 @@ import userService from '../services/userService'
 import { useState } from 'react'
 
 const EditUserExpirationDate = ({ user, onClose }) => {
+
+
+  const style = {
+    paddingBottom: 2,
+  }
+
   const users = useSelector((state) => state.users)
   const dispatch = useDispatch()
   const [expirationDate, setExpirationDate] = useState(user.expirationDate)
@@ -28,11 +34,12 @@ const EditUserExpirationDate = ({ user, onClose }) => {
 
   return (
     <div>
-      <Typography variant="h6" component="h2">
+      <Typography variant="h6" component="h2" sx={style}>
         Muokkaa käyttäjän {user.firstName} lisenssin vanhentumispäivää
       </Typography>
-      <Typography sx={{ mt: 2 }}>
+      <div>
         <TextField
+          data-cy='changeExpirationDate'
           id="date"
           label="Vanhentumispäivä"
           type="date"
@@ -41,13 +48,16 @@ const EditUserExpirationDate = ({ user, onClose }) => {
           }}
           onChange={(event) => { setExpirationDate(event.target.value) }}
         />
-      </Typography>
-      <Button
-        variant="contained"
-        onClick={() => handleSaveUserExpirationDate(user)}
-      >
-            Tallenna
-      </Button>
+      </div>
+      <div>
+        <Button
+          data-cy='saveExpirationDate'
+          variant="contained"
+          onClick={() => handleSaveUserExpirationDate(user)}
+        >
+              Tallenna
+        </Button>
+      </div>
     </div>
   )
 }

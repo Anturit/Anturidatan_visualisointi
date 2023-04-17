@@ -329,6 +329,20 @@ describe('Anturi app', function () {
           cy.contains('Lähetin 123456789 poistettu käyttäjältä UserTest')
         })
       })
+      describe.only('and edit icon is clicked', function () {
+        beforeEach(function () {
+          cy.get('[data-cy="edit expiration date of user@user.com"]').click()
+        })
+        it('user expiration date can be changed', function () {
+          cy.get('[data-cy="changeExpirationDate"]').type('2020-12-31')
+          cy.get('[data-cy="saveExpirationDate"]').click()
+        })
+        it('user expiration date can be changed and saved without refreshing the page', function () {
+          cy.get('[data-cy="changeExpirationDate"]').type('2020-12-31')
+          cy.get('[data-cy="saveExpirationDate"]').click()
+        })
+      })
+
     })
 
     describe('and user registeration form is open', function () {

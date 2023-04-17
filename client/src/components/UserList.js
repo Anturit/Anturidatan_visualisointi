@@ -130,7 +130,6 @@ const UserList = () => {
         renderRowActions={({ row }) => {
           return (
             <Box>
-
               <Tooltip arrow placement="right" title="Poista">
                 <IconButton
                   data-cy={`deleteUser ${row.original.username}`}
@@ -142,6 +141,7 @@ const UserList = () => {
               </Tooltip><Tooltip arrow placement="right" title="Muokkaa vanhentumispäivää">
 
                 <IconButton
+                  data-cy={`edit expiration date of ${row.original.username}`}
                   onClick= {() => { setUser(row.original); handleOpenExpirationDateModal()}}
                   color={'success'}
                 >
