@@ -148,7 +148,7 @@ const EditProfileDetailsDropdown = () => {
 
       {userInputType === 'city' && (
         <form onSubmit={handleSubmit} data-cy='cityForm'>
-          <small>Uusi postinumero</small>
+          <small>Uusi kaupunki</small>
           <div>
             <TextField
               type="text"
