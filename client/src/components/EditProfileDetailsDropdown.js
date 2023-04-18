@@ -3,6 +3,12 @@ import userService from '../services/userService'
 import { setNotification } from '../reducers/notificationReducer'
 import { useSelector, useDispatch } from 'react-redux'
 import { setUser } from '../reducers/loginFormReducer'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import InputLabel from '@mui/material/InputLabel'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
 
 /**
   * Component to render dropdown menu for user to select which user details to edit.
@@ -78,43 +84,90 @@ const EditProfileDetailsDropdown = () => {
     <div>
       <h2>Valitse muokattava tieto</h2>
       <div>
-        <select name='details' id='details' onChange={handleSelectChange} data-cy='EditUserDetailsDropdown'>
-          <option key='address' value='address'>Osoite</option>
-          <option key='postalCode' value='postalCode'>Postinumero</option>
-          <option key='city' value='city'>Kaupunki</option>
-        </select>
+        <FormControl fullWidth variant="outlined">
+          <InputLabel htmlFor="details" >Valitse tieto</InputLabel>
+          <Select
+            label="Valitse tieto"
+            value={userInputType}
+            onChange={handleSelectChange}
+            inputProps={{ name: 'details', id: 'details' }}
+            data-cy='EditUserDetailsDropdown'
+          >
+            <MenuItem value="address" data-cy='select-option-address'>Osoite</MenuItem>
+            <MenuItem value="postalCode" data-cy='select-option-postalcode' >Postinumero</MenuItem>
+            <MenuItem value="city" data-cy={'select-option-city'}>Kaupunki</MenuItem>
+          </Select>
+        </FormControl>
+
       </div>
+      {userInputType === 'address' && (
+        <form onSubmit={handleSubmit} data-cy='addressForm'>
+          <small>Uusi osoite</small>
+          <div>
+            <TextField
+              type="text"
+              value={userInput}
+              onChange={handleInputChange}
+              data-cy='newAddress'
+            />
+            <Button
+              type="submit"
+              onClick={handleSubmit}
+              data-cy='addressSubmitButton'
+              variant="contained"
+              color="secondary"
+            >
+              Tallenna
+            </Button>
+          </div>
+        </form>
+      )}
 
-      {userInputType === 'address' &&
-      <form onSubmit={handleSubmit} data-cy='addressForm'>
-        <small>Uusi osoite</small>
-        <div>
-          <input type="text" value={userInput} onChange={handleInputChange} data-cy='newAddress'/>
-          <button type="submit" onClick={handleSubmit} data-cy='addressSubmitButton'>Tallenna</button>
-        </div>
-      </form>
-      }
+      {userInputType === 'postalCode' && (
+        <form onSubmit={handleSubmit} data-cy='postalCodeForm'>
+          <small>Uusi postinumero</small>
+          <div>
+            <TextField
+              type="text"
+              value={userInput}
+              onChange={handleInputChange}
+              data-cy='newPostalCode'
+            />
+            <Button
+              type="submit"
+              onClick={handleSubmit}
+              data-cy='postalCodeSubmitButton'
+              variant="contained"
+              color="secondary"
+            >
+              Tallenna
+            </Button>
+          </div>
+        </form>
+      )}
 
-      {userInputType === 'postalCode' &&
-      <form onSubmit={handleSubmit} data-cy='postalCodeForm'>
-        <small>Uusi postinumero</small>
-        <div>
-          <input type="text" value={userInput} onChange={handleInputChange} data-cy='newPostalCode'/>
-          <button type="submit" onClick={handleSubmit} data-cy='postalCodeSubmitButton'>Tallenna</button>
-        </div>
-      </form>
-      }
-
-      {userInputType === 'city' &&
-
-      <form onSubmit={handleSubmit} data-cy='cityForm'>
-        <small>Uusi kaupunki</small>
-        <div>
-          <input type="text" value={userInput} onChange={handleInputChange} data-cy='newCity'/>
-          <button type="submit" onClick={handleSubmit} data-cy='citySubmitButton'>Tallenna</button>
-        </div>
-      </form>
-      }
+      {userInputType === 'city' && (
+        <form onSubmit={handleSubmit} data-cy='cityForm'>
+          <small>Uusi postinumero</small>
+          <div>
+            <TextField
+              type="text"
+              value={userInput}
+              onChange={handleInputChange}
+              data-cy='newCity'
+            />
+            <Button
+              type="submit"
+              onClick={handleSubmit}
+              data-cy='citySubmitButton'
+              variant="contained"
+              color="secondary"
+            >
+              Tallenna
+            </Button>
+          </div>
+        </form>
+      )}
     </div>
   )
 }
