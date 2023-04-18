@@ -329,6 +329,25 @@ describe('Anturi app', function () {
           cy.contains('Lähetin 123456789 poistettu käyttäjältä UserTest')
         })
       })
+      describe.only('and edit icon is clicked', function () {
+        beforeEach(function () {
+          cy.get('[data-cy="edit expiration date of user@user.com"]').click()
+        })
+        it('user expiration date can be changed', function () {
+          cy.get('[data-cy="changeExpirationDate"]').type('2024-12-31')
+          cy.get('[data-cy="saveExpirationDate"]').click()
+        })
+        it('user expiration date can be changed and saved without refreshing the page', function () {
+          cy.get('[data-cy="changeExpirationDate"]').type('2024-10-15')
+          cy.get('[data-cy="saveExpirationDate"]').click()
+          cy.get('[data-cy="expirationDate"]').eq(0).contains('15/10/2024')
+        })
+        it('user expiration date is not updated if date is not given', function () {
+          cy.get('[data-cy="saveExpirationDate"]').click()
+          cy.get('[data-cy="expirationDate"]').eq(0).contains('20/04/3000')
+          cy.contains('Päivämäärä puuttui. Päivämäärää ei muutettu.')
+        })
+      })
     })
 
     describe('and user registeration form is open', function () {

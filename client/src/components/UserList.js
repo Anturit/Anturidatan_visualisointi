@@ -3,16 +3,17 @@ import {
   Checkbox,
   IconButton,
   Tooltip,
-  Box
+  Box,
 } from '@mui/material'
 import { useSelector, useDispatch } from 'react-redux'
 import { setNotification } from '../reducers/notificationReducer'
 import { setUsers } from '../reducers/usersReducer'
-import { Delete, ShowChart } from '@mui/icons-material'
+import { Delete, ShowChart, Edit } from '@mui/icons-material'
 import MaterialReactTable from 'material-react-table'
 import userService from '../services/userService'
 import Modal from '@mui/material/Modal'
 import UserListSenders from './UserListSenders'
+import EditUserExpirationDate from './EditUserExpirationDate'
 
 const style = {
   position: 'absolute',
@@ -23,7 +24,7 @@ const style = {
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
-  p: 5,
+  padding: 6,
 }
 
 const UserList = () => {
@@ -34,6 +35,12 @@ const UserList = () => {
   const [user, setUser] = useState(null)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+  const [openExpirationDateModal, setOpenExpirationModal] = useState(false)
+  const handleOpenExpirationDateModal = () => setOpenExpirationModal(true)
+  const handleCloseExpirationDateModal = () => setOpenExpirationModal(false)
+
+
+
 
   useEffect(() => {
     userService
@@ -42,6 +49,7 @@ const UserList = () => {
         dispatch(setUsers(users))
       })
   }, [])
+
 
   /**
 * {
@@ -83,7 +91,11 @@ const UserList = () => {
       {
         accessorFn: (user) => {
           const date = new Date(user.expirationDate)
-          return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`
+          return (
+            <div data-cy={'expirationDate'}>
+              {date.toLocaleDateString('en-FI')}
+            </div>
+          )
         },
         id: 'expirationDate',
         header: 'lisenssin vanhentumispäivä',
@@ -91,6 +103,7 @@ const UserList = () => {
     ],
     []
   )
+
 
   const removeUser = async (user) => {
     try {
@@ -104,6 +117,7 @@ const UserList = () => {
       dispatch(setNotification('Tuntematon virhe käyttäjän poistossa', 3500, 'alert'))
     }
   }
+
 
   return (
     <div>
@@ -128,11 +142,20 @@ const UserList = () => {
                 >
                   <Delete />
                 </IconButton>
-              </Tooltip>
-              <Tooltip arrow placement="right" title="Näytä lähettimet">
+              </Tooltip><Tooltip arrow placement="right" title="Muokkaa vanhentumispäivää">
+
+                <IconButton
+                  data-cy={`edit expiration date of ${row.original.username}`}
+                  onClick= {() => { setUser(row.original); handleOpenExpirationDateModal()}}
+                  color={'success'}
+                >
+                  <Edit />
+                </IconButton>
+
+              </Tooltip><Tooltip arrow placement="right" title="Näytä lähettimet">
                 <IconButton
                   data-cy={`show senders of ${row.original.username}`}
-                  onClick={() => { setUser(row.original); handleOpen() }}
+                  onClick={() => { setUser(row.original); handleOpen() } }
                   color={'primary'}
                 >
                   <ShowChart />
@@ -141,6 +164,7 @@ const UserList = () => {
             </Box>
           )
         }}
+
         renderTopToolbarCustomActions={() => (
           <Box sx={{ display: 'flex', gap: '1rem' }}>
             <p>Käyttäjien poisto sallittu</p>
@@ -150,6 +174,7 @@ const UserList = () => {
             />
           </Box>
         )}
+
       />
       {open && (
         <Modal
@@ -161,6 +186,21 @@ const UserList = () => {
           </Box>
         </Modal>
       )}
+
+      {openExpirationDateModal && (
+        <Modal
+          open={openExpirationDateModal}
+          onClose={() => handleCloseExpirationDateModal()}
+
+        >
+          <Box sx={style}>
+            <EditUserExpirationDate user={user} onClose={handleCloseExpirationDateModal}/>
+          </Box>
+        </Modal>
+      )}
+
+
+
     </div>
   )
 }

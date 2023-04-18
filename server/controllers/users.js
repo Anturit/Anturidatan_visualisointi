@@ -160,6 +160,7 @@ usersRouter.put('/:id', async (request, response) => {
 usersRouter.put('/:id/changeExpirationDate', adminCredentialsValidator, async (request, response) => {
   const userId = request.params.id
   const newExpirationDate = request.body.newExpirationDate
+  console.log('backend', newExpirationDate)
 
   if (!newExpirationDate) {
     return response.status(400).json({
