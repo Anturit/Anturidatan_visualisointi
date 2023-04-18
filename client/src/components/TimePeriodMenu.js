@@ -9,39 +9,86 @@ import {
   KeyboardArrowRight
 } from '@mui/icons-material'
 import { useState, useEffect } from 'react'
+import {
+  subYears,
+  addYears,
+  getWeek,
+  intlFormat,
+  isSameDay,
+  isSameISOWeek,
+  isSameMonth,
+  isSameYear
+} from 'date-fns'
 import senderService from '../services/senderService'
 
 export default function TimePeriodMenu(
-  { selectedSenderId, setVisibleSenders }
+  { selectedSenderId, visibleSenders, setVisibleSenders }
 ) {
+  const SCALE = {
+    day: 1,
+    week: 2,
+    month: 3,
+    year: 4,
+  }
   const [senders, setSenders] = useState([])
-  const [sliderValue, setSliderValue] = useState(4)
+  const [fetchedYears, setFetchedYears] = useState([])
+  const [canFetchMore, setCanFetchMore] = useState({
+    olderData: true,
+    newerData: true
+  })
+  const [sliderValue, setSliderValue] = useState(SCALE.day)
   const [selectedDate, setSelectedDate] = useState(new Date(
     new Date().getFullYear(),
     new Date().getMonth(),
     new Date().getDate(),
     0, 0, 0, 0
   ))
-  const [matchingRegion, setMathingRegion] = useState({
+  const [matchingRegion, setMatchingRegion] = useState({
     first:0, last:0
   })
 
   /**
-   * Returns week number of given date
-   * returns 0 if date is in last week of the previous year
-   * returns 1 if date is in first full week of the year
-   * returns 52 or 53 if date is in last week of the year
-   * @param {Date} date
-   * @returns {number} week number
+   * Format date to finnish intl format, example: to 30.3.2023
+   * @param {date} date
+   * @returns {string} - Weekday date format
    */
-  const getWeekNumber = (date) => {
-    const startDate = new Date(date.getFullYear(), 0, 1)
-    var days = Math.floor((date - startDate) /
-        (24 * 60 * 60 * 1000))
-
-    return Math.ceil(days / 7)
+  const getWeekdayFormat = (date) => {
+    const dayLabel = intlFormat(date, {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+    }, {
+      locale: 'fi-FI',
+    })
+    return dayLabel
   }
 
+  /**
+   * Format date to show week and year, example: 13. viikko 2023
+   * @param {date} date
+   * @returns {string} - date in week and year
+   */
+  const getWeekFormat = (date) => {
+    const year = date.getFullYear()
+    const week = getWeek(date)
+    return `${week}. viikko ${year}`
+  }
+
+  /**
+   * Format date to show month and year, example: maaliskuu 2023
+   * @param {date} date
+   * @returns {string} - date in month and year
+   */
+  const getMonthFormat = (date) => {
+    const monthLabel = intlFormat(date, {
+      year: 'numeric',
+      month: 'long',
+    }, {
+      locale: 'fi-FI',
+    })
+    return monthLabel
+  }
 
   /**
    * Returns date label in finnish
@@ -49,69 +96,112 @@ export default function TimePeriodMenu(
    * @returns {string} - date label
    */
   const getDateLabel = (date) => {
-    const dayOfMonth = date.getDate()
-    const month = date.getMonth() + 1
-    const year = date.getFullYear()
-    const week = getWeekNumber(date)
-    const dayOfWeek = date.getDay()
-    const dayNames = [ 'sunnuntai', 'maanantai', 'tiistai', 'keskiviikko', 'torstai', 'perjantai', 'lauantai',]
-    const monthNames = ['tammikuu', 'helmikuu', 'maaliskuu', 'huhtikuu', 'toukokuu', 'kesäkuu', 'heinäkuu', 'elokuu', 'syyskuu', 'lokakuu', 'marraskuu', 'joulukuu']
-    const dateLabel = {
-      1: `${dayNames[dayOfWeek]} ${dayOfMonth}.${month}.${year}`,
-      2: `${week}. viikko ${year}`,
-      3: `${monthNames[month - 1]} ${year}`,
-      4: `${year}`
-    }
-    return dateLabel[sliderValue]
-  }
-
-  const senderLogMatcher = (senderDate) => {
-    const sameDay = senderDate.getDay() === selectedDate.getDay()
-    const sameWeek = getWeekNumber(senderDate) === getWeekNumber(selectedDate)
-    const sameMonth = senderDate.getMonth() === selectedDate.getMonth()
-    const sameYear = senderDate.getFullYear() === selectedDate.getFullYear()
-    if ( !sameYear ) return false
-    if ( sliderValue <= 3 && !sameMonth) return false
-    if ( sliderValue <= 2 && !sameWeek) return false
-    if ( sliderValue <= 1 && !sameDay) return false
-    return true
-  }
-  const findMatchingRegion = (senders) => {
-    if (senders.length === 0) return senders
-    const first = senders.findIndex(sender => senderLogMatcher(new Date(sender.date)))
-    const last = senders.findLastIndex(sender => senderLogMatcher(new Date(sender.date)))
-    return [first, last]
+    if (sliderValue === SCALE.day) { return getWeekdayFormat(date) }
+    if (sliderValue === SCALE.week) { return getWeekFormat(date) }
+    if (sliderValue === SCALE.month) { return getMonthFormat(date) }
+    if (sliderValue === SCALE.year) { return date.getFullYear() }
   }
 
   /**
-   * Fetch sender logs by id
-   * set sorted sender logs to state
-   * modify selected date to last date in the sender log array
-   * @param {string} id
+   * Return first and last index of matching region
+   * @param {array} senders
+   * @param {Date} selectedDate
+   * @returns {array} - Array of first and last index
    */
-  const fetchSenderById = async (id) => {
-    const data = await senderService.getOneSenderLogs(id)
-    const dataByDateAscending = data
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-    setSenders(dataByDateAscending)
+  const findMatchingRegion = (senders, selectedDate) => {
+    const matcher = (senderDate) =>  ({
+      [SCALE.day]:   isSameDay(senderDate, selectedDate),
+      [SCALE.week]:  isSameISOWeek(senderDate, selectedDate),
+      [SCALE.month]: isSameMonth(senderDate, selectedDate),
+      [SCALE.year]:  isSameYear(senderDate, selectedDate)
+    }[sliderValue])
+    const first = senders.findIndex(sender => matcher(new Date(sender.date), selectedDate))
+    const last = senders.findLastIndex(sender => matcher(new Date(sender.date), selectedDate))
+    return [first, last]
+  }
+
+  const handleNoDataFound = (dataIsNewer) => {
+    setCanFetchMore(
+      dataIsNewer
+        ? { ...canFetchMore, newerData: false }
+        : { ...canFetchMore, olderData: false }
+    )
+    const indexForDate = dataIsNewer ? senders.length - 1 : 0
     setSelectedDate(
-      new Date(dataByDateAscending[dataByDateAscending.length-1].date)
+      new Date(senders[indexForDate].date)
     )
   }
 
-  useEffect(() => {
-    fetchSenderById(selectedSenderId)
-  }, [selectedSenderId])
+  /**
+   * Fetch sender logs from specified year by id
+   * @param {string} id
+   * @param {number} year
+   * @returns {array} - Array of sender logs
+   */
+  async function fetchSenderLogs(id, year) {
+    try {
+      const data = await senderService.getOneSenderLogsFromYear(id, year)
+      return data
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    }
+  }
+  /**
+   * Fetches sender logs from selected year
+   * updates senders, fetchedYears, selectedDate, canFetchMore states
+   * @param {number} selectedYear
+   */
+  const handleFetchMoreLogs = async (selectedYear) => {
+    const data = await fetchSenderLogs(selectedSenderId, selectedYear)
+    const dataIsNewer = fetchedYears[0] < selectedYear
+    if (!data || data.length === 0) {
+      if (senders.length === 0) return
+      handleNoDataFound(dataIsNewer)
+      return
+    }
+    setSenders((senders) => (dataIsNewer)
+      ? [...senders, ...data]
+      : [...data, ...senders]
+    )
+    setFetchedYears((fetchedYears) => (dataIsNewer)
+      ? [...fetchedYears, selectedYear]
+      : [selectedYear, ...fetchedYears]
+    )
+    const indexForDate = dataIsNewer ? 0 : data.length - 1
+    setSelectedDate(new Date(data[indexForDate].date))
+  }
+
 
   useEffect(() => {
-    const [first, last] = findMatchingRegion(senders)
-    setMathingRegion({ first, last })
+    const selectedYear = selectedDate.getFullYear()
+    if (fetchedYears.includes(selectedYear)) return
+    handleFetchMoreLogs(selectedYear)
+  }, [selectedSenderId, selectedDate.getFullYear()])
+
+  useEffect(() => {
+    if (senders.length === 0) return setVisibleSenders([])
+    const [first, last] = findMatchingRegion(senders, selectedDate)
+    setMatchingRegion({ first, last })
     const filteredSenders = senders.slice(first, last + 1)
     setVisibleSenders(filteredSenders)
-  }, [selectedSenderId, sliderValue, selectedDate])
+  }, [selectedSenderId, senders, sliderValue, selectedDate])
 
-  const canIncreaseDate = senders.length > 0 && matchingRegion.last !== senders.length - 1
-  const canDecreaseDate = senders.length > 0 && matchingRegion.first !== 0
+  const canIncreaseDate = canFetchMore.newerData || matchingRegion.last !== senders.length - 1
+  const canDecreaseDate = canFetchMore.olderData || matchingRegion.first !== 0
+
+  const increaseDate = () => {
+    if (visibleSenders.length !== 0&& matchingRegion.last !== senders.length - 1)
+      setSelectedDate(new Date(senders[matchingRegion.last + 1].date))
+    else
+      setSelectedDate(addYears(selectedDate,1))
+  }
+
+  const decreaseDate = () => {
+    if (visibleSenders.length !== 0&& matchingRegion.first !== 0)
+      setSelectedDate(new Date(senders[matchingRegion.first - 1].date))
+    else
+      setSelectedDate(subYears(selectedDate,1))
+  }
   return <>
     <Stack
       direction="row"
@@ -124,7 +214,7 @@ export default function TimePeriodMenu(
         color={canDecreaseDate ? 'primary' : 'disabled'}
         onClick={() =>
           canDecreaseDate
-        && setSelectedDate(new Date(senders[matchingRegion.first - 1].date))}
+        && decreaseDate()}
       >
         <KeyboardArrowLeft />
       </IconButton>
@@ -136,12 +226,13 @@ export default function TimePeriodMenu(
         color={canIncreaseDate ? 'primary' : 'disabled'}
         onClick={() =>
           canIncreaseDate
-        && setSelectedDate(new Date(senders[matchingRegion.last + 1].date))}
+        && increaseDate()}
       >
         <KeyboardArrowRight />
       </IconButton>
     </Stack>
     <Slider
+      data-cy='time-select-slider'
       value={sliderValue}
       min={1}
       step={1}

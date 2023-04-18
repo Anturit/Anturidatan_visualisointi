@@ -99,6 +99,26 @@ describe('When there is initially two senders at db', () => {
       .expect('Content-Type', /application\/json/)
   })
 
+  test('get sender by "device" and year succeeds if USER login and USER owns the device', async () => {
+    const response = await api
+      .get('/api/senders/E00208B4/2000')
+      .set('Authorization', `Bearer ${USERTOKEN}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const senders = response.body
+    const allSendersHaveYear2000Date = senders.some(obj => new Date(obj.date).getFullYear() === 2000)
+    expect(allSendersHaveYear2000Date).toBe(true)
+  })
+
+  test('get sender by "device" and year fails if USER login and does not own the device', async () => {
+    await api
+      .get('/api/senders/1B2AF5B/2000')
+      .set('Authorization', `Bearer ${USERTOKEN}`)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+  })
+
   test('POST senders fails if USER auth', async () => {
     const initialSenders = await helper.sendersInDb()
     const response = await api
