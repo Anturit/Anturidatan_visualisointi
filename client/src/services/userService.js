@@ -134,6 +134,14 @@ const addSenderDevice = async (userId, senderDeviceId) => {
   return response.data
 }
 
+/**
+ *
+ * @param {*} user_id
+ * @param {*} newExpirationDate
+ * @returns {userObject} user object
+ * @description Updates user's expiration date
+ */
+
 const updateUserExpirationDate = async (user_id, newExpirationDate) => {
   const response = await axios.put(`${baseUrl}/${user_id}/changeExpirationDate`, { newExpirationDate }, config)
   return response.data

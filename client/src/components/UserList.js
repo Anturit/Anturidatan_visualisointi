@@ -91,7 +91,11 @@ const UserList = () => {
       {
         accessorFn: (user) => {
           const date = new Date(user.expirationDate)
-          return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`
+          return (
+            <div data-cy={'expirationDate'}>
+              {date.toLocaleDateString('en-FI')}
+            </div>
+          )
         },
         id: 'expirationDate',
         header: 'lisenssin vanhentumispäivä',
