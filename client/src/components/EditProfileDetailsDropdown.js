@@ -13,6 +13,7 @@ const EditProfileDetailsDropdown = () => {
   const [userInput, setUserInput] = useState('')
 
   const user_id = useSelector(state => state.loginForm.user.id)
+  const user_token = useSelector(state => state.loginForm.user.token)
   /**
    * Checks that no string value in user object is not an empty string.
    * @param {*} userObj
@@ -59,6 +60,7 @@ const EditProfileDetailsDropdown = () => {
     }
     try {
       const updatedUser = await userService.updateUserDetails(user_id, newUser)
+      updatedUser['token'] = user_token
       dispatch(setUser(updatedUser))
       dispatch(setNotification('Tiedon muokkaaminen onnistui!', 3500
       ))
