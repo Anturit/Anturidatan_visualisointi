@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material'
 import { SensorChart } from './SensorChart'
 import { formatData, getMeasurementParameters, getSmallSensorIds } from '../utils/senderDataHandler'
 
@@ -17,13 +18,17 @@ const SenderVisualizer = ({ id, logs }) => {
   const sensorData = formatData(logs, measurementParameters)
 
   return (
-    <div className='sensor-chart-group'>
-      <div>
-        <p><b>{id}</b></p>
-      </div>
-      <div>
+    <div className='sensor-chart-group'
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '100%'
+      }}>
+      <Typography variant="h6">{ id }</Typography>
+      <div style={{ flexGrow: 1, width: '100%' }}>
         {measurementParameters.filter(parameter => parameter !== 'measurement').map(parameter =>
-          <SensorChart id='normal-sensor-chart' key={parameter} parameter={parameter} ids={bigSensorIds} logs={sensorData} />
+          <SensorChart id={`normal-sensor-chart-${parameter}`} key={parameter} parameter={parameter} ids={bigSensorIds} logs={sensorData} />
         )}
         <SensorChart id='small-sensor-chart' parameter='measurement' ids={smallSensorIds} logs={sensorData} />
       </div>
