@@ -74,8 +74,8 @@ function App() {
         ?
         <><ThemeProvider theme={theme}>
           <Navbar />
-          <Button  color="secondary" variant="contained" onClick={() => userService.logoutLocalUser(dispatch)}
-            data-cy='logout'>Kirjaudu ulos käyttäjältä {user.firstName} {user.lastName}</Button>
+          <Button color="secondary" variant="contained" onClick={() => userService.logoutLocalUser(dispatch)}
+            data-cy='logout'>Kirjaudu ulos</Button>
           <Notification />
           <Routes>
             <Route path="/user" element={<UserMainView />} />
@@ -90,10 +90,6 @@ function App() {
         </>
         : <LoginForm />
       }
-      <div>
-        <br />
-        <em>Anturi app, demo 2023</em>
-      </div>
     </div >
   )
 }

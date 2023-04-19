@@ -15,8 +15,9 @@ describe('Anturi app', function () {
     it('succeeds with correct credentials', function () {
       cy.get('[data-cy="username"]').type(userUser().username)
       cy.get('[data-cy="password"]').type(userUser().password)
+      cy.get('[data-cy="logout"]').should('not.exist')
       cy.get('[data-cy="login"]').click()
-      cy.get('[data-cy="logout"]').should('contain', `${userUser().firstName}`)
+      cy.get('[data-cy="logout"]').should('exist')
     })
 
     it('stays logged in after page refresh', function () {
@@ -24,9 +25,9 @@ describe('Anturi app', function () {
       cy.get('[data-cy="username"]').type(userUser().username)
       cy.get('[data-cy="password"]').type(userUser().password)
       cy.get('[data-cy="login"]').click()
-      cy.get('[data-cy="logout"]').should('contain', `${userUser().firstName}`)
+      cy.get('[data-cy="logout"]').should('exist')
       cy.reload()
-      cy.get('[data-cy="logout"]').should('contain', `${userUser().firstName}`)
+      cy.get('[data-cy="logout"]').should('exist')
     })
 
     it('fails with wrong credentials', function () {
@@ -47,7 +48,7 @@ describe('Anturi app', function () {
   const clickHrefAndRefresh = (route, href=route) => {
     //cy.get('[data-cy="menuicon"]').click()
     //navbar icon hides href, force true necessary
-    cy.get(`[href="${href}"]`).click()
+    cy.get(`[href="${href}"]`).click({ multiple: true })
     cy.url().should('include', route)
     cy.reload()
     cy.url().should('include', route)
@@ -451,7 +452,7 @@ describe('Anturi app', function () {
         cy.get('[data-cy="addUser"]').click()
         cy.contains('Käyttäjän luonti onnistui!')
         cy.login({ username: 'testi@testi.net', password: userUser().password })
-        cy.get('[data-cy="logout"]').should('contain', `${userUser().firstName}`)
+        cy.get('[data-cy="logout"]').should('exist')
       })
       it('registeration fails if some field is empty', function () {
         cy.get('[data-cy="addUser"]').click()
