@@ -7,7 +7,9 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  ResponsiveContainer,
 } from 'recharts'
+import { Typography } from '@mui/material'
 import {
   format,
   startOfDay,
@@ -147,45 +149,49 @@ const SensorChart = ({ parameter, ids, logs }) => {
   }))
   const scale = getScale(logsWithDates)
   return (
-    <div>
-      <p><b>{TRANSLATE[parameter]}</b></p>
-      <LineChart
-        width={600}
-        height={300}
-        data={logsWithDates}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray="5 5" />
-        <XAxis
-          dataKey='date'
-          type='number'
-          domain={domain(logsWithDates, scale)}
-          ticks={getTicks(logsWithDates, scale)}
-          tickFormatter={(tick) => tickFormatter(tick, scale)}
-        />
-        <YAxis />
-        <Tooltip
-          labelFormatter={(value) => format(value, "dd/MM/yyyy 'klo' HH:mm")}
-        />
-        <Legend />
-        {ids
-          .map((id, i) =>
-            <Line
-              key={id}
-              connectNulls
-              type="monotone"
-              dataKey={`${id}_${parameter}`}
-              stroke={COLORS[i]}
-              dot={false}
-              name={id}
-            />
-          )}
-      </LineChart>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+      <Typography variant="h6">{TRANSLATE[parameter]}</Typography>
+      <ResponsiveContainer width="100%" height={350}>
+        <LineChart
+          data={logsWithDates}
+          margin={{
+            top: 10,
+            right: 30,
+            left: 0,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="5 5" />
+          <XAxis
+            dataKey='date'
+            type='number'
+            domain={domain(logsWithDates, scale)}
+            ticks={getTicks(logsWithDates, scale)}
+            tickFormatter={(tick) => tickFormatter(tick, scale)}
+          />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          {ids
+            .map((id, i) =>
+              <Line
+                key={id}
+                connectNulls
+                type="monotone"
+                dataKey={`${id}_${parameter}`}
+                stroke={COLORS[i]}
+                dot={false}
+                name={id}
+              />
+            )}
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   )
 }

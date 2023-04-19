@@ -290,8 +290,12 @@ describe('Anturi app', function () {
           cy.contains(user.postalCode)
           cy.contains(user.city)
           cy.contains(user.role)
-          const formattedDate = `${user.expirationDate.getDate()}/${user.expirationDate.getMonth()}/${user.expirationDate.getFullYear()}`
-          cy.contains(formattedDate)
+          // getMonth() is zero-indexed, so January is 0, February 1 etc. Also functions return non-padded so have to convert 4 -> 04
+          const day = user.expirationDate.getDate().toString().padStart(2, '0')
+          const month = (user.expirationDate.getMonth() + 1).toString().padStart(2, '0')
+          const year = user.expirationDate.getFullYear().toString()
+          const formattedDate = `${day}/${month}/${year}`
+          cy.get('[data-cy="expirationDate"]').contains(formattedDate)
         }
         [adminUser(), userUser(), expiredUser()]
           .forEach(user => pageContainsUserFields(user))
@@ -339,7 +343,7 @@ describe('Anturi app', function () {
           cy.contains('Lähetin 123456789 poistettu käyttäjältä UserTest')
         })
       })
-      describe.only('and edit icon is clicked', function () {
+      describe('and edit icon is clicked', function () {
         beforeEach(function () {
           cy.get('[data-cy="edit expiration date of user@user.com"]').click()
         })
