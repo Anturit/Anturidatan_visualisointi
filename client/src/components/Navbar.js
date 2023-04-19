@@ -18,9 +18,9 @@ function Navbar() {
         <Toolbar>
           <>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} >
-              <div style={{ maxWidth: 100 }}>
-                <img src={Logo} style={{ width: '100%', margin: 20, marginBottom: 10 }} alt="Kymppiremontit logo" />
-              </div>
+              <Link to='/' >
+                <img src={Logo} style={{ maxWidth: 100, margin: 20, marginBottom: 10 }} alt="Kymppiremontit logo" />
+              </Link>
             </Typography>
             {user.role === 'user' && (
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} >
