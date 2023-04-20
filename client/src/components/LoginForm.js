@@ -135,7 +135,7 @@ const LoginForm = () => {
             />
             <Button
               type="submit"
-              color="error"
+              color="primary"
               data-cy="login"
               fullWidth
               variant="contained"
