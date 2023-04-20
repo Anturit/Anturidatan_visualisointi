@@ -4,6 +4,12 @@ import { useNavigate } from 'react-router-dom'
 import { setNotification } from '../reducers/notificationReducer.js'
 import userService from '../services/userService'
 import PasswordFeedback from './PasswordFeedback'
+import {
+  TextField,
+  Typography,
+  Box,
+  Button
+} from '@mui/material'
 
 const PasswordChangeForm = () => {
   const [oldPassword, setOldPassword] = useState('')
@@ -52,48 +58,56 @@ const PasswordChangeForm = () => {
   return (
     <div data-cy='passwordChangeForm' style={{ paddingBottom: '1em' }}>
       <form onSubmit={submit}>
-        <h2>Vaihda salasana</h2>
-        <small>Vanha salasana</small>
-        <div>
-          <input
+        <Typography variant='h2'>Vaihda salasana</Typography>
+        <Box marginTop='1em'>
+          <Typography variant='body2'>Vanha salasana</Typography>
+          <TextField
             data-cy='oldPassword'
             type="password"
             name="oldPassword"
             value={oldPassword}
             onChange={(e) => setOldPassword(e.target.value)}
+            fullWidth
           />
-        </div>
-        <small>Uusi salasana</small>
-        <div>
-          <input
+        </Box>
+        <Box marginTop='1em'>
+          <Typography variant='body2'>Uusi salasana</Typography>
+          <TextField
             data-cy='newPassword'
             type="password"
             name="newPassword"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
+            fullWidth
             onFocus={() => setShowPasswordSecurityFeedback(true)}
           />
           {showPasswordSecurityFeedback && <PasswordFeedback password={newPassword} />}
-        </div>
-        <small>Vahvista uusi salasana</small>
-        <div>
-          <input
+          <Typography variant='body2'>Vahvista uusi salasana</Typography>
+          <TextField
             data-cy='confirmNewPassword'
             type="password"
-            name="confirmPassword"
+            name="confirmNewPassword"
             value={confirmNewPassword}
             onChange={(e) => setConfirmNewPassword(e.target.value)}
+            fullWidth
           />
-        </div>
-        {(newPassword === confirmNewPassword)
-          ? <small>Onnistunut salasanan vaihto aiheuttaa automaattisen uloskirjautumisen</small>
-          : <small>Uusi salasana ja vahvista uusi salasana eivät täsmää</small>
-        }
-        <br />
-        <button data-cy='passwordChangeButton' type="submit">Vaihda salasana</button>
+          {(newPassword === confirmNewPassword)
+            ? <Typography variant='body2'>Onnistunut salasanan vaihto aiheuttaa automaattisen uloskirjautumisen</Typography>
+            : <Typography variant='body2'>Uusi salasana ja vahvista uusi salasana eivät täsmää</Typography>
+          }
+          <br />
+          <Button
+            data-cy='passwordChangeButton'
+            color="primary"
+            variant="contained"
+            type="submit">
+              Vaihda salasana
+          </Button>
+        </Box>
       </form>
     </div>
   )
 }
 
 export default PasswordChangeForm
+
