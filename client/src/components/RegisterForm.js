@@ -237,7 +237,7 @@ const RegisterForm = () => {
             <Button
               type='submit'
               data-cy='addUser'
-              color='secondary'
+              color='primary'
               variant='contained'
               onClick={submit}
               sx={{ mt: 4 }}
