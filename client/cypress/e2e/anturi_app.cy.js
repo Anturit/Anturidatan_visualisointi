@@ -365,7 +365,7 @@ describe('Anturi app', function () {
       })
     })
 
-    describe.only('and user registeration form is open', function () {
+    describe('and user registeration form is open', function () {
       beforeEach(function () {
         cy.visit('/register')
       })

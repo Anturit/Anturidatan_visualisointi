@@ -11,6 +11,7 @@ import {
   TextField,
   Button,
   Typography,
+  Box
 } from '@mui/material'
 
 /**
@@ -92,7 +93,7 @@ const EditProfileDetailsDropdown = () => {
       <Typography align='center' variant='h2' component='h2'>
         Valitse muokattava tieto
       </Typography>
-      <div>
+      <Box marginTop='1em'>
         <FormControl fullWidth variant='outlined'>
           <InputLabel htmlFor='details'>Valitse tieto</InputLabel>
           <Select
@@ -103,84 +104,90 @@ const EditProfileDetailsDropdown = () => {
             data-cy='EditUserDetailsDropdown'
           >
             <MenuItem value='address' data-cy='select-option-address'>
-              Osoite
+                Osoite
             </MenuItem>
             <MenuItem value='postalCode' data-cy='select-option-postalcode'>
-              Postinumero
+                Postinumero
             </MenuItem>
             <MenuItem value='city' data-cy={'select-option-city'}>
-              Kaupunki
+                Kaupunki
             </MenuItem>
           </Select>
         </FormControl>
-      </div>
+      </Box>
       {userInputType === 'address' && (
-        <form onSubmit={handleSubmit} data-cy='addressForm'>
-          <small>Uusi osoite</small>
-          <div>
-            <TextField
-              type='text'
-              value={userInput}
-              onChange={handleInputChange}
-              data-cy='newAddress'
-            />
-            <Button
-              type='submit'
-              onClick={handleSubmit}
-              data-cy='addressSubmitButton'
-              variant='contained'
-              color='secondary'
-            >
-              Tallenna
-            </Button>
-          </div>
-        </form>
+        <Box component='form' onSubmit={handleSubmit} data-cy='addressForm' marginTop='1em'>
+          <Typography variant='body2'>
+            Uusi katuosoite
+          </Typography>
+          <TextField
+            type='text'
+            value={userInput}
+            onChange={handleInputChange}
+            data-cy='newAddress'
+          />
+          <br />
+          <Button
+            type='submit'
+            onClick={handleSubmit}
+            data-cy='addressSubmitButton'
+            variant='contained'
+            color='secondary'
+            sx={{ marginTop: '1em' }}
+          >
+            Tallenna
+          </Button>
+        </Box>
       )}
 
       {userInputType === 'postalCode' && (
-        <form onSubmit={handleSubmit} data-cy='postalCodeForm'>
-          <small>Uusi postinumero</small>
-          <div>
-            <TextField
-              type='text'
-              value={userInput}
-              onChange={handleInputChange}
-              data-cy='newPostalCode'
-            />
-            <Button
-              type='submit'
-              onClick={handleSubmit}
-              data-cy='postalCodeSubmitButton'
-              variant='contained'
-              color='secondary'
-            >
-              Tallenna
-            </Button>
-          </div>
-        </form>
+        <Box component='form' onSubmit={handleSubmit} data-cy='postalCodeForm' marginTop='1em'>
+          <Typography variant='body2'>
+            Uusi postinumero
+          </Typography>
+          <TextField
+            type='text'
+            value={userInput}
+            onChange={handleInputChange}
+            data-cy='newPostalCode'
+          />
+          <br />
+          <Button
+            type='submit'
+            onClick={handleSubmit}
+            data-cy='postalCodeSubmitButton'
+            variant='contained'
+            color='secondary'
+            sx={{ marginTop: '1em' }}
+          >
+            Tallenna
+          </Button>
+        </Box>
       )}
 
       {userInputType === 'city' && (
-        <form onSubmit={handleSubmit} data-cy='cityForm'>
-          <small>Uusi kaupunki</small>
-          <div>
-            <TextField
-              type='text'
-              value={userInput}
-              onChange={handleInputChange}
-              data-cy='newCity'
-            />
-            <Button
-              type='submit'
-              onClick={handleSubmit}
-              data-cy='citySubmitButton'
-              variant='contained'
-              color='secondary'
-            >
-              Tallenna
-            </Button>
-          </div>
-        </form>
+        <Box component='form' onSubmit={handleSubmit} data-cy='cityForm' marginTop='1em'>
+          <Typography variant='body2'>
+            Uusi kaupunki
+          </Typography>
+          <TextField
+            type='text'
+            value={userInput}
+            onChange={handleInputChange}
+            data-cy='newCity'
+          />
+          <br />
+          <Button
+            type='submit'
+            onClick={handleSubmit}
+            data-cy='citySubmitButton'
+            variant='contained'
+            color='secondary'
+            sx={{ marginTop: '1em' }}
+          >
+            Tallenna
+          </Button>
+        </Box>
       )}
     </div>
   )

@@ -82,6 +82,8 @@ const PasswordChangeForm = () => {
             onFocus={() => setShowPasswordSecurityFeedback(true)}
           />
           {showPasswordSecurityFeedback && <PasswordFeedback password={newPassword} />}
+        </Box>
+        <Box marginTop='1em'>
           <Typography variant='body2'>Vahvista uusi salasana</Typography>
           <TextField
             data-cy='confirmNewPassword'
