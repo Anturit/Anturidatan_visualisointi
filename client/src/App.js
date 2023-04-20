@@ -88,9 +88,13 @@ function App() {
           </Routes>
         </ThemeProvider>
         </>
-        : <LoginForm />
+        :
+        <><ThemeProvider theme={theme}>
+          <LoginForm />
+        </ThemeProvider>
+        </>
       }
-    </div >
+    </div>
   )
 }
 
