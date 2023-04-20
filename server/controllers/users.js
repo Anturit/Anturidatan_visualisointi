@@ -177,6 +177,34 @@ usersRouter.put('/:id/changeExpirationDate', adminCredentialsValidator, async (r
   response.status(200).json(changedUser)
 })
 
+usersRouter.put('/:id/changeEmail', adminCredentialsValidator, async (request, response) => {
+  const userId = request.params.id
+  const newEmail = request.body.newEmail
+
+  if (!newEmail) {
+    return response.status(400).json({
+      error: 'new email must be given'
+    })
+  }
+
+  if (!(validator.isEmail(newEmail))) {
+    return response.status(400).json({
+      error: 'invalid email address'
+    })
+  }
+
+  await User.updateOne(
+    { _id: userId },
+    { $set: { username: newEmail } },
+    { new: true }
+  )
+
+  const changedUser = await User.findById(userId)
+  response.status(200).json(changedUser)
+})
+
+
+
 usersRouter.put('/:id/addSenderDevice', adminCredentialsValidator, async (request, response) => {
   const senderDeviceId = request.body.senderDeviceId
 

@@ -786,3 +786,48 @@ describe('When sender device is removed from user', () => {
     expect(userFromDb.senderDeviceIds).toHaveLength(lengthAtStart)
   })
 })
+
+describe('When user email is changed', () => {
+  test('EMAIL CHANGE succeeds with correct values', async () => {
+    const response = await api
+      .put(`/api/users/${USERID}/changeEmail`)
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send({
+        newEmail: 'user@email.fi'
+      })
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.username).toBe('user@email.fi')
+  })
+  test('EMAIL CHANGE fails with invalid token', async () => {
+    const response = await api
+      .put(`/api/users/${USERID}/changeEmail`)
+      .set('Authorization', `Bearer ${USERTOKEN}`)
+      .send({
+        newEmail: 'test@email.fi'
+      })
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toBe('you don´t have rights for this operation')
+  })
+  test('EMAIL CHANGE fails if new email is not given', async () => {
+    const response = await api
+      .put(`/api/users/${USERID}/changeEmail`)
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send({})
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toBe('new email must be given')
+  })
+  test('EMAIL CHANGE fails if new email is not valid', async () => {
+    const response = await api
+      .put(`/api/users/${USERID}/changeEmail`)
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send({
+        newEmail: 'testemail.fi'
+      })
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toBe('invalid email address')
+  })
+})
