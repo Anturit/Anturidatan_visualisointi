@@ -41,6 +41,11 @@ const TRANSLATE = {
 }
 Object.freeze(TRANSLATE)
 
+const fontStyle = {
+  fontSize: '1rem',
+  fontFamily: 'Roboto',
+}
+
 const SCALE = {
   day: 1,
   week: 2,
@@ -174,10 +179,21 @@ const SensorChart = ({ parameter, ids, logs }) => {
             domain={domain(logsWithDates, scale)}
             ticks={getTicks(logsWithDates, scale)}
             tickFormatter={(tick) => tickFormatter(tick, scale)}
+            style={{
+              ...fontStyle,
+              fontSize: '0.8rem',
+            }}
           />
-          <YAxis />
-          <Tooltip />
-          <Legend />
+          <YAxis
+            style={fontStyle}
+          />
+          <Tooltip
+            labelStyle={fontStyle}
+            contentStyle={fontStyle}
+          />
+          <Legend
+            wrapperStyle={fontStyle}
+          />
           {ids
             .map((id, i) =>
               <Line
