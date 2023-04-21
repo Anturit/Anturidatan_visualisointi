@@ -157,53 +157,41 @@ usersRouter.put('/:id', async (request, response) => {
 
 })
 
-usersRouter.put('/:id/changeExpirationDate', adminCredentialsValidator, async (request, response) => {
+usersRouter.put('/:id/changeUserDetails', adminCredentialsValidator, async (request, response) => {
   const userId = request.params.id
-  const newExpirationDate = request.body.newExpirationDate
+  const newEmail = request.body.username
+  const newExpirationDate = request.body.expirationDate
+
+  const updatedDetails = { username: newEmail, expirationDate: newExpirationDate }
+
+  if (newEmail === undefined) {
+    // return 400 error
+    return response.status(400).json({
+      error: 'email must be given'
+    })
+  }
 
   if (!newExpirationDate) {
     return response.status(400).json({
-      error: 'new expiration date must be given'
+      error: 'expiration date must be given'
     })
   }
 
-  await User.updateOne(
-    { _id: userId },
-    { $set: { expirationDate: newExpirationDate } },
-    { new: true }
-  )
-
-  const changedUser = await User.findById(userId)
-  response.status(200).json(changedUser)
-})
-
-usersRouter.put('/:id/changeEmail', adminCredentialsValidator, async (request, response) => {
-  const userId = request.params.id
-  const newEmail = request.body.newEmail
-
-  if (!newEmail) {
-    return response.status(400).json({
-      error: 'new email must be given'
-    })
-  }
-
-  if (!(validator.isEmail(newEmail))) {
+  if (newEmail && !(validator.isEmail(newEmail))) {
     return response.status(400).json({
       error: 'invalid email address'
     })
   }
 
-  await User.updateOne(
+  console.log(updatedDetails, 'moimoimoi')
+  await User.findOneAndUpdate(
     { _id: userId },
-    { $set: { username: newEmail } },
+    { $set: updatedDetails },
     { new: true }
   )
-
   const changedUser = await User.findById(userId)
   response.status(200).json(changedUser)
 })
-
-
 
 usersRouter.put('/:id/addSenderDevice', adminCredentialsValidator, async (request, response) => {
   const senderDeviceId = request.body.senderDeviceId

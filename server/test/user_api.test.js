@@ -1,6 +1,7 @@
 const supertest = require('supertest')
 const helper = require('./test_helper')
 const app = require('../app')
+const e = require('express')
 const api = supertest(app)
 
 let ADMINTOKEN = ''
@@ -591,41 +592,6 @@ describe('When user info is changed', () => {
   })
 })
 
-describe('When user expiration date is changed', () => {
-  test('EXPIRATION DATE CHANGE succeeds with correct values', async () => {
-    const response = await api
-      .put(`/api/users/${USERID}/changeExpirationDate`)
-      .set('Authorization', `Bearer ${ADMINTOKEN}`)
-      .send({
-        newExpirationDate: '3000-04-20T06:12:00.000Z'
-      })
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-    expect(response.body.expirationDate).toBe('3000-04-20T06:12:00.000Z')
-  })
-
-  test('EXPIRATION DATE CHANGE fails with invalid token', async () => {
-    const response = await api
-      .put(`/api/users/${USERID}/changeExpirationDate`)
-      .set('Authorization', `Bearer ${USERTOKEN}`)
-      .send({
-        newExpirationDate: '3000-04-20T06:12:00.000Z'
-      })
-      .expect(401)
-      .expect('Content-Type', /application\/json/)
-    expect(response.body.error).toBe('you don´t have rights for this operation')
-  })
-
-  test('EXPIRATION DATE CHANGE fails if new expiration date is not given', async () => {
-    const response = await api
-      .put(`/api/users/${USERID}/changeExpirationDate`)
-      .set('Authorization', `Bearer ${ADMINTOKEN}`)
-      .expect(400)
-      .expect('Content-Type', /application\/json/)
-    expect(response.body.error).toBe('new expiration date must be given')
-  })
-})
-
 describe('When sender device is added to user', () => {
   test('SENDER DEVICE ADDITION succeeds with correct values', async () => {
     const userAtStart = await helper.userInDb(USERID)
@@ -787,47 +753,64 @@ describe('When sender device is removed from user', () => {
   })
 })
 
-describe('When user email is changed', () => {
-  test('EMAIL CHANGE succeeds with correct values', async () => {
-    const response = await api
-      .put(`/api/users/${USERID}/changeEmail`)
+describe('When admin edits user details', () => {
+  test('EXPIRATION DATE and EMAIL (username) change succeeds with correct values', async () => {
+
+    await api
+      .put(`/api/users/${USERID}/changeUserDetails`)
       .set('Authorization', `Bearer ${ADMINTOKEN}`)
       .send({
-        newEmail: 'user@email.fi'
+        username: 'new@email.com',
+        expirationDate: '3000-04-20T06:12:00.000Z'
       })
       .expect(200)
       .expect('Content-Type', /application\/json/)
-    expect(response.body.username).toBe('user@email.fi')
+    const userFromDb = await helper.userInDb(USERID)
+    expect(userFromDb.username).toBe('new@email.com')
+    expect(userFromDb.expirationDate.toISOString()).toBe('3000-04-20T06:12:00.000Z')
   })
-  test('EMAIL CHANGE fails with invalid token', async () => {
+  test('EXPIRATION DATE and EMAIL (username) change fails with invalid token', async () => {
     const response = await api
-      .put(`/api/users/${USERID}/changeEmail`)
+      .put(`/api/users/${USERID}/changeUserDetails`)
       .set('Authorization', `Bearer ${USERTOKEN}`)
       .send({
-        newEmail: 'test@email.fi'
-      })
+        username: 'new@mail.com',
+        expirationDate: '3000-04-20T06:12:00.000Z'})
       .expect(401)
       .expect('Content-Type', /application\/json/)
     expect(response.body.error).toBe('you don´t have rights for this operation')
   })
-  test('EMAIL CHANGE fails if new email is not given', async () => {
+  test('change fails if email is invalid type', async () => {
+
     const response = await api
-      .put(`/api/users/${USERID}/changeEmail`)
-      .set('Authorization', `Bearer ${ADMINTOKEN}`)
-      .send({})
-      .expect(400)
-      .expect('Content-Type', /application\/json/)
-    expect(response.body.error).toBe('new email must be given')
-  })
-  test('EMAIL CHANGE fails if new email is not valid', async () => {
-    const response = await api
-      .put(`/api/users/${USERID}/changeEmail`)
+      .put(`/api/users/${USERID}/changeUserDetails`)
       .set('Authorization', `Bearer ${ADMINTOKEN}`)
       .send({
-        newEmail: 'testemail.fi'
+        username: 'newmail.com',
+        expirationDate: '3000-04-20T06:12:00.000Z'
       })
       .expect(400)
       .expect('Content-Type', /application\/json/)
     expect(response.body.error).toBe('invalid email address')
   })
+  test('returns 400 if email is missing', async () => {
+
+    const response = await api
+      .put(`/api/users/${USERID}/changeUserDetails`)
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send({ expirationDate: '3000-04-20T06:12:00.000Z' })
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toBe('email must be given')
+  })
+  test('returns 400 if expiration date is missing', async () => {
+      const response = await api
+        .put(`/api/users/${USERID}/changeUserDetails`)
+        .set('Authorization', `Bearer ${ADMINTOKEN}`)
+        .send({ username: 'new@sahkposti.fi' })
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+      expect(response.body.error).toBe('expiration date must be given')
+  })
+
 })
