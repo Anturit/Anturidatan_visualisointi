@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useState } from 'react'
-import { Box, Typography } from '@mui/material'
+import { Container, Stack, Typography } from '@mui/material'
 import SenderDropdown from './SenderDropdown'
 import SenderList from './SenderList'
 import TimePeriodMenu from './TimePeriodMenu'
@@ -18,18 +18,22 @@ const UserMainView = () => {
   const user = useSelector((state) => state.loginForm.user)
   const [selectedSenderId, setSelectedSenderId] = useState(user.senderDeviceIds[0])
   const [visibleSenders, setVisibleSenders] = useState([])
-
-  return (user.senderDeviceIds.length === 0
-    ? <Typography>
-        Sinulla ei ole vielä yhtään lähetintä.
+  if (user.senderDeviceIds.length === 0)
+    return <Typography>
+      Sinulla ei ole vielä yhtään lähetintä.
     </Typography>
-    : <>
-      <Box maxWidth="sm" p={2}>
+  return (
+    <Stack
+      justifyContent="flex-start"
+      alignItems="stretch"
+    >
+      <Container maxWidth='md'>
+
         {user.senderDeviceIds.length > 1 &&
-          <SenderDropdown
-            senderDeviceIds={user.senderDeviceIds}
-            setSelectedSenderId={setSelectedSenderId}
-          />
+      <SenderDropdown
+        senderDeviceIds={user.senderDeviceIds}
+        setSelectedSenderId={setSelectedSenderId}
+      />
         }
         <TimePeriodMenu
           key={selectedSenderId}
@@ -37,9 +41,11 @@ const UserMainView = () => {
           visibleSenders={visibleSenders}
           setVisibleSenders={setVisibleSenders}
         />
+      </Container>
+      <Container maxWidth='xl'>
         <SenderList senders={visibleSenders} />
-      </Box>
-    </>
+      </Container>
+    </Stack>
   )
 }
 
