@@ -11,7 +11,7 @@ import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
 //import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
-import Logo from '../assets/kymppilogo_square.png'
+import Logo from '../assets/logo_b.png'
 /**
  * @typedef {import('../services/userService').userObject} userObject
  */
@@ -88,14 +88,16 @@ const LoginForm = () => {
       <Container>
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 10,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
           }}
         >
-          <img src={Logo} style={{ width: 200, height: 200 }} alt="Kymppiremontit ogo" />
-          <Notification/>
+          <div style={{ maxWidth: 608 }}>
+            <img src={Logo} style={{ width: '100%' }} alt="Kymppiremontit logo" />
+          </div>
+          <Notification />
         </Box>
       </Container>
       <Container component="main" maxWidth="xs">
@@ -113,6 +115,7 @@ const LoginForm = () => {
               margin="normal"
               required
               fullWidth
+              label="Sähköposti"
               id='username'
               name='username'
               data-cy='username'
@@ -132,13 +135,13 @@ const LoginForm = () => {
             />
             <Button
               type="submit"
-              color="error"
+              color="primary"
               data-cy="login"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-            Kirjaudu sisään
+              Kirjaudu sisään
             </Button >
           </Box>
         </Box>

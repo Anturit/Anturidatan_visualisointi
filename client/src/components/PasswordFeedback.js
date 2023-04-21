@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material'
 
 const PasswordFeedback = ({ password }) => {
   const regexAndHint = [
@@ -27,9 +28,13 @@ const PasswordFeedback = ({ password }) => {
     )
   }
 
-  return <div style={{ fontSize : 'smaller' }}>
-    {passwordImprovementHintText()}
-  </div>
+  return(
+    <>
+      <Typography variant='body2'>
+        {passwordImprovementHintText()}
+      </Typography>
+    </>
+  )
 }
 
 export default PasswordFeedback
