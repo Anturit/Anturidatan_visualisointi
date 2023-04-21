@@ -50,6 +50,7 @@ const UserProfile = () => {
       <Box sx={{ mt: 2 }}>
         <Togglable buttonLabel='Muokkaa tietoja' id='editForm'>
           <EditProfileDetailsDropdown userDetailsToShow={user} />
+          <br />
           <PasswordChangeForm />
         </Togglable>
       </Box>

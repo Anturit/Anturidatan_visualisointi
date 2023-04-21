@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { setNotification } from '../reducers/notificationReducer.js'
 import PasswordFeedback from './PasswordFeedback.js'
 import userService from '../services/userService.js'
+import { Box, Button, Container, MenuItem, Select, TextField, Typography } from '@mui/material' // eslint-disable-line
 
 /**
  * @typedef {import('../services/userService').userObject} userObject
@@ -111,106 +112,142 @@ const RegisterForm = () => {
   }
 
   return (
-    <div>
-      <form>
-        <h1>Rekisteröintilomake</h1>
-        <label><h3>Käyttäjän rooli</h3></label>
-        <p>
-          <small>Valitse käyttäjän rooli: <span> </span></small>
-          <select
-            value={selectedRole}
-            data-cy='role'
-            onChange={(e) => setSelectedRole(e.target.value)}>
-            {roles.map((value) => (
-              <option
-                value={value}
-                key={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-        </p>
-        <label><h3>Käyttäjätunnus voimassa: </h3></label>
-        <input type="date" name="expiration"
-          value={expirationDate.toISOString().substring(0, 10)}
-          data-cy='expirationDate'
-          max="2100-01-01"
-          onChange={(e) =>
-            setExpirationDate(
-              e.target.value === ''
-                ? new Date()
-                : new Date(e.target.value) > new Date('2100-01-01')
-                  ? new Date('2100-01-01')
-                  : new Date(e.target.value))
-          } />
-        <label><h3>Nimi</h3></label>
-        <small>Etunimi</small>
-        <div>
-          <input
-            placeholder='esim. Matti'
-            data-cy='firstName'
-            value={newFirstName}
-            onChange={(e) => setNewFirstName(e.target.value)} />
-        </div>
-        <small>Sukunimi</small>
-        <div>
-          <input
-            placeholder='esim. Meikäläinen'
-            value={newSurname}
-            data-cy='lastName'
-            onChange={(e) => setNewSurname(e.target.value)} />
-        </div>
-        <div>
-          <label><h3>Sähköposti</h3></label>
-          <input
-            type='text'
-            placeholder='esim. testi@email.fi'
-            value={newEmail} id='newEmail'
-            data-cy='email'
-            onChange={(e) => setNewEmail(e.target.value)} />
-        </div>
-        <div>
-          <label><h3>Osoite</h3></label>
-          <small>Katuosoite</small>
-          <div>
-            <input
-              placeholder='esim. Kauppakatu 29'
-              value={newAddressLine}
-              data-cy='address'
-              onChange={(e) => setNewAddressLine(e.target.value)} />
-          </div>
-          <small>Postinumero</small>
-          <div>
-            <input
-              placeholder='esim. 40100'
-              value={newPostcode}
-              data-cy='postalCode'
-              onChange={(e) => setNewPostcode(e.target.value)} />
-          </div>
-          <small>Kaupunki</small>
-          <div>
-            <input
-              placeholder='esim. Jyväskylä'
-              value={newCity}
-              data-cy='city'
-              onChange={(e) => setNewCity(e.target.value)} />
-          </div>
-        </div>
-        <label><h3>Salasana</h3></label>
-        <small>Käyttäjän salasana</small>
-        <div>
-          <input
-            value={newPassword}
-            data-cy='password'
-            onFocus={() => setShowPasswordSecurityFeedback(true)}
-            onChange={(e) => setNewPassword(e.target.value)} />
-          {showPasswordSecurityFeedback && <PasswordFeedback password={newPassword} />}
-        </div>
-        <p>
-          <button type="submit" data-cy='addUser' onClick={submit}>Lisää uusi käyttäjä</button>
-        </p>
-      </form>
-    </div>
+    <>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', id: 'registerForm' }}>
+        <Box component='form' onSubmit={submit}>
+          <Typography component='h2' variant='h2'>
+            Rekisteröintilomake
+          </Typography>
+          <Box sx={{ id: 'role', marginTop: 4 }}>
+            <Typography component='h4' variant='h4'>
+                Käyttäjän rooli
+            </Typography>
+            <Select
+              value={selectedRole}
+              data-cy='role'
+              onChange={(e) => setSelectedRole(e.target.value)}
+              sx={{ mt: 2 }}>
+              {roles.map((value) => (
+                <MenuItem value={value} key={value}>
+                  {value}
+                </MenuItem>
+              ))}
+            </Select>
+          </Box>
+          <Box sx={{ id: 'expirationDate', mt: 4 }}>
+            <Typography component='h4' variant='h4'>
+              Käyttäjätunnus voimassa
+            </Typography>
+            <TextField
+              type='date'
+              name='expiration'
+              value={expirationDate.toISOString().substring(0, 10)}
+              data-cy='expirationDate'
+              max="2100-01-01"
+              onChange={(e) =>
+                setExpirationDate(
+                  e.target.value === ''
+                    ? new Date()
+                    : new Date(e.target.value) > new Date('2100-01-01')
+                      ? new Date('2100-01-01')
+                      : new Date(e.target.value))
+              }
+              sx={{ mt: 2 }}
+            />
+          </Box>
+          <Box sx={{ id: 'name', marginTop: 4 }}>
+            <Typography component='h4' variant='h4'>
+              Nimi
+            </Typography>
+            <TextField
+              label='Etunimi'
+              value={newFirstName}
+              data-cy='firstName'
+              onChange={(e) => setNewFirstName(e.target.value)}
+              sx={{ mt: 2, mr: 2 }}
+            />
+            <TextField
+              label='Sukunimi'
+              value={newSurname}
+              data-cy='lastName'
+              onChange={(e) => setNewSurname(e.target.value)}
+              sx={{ mt: 2 }}
+            />
+          </Box>
+          <Box sx={{ id: 'email', marginTop: 4 }}>
+            <Typography component='h4' variant='h4'>
+              Sähköposti
+            </Typography>
+            <TextField
+              label='Sähköposti'
+              value={newEmail}
+              id='newEmail'
+              data-cy='email'
+              onChange={(e) => setNewEmail(e.target.value)}
+              sx={{ mt: 2 }}
+            />
+          </Box>
+          <Box sx={{ id: 'address', marginTop: 4 }}>
+            <Typography component='h4' variant='h4'>
+              Osoite
+            </Typography>
+            <Box sx={{ id: 'street' }}>
+              <TextField
+                label='Katuosoite'
+                value={newAddressLine}
+                data-cy='address'
+                onChange={(e) => setNewAddressLine(e.target.value)}
+                sx={{ mt: 2 }}
+              />
+            </Box>
+            <Box sx={{ id: 'postalCode' }}>
+              <TextField
+                label='Postinumero'
+                value={newPostcode}
+                data-cy='postalCode'
+                onChange={(e) => setNewPostcode(e.target.value)}
+                sx={{ mt: 2 }}
+              />
+            </Box>
+            <Box sx={{ id: 'city' }}>
+              <TextField
+                label='Kaupunki'
+                value={newCity}
+                data-cy='city'
+                onChange={(e) => setNewCity(e.target.value)}
+                sx={{ mt: 2 }}
+              />
+            </Box>
+          </Box>
+          <Box sx={{ id: 'password', marginTop: 4 }}>
+            <Typography component='h4' variant='h4'>
+              Salasana
+            </Typography>
+            <Box>
+              <TextField
+                label='Salasana'
+                value={newPassword}
+                data-cy='password'
+                onFocus={() => setShowPasswordSecurityFeedback(true)}
+                onChange={(e) => setNewPassword(e.target.value)}
+                sx={{ mt: 2 }}
+              />
+              {showPasswordSecurityFeedback && <PasswordFeedback password={newPassword} />}
+            </Box>
+            <Button
+              type='submit'
+              data-cy='addUser'
+              color='primary'
+              variant='contained'
+              onClick={submit}
+              sx={{ mt: 4 }}
+            >
+              Lisää uusi käyttäjä
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+    </>
   )
 }
 
