@@ -13,7 +13,7 @@ import { useState } from 'react'
  * @param {Function} onClose
  * @returns {JSX.Element} JSX element
  * @constructor
- * @description Modal for editing user expiration date
+ * @description Modal for editing user details (username, expiration date)
  */
 const EditUserDetails = ({ user, onClose }) => {
 
@@ -45,15 +45,16 @@ const EditUserDetails = ({ user, onClose }) => {
 
     try {
       await userService.changeUserDetails(user.id, updatedUser)
-      dispatch(setNotification(`Käyttäjän ${user.firstName} tiedot päivitetty`, 'success', 5))
       const updatedUsers = users.map((u) => u.id === user.id ? updatedUser : u)
       dispatch(setUsers(updatedUsers))
       onClose()
+      dispatch(setNotification(`Käyttäjän ${user.firstName} tiedot päivitetty`, 3500, 'success'))
     } catch (error) {
-      dispatch(setNotification('Käyttäjän tietojen päivitys epäonnistui', 'error', 5))
+      dispatch(setNotification('Käyttäjän tietojen päivitys epäonnistui', 3500, 'error'))
       onClose()
     }
   }
+
   return (
     <div>
       <Typography variant="h6" component="h2" sx={style}>
@@ -89,7 +90,7 @@ const EditUserDetails = ({ user, onClose }) => {
       />
       <div>
         <Button
-          data-cy='saveDetails'
+          data-cy='saveChanges'
           variant="contained"
           onClick={() => handleSaveUserDetails(user)}
         >

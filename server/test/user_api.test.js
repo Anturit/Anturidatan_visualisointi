@@ -812,5 +812,18 @@ describe('When admin edits user details', () => {
         .expect('Content-Type', /application\/json/)
       expect(response.body.error).toBe('expiration date must be given')
   })
+  test('returns 400 if email is already taken', async () => {
+    const response = await api
+      .put(`/api/users/${USERID}/changeUserDetails`)
+      .set('Authorization', `Bearer ${ADMINTOKEN}`)
+      .send({
+        username: 'admin@admin.com',
+        expirationDate: '3000-04-20T06:12:00.000Z'
+      })
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.error).toBe('this email is already in use')
+  })
+
 
 })

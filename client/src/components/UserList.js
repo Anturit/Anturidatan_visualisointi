@@ -145,7 +145,7 @@ const UserList = () => {
               </Tooltip><Tooltip arrow placement="right" title="Muokkaa vanhentumispäivää">
 
                 <IconButton
-                  data-cy={`edit expiration date of ${row.original.username}`}
+                  data-cy={`edit details of ${row.original.username}`}
                   onClick= {() => { setUser(row.original); handleEditModal()}}
                   color={'success'}
                 >

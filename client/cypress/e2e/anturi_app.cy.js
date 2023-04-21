@@ -344,6 +344,38 @@ describe('Anturi app', function () {
           cy.contains('Lähetin 123456789 poistettu käyttäjältä UserTest')
         })
       })
+      describe.only('and edit user icon is clicked', function () {
+        beforeEach(function () {
+          cy.get('[data-cy="edit details of user@user.com"]').click()
+        })
+        it('expiration date and email can be edited', function () {
+          cy.get('[data-cy="changeExpirationDate"]').type('2024-12-31')
+          cy.get('[data-cy="changeEmail"]').type('testi@mail.com')
+          cy.get('[data-cy="saveChanges"]').click()
+          cy.contains('Käyttäjän UserTest tiedot päivitetty')
+
+        })
+        it('only expiration date can be edited', function () {
+          cy.get('[data-cy="changeExpirationDate"]').type('2024-12-31')
+          cy.get('[data-cy="saveChanges"]').click()
+          cy.contains('Käyttäjän UserTest tiedot päivitetty')
+        })
+        it('only email can be edited', function () {
+          cy.get('[data-cy="changeEmail"]').type('helloworld@mail.com')
+          cy.get('[data-cy="saveChanges"]').click()
+          cy.contains('Käyttäjän UserTest tiedot päivitetty')
+        })
+        it('email cannot be edited to an email that is already in use', function () {
+          cy.get('[data-cy="changeEmail"]').type('admin@admin.com')
+          cy.get('[data-cy="saveChanges"]').click()
+          cy.contains('Käyttäjän tietojen päivitys epäonnistui')
+        })
+        it('email cannot be edited to an invalid email', function () {
+          cy.get('[data-cy="changeEmail"]').type('invalidemail')
+          cy.get('[data-cy="saveChanges"]').click()
+          cy.contains('Käyttäjän tietojen päivitys epäonnistui')
+        })
+      })
     })
 
     describe('and user registeration form is open', function () {

@@ -165,7 +165,6 @@ usersRouter.put('/:id/changeUserDetails', adminCredentialsValidator, async (requ
   const updatedDetails = { username: newEmail, expirationDate: newExpirationDate }
 
   if (newEmail === undefined) {
-    // return 400 error
     return response.status(400).json({
       error: 'email must be given'
     })
@@ -183,7 +182,14 @@ usersRouter.put('/:id/changeUserDetails', adminCredentialsValidator, async (requ
     })
   }
 
-  console.log(updatedDetails, 'moimoimoi')
+  const existingUser = await User.findOne({ username: newEmail })
+
+  if (newEmail && existingUser && existingUser._id.toString() !== userId) {
+    return response.status(400).json({
+    error: 'this email is already in use'
+  })
+  }
+
   await User.findOneAndUpdate(
     { _id: userId },
     { $set: updatedDetails },
