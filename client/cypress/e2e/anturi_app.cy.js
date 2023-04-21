@@ -344,7 +344,7 @@ describe('Anturi app', function () {
           cy.contains('Lähetin 123456789 poistettu käyttäjältä UserTest')
         })
       })
-      describe.only('and edit user icon is clicked', function () {
+      describe('and edit user icon is clicked', function () {
         beforeEach(function () {
           cy.get('[data-cy="edit details of user@user.com"]').click()
         })
