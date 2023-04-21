@@ -185,9 +185,7 @@ usersRouter.put('/:id/changeUserDetails', adminCredentialsValidator, async (requ
   const existingUser = await User.findOne({ username: newEmail })
 
   if (newEmail && existingUser && existingUser._id.toString() !== userId) {
-    return response.status(400).json({
-    error: 'this email is already in use'
-  })
+    return response.status(400).json({ error: 'this email is already in use' })
   }
 
   await User.findOneAndUpdate(
