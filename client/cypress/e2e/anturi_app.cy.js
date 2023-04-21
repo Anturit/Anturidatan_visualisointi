@@ -361,7 +361,8 @@ describe('Anturi app', function () {
         cy.contains('Salasanan täytyy sisältää').should('not.exist')
       })
       it('create new user with default date when all fields are filled', function () {
-        cy.get('[data-cy="role"]').select('user')
+        cy.get('[data-cy="role"]').click()
+        cy.get('[data-value="user"]').click()
         cy.get('[data-cy="firstName"]').type(userUser().firstName)
         cy.get('[data-cy="lastName"]').type(userUser().lastName)
         cy.get('[data-cy="email"]').type('username@username.com')
@@ -373,7 +374,8 @@ describe('Anturi app', function () {
         cy.contains('Käyttäjän luonti onnistui!')
       })
       it('cannot create user if username is taken', function () {
-        cy.get('[data-cy="role"]').select('user')
+        cy.get('[data-cy="role"]').click()
+        cy.get('[data-value="user"]').click()
         cy.get('[data-cy="firstName"]').type(userUser().firstName)
         cy.get('[data-cy="lastName"]').type(userUser().lastName)
         cy.get('[data-cy="email"]').type(userUser().username)
@@ -385,7 +387,8 @@ describe('Anturi app', function () {
         cy.contains('Käyttäjä tällä sähköpostilla on jo olemassa!')
       })
       it('cannot create user if username (email) is wrong type', function () {
-        cy.get('[data-cy="role"]').select('user')
+        cy.get('[data-cy="role"]').click()
+        cy.get('[data-value="user"]').click()
         cy.get('[data-cy="firstName"]').type(userUser().firstName)
         cy.get('[data-cy="lastName"]').type(userUser().lastName)
         cy.get('[data-cy="email"]').type('email@')
@@ -397,7 +400,8 @@ describe('Anturi app', function () {
         cy.contains('Virheellinen sähköpostiosoite!')
       })
       it('cannot create user with invalid password', function () {
-        cy.get('[data-cy="role"]').select('user')
+        cy.get('[data-cy="role"]').click()
+        cy.get('[data-value="user"]').click()
         cy.get('[data-cy="firstName"]').type(userUser().firstName)
         cy.get('[data-cy="lastName"]').type(userUser().lastName)
         cy.get('[data-cy="email"]').type(userUser().username)
@@ -409,7 +413,8 @@ describe('Anturi app', function () {
         cy.contains('Salasana ei kelpaa!')
       })
       it('can not create user with invalid postal code', function () {
-        cy.get('[data-cy="role"]').select('user')
+        cy.get('[data-cy="role"]').click()
+        cy.get('[data-value="user"]').click()
         cy.get('[data-cy="firstName"]').type(userUser().firstName)
         cy.get('[data-cy="lastName"]').type(userUser().lastName)
         cy.get('[data-cy="email"]').type(userUser().username)
@@ -420,9 +425,10 @@ describe('Anturi app', function () {
         cy.get('[data-cy="addUser"]').click()
         cy.contains('Virheellinen postinumero!')
       })
-      it('create new user non expired user and try to login with that user', function () {
+      it('create new non expired user and try to login with that user', function () {
         cy.get('[data-cy="expirationDate"]').type('2050-01-01')
-        cy.get('[data-cy="role"]').select('user')
+        cy.get('[data-cy="role"]').click()
+        cy.get('[data-value="user"]').click()
         cy.get('[data-cy="firstName"]').type(userUser().firstName)
         cy.get('[data-cy="lastName"]').type(userUser().lastName)
         cy.get('[data-cy="email"]').type('testi@testi.net')

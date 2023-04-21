@@ -11,7 +11,7 @@ import { setUsers } from '../reducers/usersReducer'
 import { Delete, ShowChart, Edit } from '@mui/icons-material'
 import MaterialReactTable from 'material-react-table'
 import userService from '../services/userService'
-import Modal from '@mui/material/Modal'
+import { FormControlLabel, Modal } from '@mui/material'
 import UserListSenders from './UserListSenders'
 import EditUserDetails from './EditUserDetails'
 
@@ -167,10 +167,14 @@ const UserList = () => {
 
         renderTopToolbarCustomActions={() => (
           <Box sx={{ display: 'flex', gap: '1rem' }}>
-            <p>Käyttäjien poisto sallittu</p>
-            <Checkbox
-              data-cy='enableDeletion'
-              onChange={() => setUserDeletionAllowed(!userDeletionAllowed)}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  data-cy='enableDeletion'
+                  onChange={() => setUserDeletionAllowed(!userDeletionAllowed)}
+                />}
+              label='Käyttäjien poisto sallittu'
+              labelPlacement='end'
             />
           </Box>
         )}
