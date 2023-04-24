@@ -13,7 +13,7 @@ import MaterialReactTable from 'material-react-table'
 import userService from '../services/userService'
 import { FormControlLabel, Modal } from '@mui/material'
 import UserListSenders from './UserListSenders'
-import EditUserExpirationDate from './EditUserExpirationDate'
+import EditUserDetails from './EditUserDetails'
 
 const style = {
   position: 'absolute',
@@ -35,9 +35,9 @@ const UserList = () => {
   const [user, setUser] = useState(null)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
-  const [openExpirationDateModal, setOpenExpirationModal] = useState(false)
-  const handleOpenExpirationDateModal = () => setOpenExpirationModal(true)
-  const handleCloseExpirationDateModal = () => setOpenExpirationModal(false)
+  const [openExpirationDateModal, setEditModal] = useState(false)
+  const handleEditModal = () => setEditModal(true)
+  const handleCloseEditModal = () => setEditModal(false)
 
 
 
@@ -61,7 +61,14 @@ const UserList = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'username',
+        accessorFn: (user) => {
+          const email = user.username
+          return (
+            <div data-cy={'email'}>
+              {email}
+            </div>
+          )
+        },
         header: 'Sähköposti',
       },
       {
@@ -145,8 +152,8 @@ const UserList = () => {
               </Tooltip><Tooltip arrow placement="right" title="Muokkaa vanhentumispäivää">
 
                 <IconButton
-                  data-cy={`edit expiration date of ${row.original.username}`}
-                  onClick= {() => { setUser(row.original); handleOpenExpirationDateModal()}}
+                  data-cy={`edit details of ${row.original.username}`}
+                  onClick= {() => { setUser(row.original); handleEditModal()}}
                   color={'success'}
                 >
                   <Edit />
@@ -194,11 +201,11 @@ const UserList = () => {
       {openExpirationDateModal && (
         <Modal
           open={openExpirationDateModal}
-          onClose={() => handleCloseExpirationDateModal()}
+          onClose={() => handleCloseEditModal()}
 
         >
           <Box sx={style}>
-            <EditUserExpirationDate user={user} onClose={handleCloseExpirationDateModal}/>
+            <EditUserDetails user={user} onClose={handleCloseEditModal}/>
           </Box>
         </Modal>
       )}

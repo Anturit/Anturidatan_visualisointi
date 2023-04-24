@@ -157,22 +157,42 @@ usersRouter.put('/:id', async (request, response) => {
 
 })
 
-usersRouter.put('/:id/changeExpirationDate', adminCredentialsValidator, async (request, response) => {
+usersRouter.put('/:id/changeUserDetails', adminCredentialsValidator, async (request, response) => {
   const userId = request.params.id
-  const newExpirationDate = request.body.newExpirationDate
+  const newEmail = request.body.username
+  const newExpirationDate = request.body.expirationDate
 
-  if (!newExpirationDate) {
+  const updatedDetails = { username: newEmail, expirationDate: newExpirationDate }
+
+  if (newEmail === undefined) {
     return response.status(400).json({
-      error: 'new expiration date must be given'
+      error: 'email must be given'
     })
   }
 
-  await User.updateOne(
+  if (!newExpirationDate) {
+    return response.status(400).json({
+      error: 'expiration date must be given'
+    })
+  }
+
+  if (newEmail && !(validator.isEmail(newEmail))) {
+    return response.status(400).json({
+      error: 'invalid email address'
+    })
+  }
+
+  const existingUser = await User.findOne({ username: newEmail })
+
+  if (newEmail && existingUser && existingUser._id.toString() !== userId) {
+    return response.status(400).json({ error: 'this email is already in use' })
+  }
+
+  await User.findOneAndUpdate(
     { _id: userId },
-    { $set: { expirationDate: newExpirationDate } },
+    { $set: updatedDetails },
     { new: true }
   )
-
   const changedUser = await User.findById(userId)
   response.status(200).json(changedUser)
 })

@@ -147,6 +147,10 @@ const updateUserExpirationDate = async (user_id, newExpirationDate) => {
   return response.data
 }
 
+const changeUserDetails = async (user_id, newObject) => {
+  const response = await axios.put(`${baseUrl}/${user_id}/changeUserDetails`, newObject, config)
+  return response.data
+}
 
 export default {
   create,
@@ -160,5 +164,6 @@ export default {
   removeToken,
   removeSenderDevice,
   addSenderDevice,
-  updateUserExpirationDate
+  updateUserExpirationDate,
+  changeUserDetails
 }
