@@ -61,7 +61,14 @@ const UserList = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'username',
+        accessorFn: (user) => {
+          const email = user.username
+          return (
+            <div data-cy={'email'}>
+              {email}
+            </div>
+          )
+        },
         header: 'Sähköposti',
       },
       {

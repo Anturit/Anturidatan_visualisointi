@@ -344,7 +344,7 @@ describe('Anturi app', function () {
           cy.contains('Lähetin 123456789 poistettu käyttäjältä UserTest')
         })
       })
-      describe('and edit user icon is clicked', function () {
+      describe.only('and edit user icon is clicked', function () {
         beforeEach(function () {
           cy.get('[data-cy="edit details of user@user.com"]').click()
         })
@@ -353,27 +353,34 @@ describe('Anturi app', function () {
           cy.get('[data-cy="changeEmail"]').type('testi@mail.com')
           cy.get('[data-cy="saveChanges"]').click()
           cy.contains('Käyttäjän UserTest tiedot päivitetty')
+          cy.get('[data-cy="email"]').eq(0).contains('testi@mail.com')
+          cy.get('[data-cy="expirationDate"]').eq(0).contains('31/12/2024')
 
         })
         it('only expiration date can be edited', function () {
           cy.get('[data-cy="changeExpirationDate"]').type('2024-12-31')
           cy.get('[data-cy="saveChanges"]').click()
           cy.contains('Käyttäjän UserTest tiedot päivitetty')
+          cy.get('[data-cy="expirationDate"]').eq(0).contains('31/12/2024')
         })
         it('only email can be edited', function () {
           cy.get('[data-cy="changeEmail"]').type('helloworld@mail.com')
           cy.get('[data-cy="saveChanges"]').click()
           cy.contains('Käyttäjän UserTest tiedot päivitetty')
+          cy.get('[data-cy="email"]').eq(0).contains('helloworld@mail.com')
+
         })
         it('email cannot be edited to an email that is already in use', function () {
           cy.get('[data-cy="changeEmail"]').type('admin@admin.com')
           cy.get('[data-cy="saveChanges"]').click()
           cy.contains('Käyttäjän tietojen päivitys epäonnistui')
+          cy.get('[data-cy="email"]').eq(0).contains('user@user.com')
         })
         it('email cannot be edited to an invalid email', function () {
           cy.get('[data-cy="changeEmail"]').type('invalidemail')
           cy.get('[data-cy="saveChanges"]').click()
           cy.contains('Käyttäjän tietojen päivitys epäonnistui')
+          cy.get('[data-cy="email"]').eq(0).contains('user@user.com')
         })
       })
     })
