@@ -190,6 +190,7 @@ const SensorChart = ({ parameter, ids, logs }) => {
           <Tooltip
             labelStyle={fontStyle}
             contentStyle={fontStyle}
+            labelFormatter={(value) => format(value, "dd/MM/yyyy 'klo' HH:mm")}
           />
           <Legend
             wrapperStyle={fontStyle}
