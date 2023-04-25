@@ -46,6 +46,7 @@ export default function TimePeriodMenu(
   const [matchingRegion, setMatchingRegion] = useState({
     first:0, last:0
   })
+  const [loadingData, setLoadingData] = useState(true)
 
   /**
    * Format date to finnish intl format, example: to 30.3.2023
@@ -154,6 +155,7 @@ export default function TimePeriodMenu(
   const handleFetchMoreLogs = async (selectedYear) => {
     const data = await fetchSenderLogs(selectedSenderId, selectedYear)
     const dataIsNewer = fetchedYears[0] < selectedYear
+    setLoadingData(false)
     if (!data || data.length === 0) {
       if (senders.length === 0) return
       handleNoDataFound(dataIsNewer)
@@ -173,10 +175,10 @@ export default function TimePeriodMenu(
 
 
   useEffect(() => {
-    const selectedYear = selectedDate.getFullYear()
-    if (fetchedYears.includes(selectedYear)) return
-    handleFetchMoreLogs(selectedYear)
-  }, [selectedSenderId, selectedDate.getFullYear()])
+    if (!loadingData)
+      return
+    handleFetchMoreLogs(selectedDate.getFullYear())
+  }, [selectedSenderId, loadingData, selectedDate.getFullYear()])
 
   useEffect(() => {
     if (senders.length === 0) return setVisibleSenders([])
@@ -186,21 +188,25 @@ export default function TimePeriodMenu(
     setVisibleSenders(filteredSenders)
   }, [selectedSenderId, senders, sliderValue, selectedDate])
 
-  const canIncreaseDate = canFetchMore.newerData || matchingRegion.last !== senders.length - 1
-  const canDecreaseDate = canFetchMore.olderData || matchingRegion.first !== 0
+  const canIncreaseDate = !loadingData && (canFetchMore.newerData || matchingRegion.last !== senders.length - 1)
+  const canDecreaseDate = !loadingData && (canFetchMore.olderData || matchingRegion.first !== 0)
 
   const increaseDate = () => {
     if (visibleSenders.length !== 0&& matchingRegion.last !== senders.length - 1)
       setSelectedDate(new Date(senders[matchingRegion.last + 1].date))
-    else
-      setSelectedDate(addYears(selectedDate,1))
+    else {
+      setLoadingData(true)
+      setSelectedDate(addYears(selectedDate, 1))
+    }
   }
 
   const decreaseDate = () => {
     if (visibleSenders.length !== 0&& matchingRegion.first !== 0)
       setSelectedDate(new Date(senders[matchingRegion.first - 1].date))
-    else
+    else {
+      setLoadingData(true)
       setSelectedDate(subYears(selectedDate,1))
+    }
   }
   return <>
     <Stack
