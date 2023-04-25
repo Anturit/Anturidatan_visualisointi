@@ -48,9 +48,7 @@ const RegisterForm = () => {
     city: newCity,
     role: selectedRole,
     expirationDate: expirationDate,
-    senderDeviceIds: [
-      'E00208B4'
-    ]
+    senderDeviceIds: []
   })
 
   const resetRegisterFormStates = () => {
