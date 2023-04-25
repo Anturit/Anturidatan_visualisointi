@@ -24,7 +24,7 @@ Projektissa toteutetaan sensoridatan visualisointi sovellus Kymppiremontit -yrit
 ## Dokumentaatio
 
 - [Definition of Done](https://github.com/Anturit/Anturidatan_visualisointi/blob/main/documentation/definition_of_done.md)
-- [Arkkitehtuuri](https://github.com/Anturit/Anturidatan_visualisointi/blob/main/documentation/arkkitehtuuri.md)
+- [Arkkitehtuuri](https://github.com/Anturit/Anturidatan_visualisointi/blob/main/documentation/definition_of_done.md)
 - [Tuntikirjanpito](https://github.com/orgs/Anturit/projects/2/insights/15) *HUOM! Luku- ja muokkausoikeudet vain tiimin jäsenillä mukaanlukien ohjaaja.*
 
 
