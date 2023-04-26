@@ -30,16 +30,37 @@ import {
   isSameISOWeek,
   isSameMonth
 } from 'date-fns'
-const COLORS = ['blue', 'crimson', 'green', 'purple', 'black']
+
+// Colorblind-friendly hues
+const COLORS = [
+  '#1a69c9', // blue
+  '#d43d51', // red
+  '#a98ee6', // light purple
+  '#f57aaf', // red-pinkish
+  '#ffbcff', // pink
+]
 
 //Enum of Finnish translations of measurement parameters
 const TRANSLATE = {
   temperature: 'Lämpötila',
-  humidity: 'Ilmankosteus',
+  humidity: 'Suhteellinen ilmankosteus',
   pressure: 'Ilmanpaine',
   measurement: 'Mittaus',
+  dev_battery: 'Lähettimen jännite',
+  sen_battery: 'Anturien jännite'
 }
 Object.freeze(TRANSLATE)
+
+//Enum of units for measurement parameters
+const UNIT = {
+  temperature: '°C',
+  humidity: ' %',
+  pressure: ' Pa',
+  measurement: '',
+  dev_battery: 'V',
+  sen_battery: 'V'
+}
+Object.freeze(UNIT)
 
 const fontStyle = {
   fontSize: '1rem',
@@ -91,7 +112,7 @@ const getTicks = (logsWithDates, scale) => {
  * @param {number} scale
  * @returns {string} hour if day, day if week/month, month in finnish if year
  */
-const tickFormatter = (tick, scale) => {
+const xTickFormatter = (tick, scale) => {
   if (scale === SCALE.day)
     return format(new Date(tick), 'HH:mm')
   if (scale === SCALE.week || scale === SCALE.month)
@@ -100,6 +121,12 @@ const tickFormatter = (tick, scale) => {
   return monthsInFinnish[
     getMonth(new Date(tick))
   ]
+}
+
+const yTickFormatter = (value, parameter) => {
+  return parameter === 'pressure' ?
+    `${value/1000} kPa`
+    : `${value}${UNIT[parameter]}`
 }
 
 /**
@@ -178,7 +205,7 @@ const SensorChart = ({ parameter, ids, logs }) => {
             type='number'
             domain={domain(logsWithDates, scale)}
             ticks={getTicks(logsWithDates, scale)}
-            tickFormatter={(tick) => tickFormatter(tick, scale)}
+            tickFormatter={(tick) => xTickFormatter(tick, scale)}
             style={{
               ...fontStyle,
               fontSize: '0.8rem',
@@ -186,11 +213,15 @@ const SensorChart = ({ parameter, ids, logs }) => {
           />
           <YAxis
             style={fontStyle}
+            width={80}
+            wrapStyle={'pre-wrap'}
+            tickFormatter={(tick) => yTickFormatter(tick, parameter)}
           />
           <Tooltip
             labelStyle={fontStyle}
             contentStyle={fontStyle}
             labelFormatter={(value) => format(value, "dd/MM/yyyy 'klo' HH:mm")}
+            formatter={(value) => `${value}${UNIT[parameter]}`}
           />
           <Legend
             wrapperStyle={fontStyle}

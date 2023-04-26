@@ -40,10 +40,10 @@ const getOneSenderLogsFromYear = async (id, year) => {
     return response.data
   } catch (error) {
     if (error.response && error.response.status === 404) {
-      console.log('No data during this time period')
+      console.error('No data during this time period')
       return []
     } else {
-      console.log('Error fetching data:', error)
+      console.error('Error fetching data:', error)
     }
   }
 }
