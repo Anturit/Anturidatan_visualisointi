@@ -46,7 +46,6 @@ const LoginForm = () => {
       const user = await login(
         { username, password }
       )
-      console.log(`logging in with ${JSON.stringify(user)}`)
       window.localStorage.setItem(
         'loggedUser', JSON.stringify(user)
       )
@@ -63,7 +62,6 @@ const LoginForm = () => {
         navigate('/user')
       }
     } catch (err) {
-      console.log(err)
       if (err.response.data.error) {
         if (err.response.data.error.includes('expired')) {
           dispatch(setNotification(

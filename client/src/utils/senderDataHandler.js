@@ -3,7 +3,7 @@ import { format, parseISO, roundToNearestMinutes } from 'date-fns'
 import { groupBy, chain, spread, assign } from 'lodash'
 
 // Object keys-values that are filtered out from formatted data
-const SUPPRESS = ['id', 'sen_id',  'date', 'seq_number', 'device', 'sen_battery', 'dev_battery']
+const SUPPRESS = ['id', 'sen_id',  'date', 'seq_number', 'device']
 
 const groupByDeviceID = (senders) => {
   return groupBy(senders, 'device')

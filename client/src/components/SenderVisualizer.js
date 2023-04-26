@@ -14,6 +14,7 @@ const SenderVisualizer = ({ id, logs }) => {
 
   const bigSensorIds = getSmallSensorIds(logs, false)
   const smallSensorIds = getSmallSensorIds(logs, true)
+  const allSensorIds = bigSensorIds.concat(smallSensorIds)
 
   const sensorData = formatData(logs, measurementParameters)
 
@@ -27,10 +28,14 @@ const SenderVisualizer = ({ id, logs }) => {
       }}>
       <Typography variant="h6">{ id }</Typography>
       <div style={{ flexGrow: 1, width: '100%' }}>
-        {measurementParameters.filter(parameter => parameter !== 'measurement').map(parameter =>
+        {measurementParameters.filter(parameter => !['measurement', 'dev_battery', 'sen_battery'].includes(parameter)).map(parameter =>
           <SensorChart id={`normal-sensor-chart-${parameter}`} key={parameter} parameter={parameter} ids={bigSensorIds} logs={sensorData} />
         )}
-        <SensorChart id='small-sensor-chart' parameter='measurement' ids={smallSensorIds} logs={sensorData} />
+        {measurementParameters.includes('measurement') && <SensorChart id='small-sensor-chart' parameter='measurement' ids={smallSensorIds} logs={sensorData} />}
+        <div>
+          <SensorChart id={'battery-sensor-chart-dev-battery'} parameter={'dev_battery'} ids={allSensorIds} logs={sensorData} />
+          <SensorChart id={'battery-sensor-chart-sen-battery'} parameter={'sen_battery'} ids={allSensorIds} logs={sensorData} />
+        </div>
       </div>
     </div>
   )

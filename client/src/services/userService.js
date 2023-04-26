@@ -66,7 +66,6 @@ const getUser = async (user_id) => {
  * @returns {Array.<userObject>} array of user objects
  */
 const getAllUsers = async () => {
-  console.log('config, getAllusers servicessä', config)
   const response = await axios.get(`${baseUrl}/`, config)
   return response.data
 }
@@ -117,8 +116,7 @@ const updateUserDetails = async (user_id, newObject) => {
 */
 
 const removeSenderDevice = async (user_id, senderDeviceId) => {
-  const response = await axios.put(`${baseUrl}/${user_id}/deleteSenderDevice`, { senderDeviceId: senderDeviceId }, config)
-  console.log(response, 'hello')
+  await axios.put(`${baseUrl}/${user_id}/deleteSenderDevice`, { senderDeviceId: senderDeviceId }, config)
 
 }
 

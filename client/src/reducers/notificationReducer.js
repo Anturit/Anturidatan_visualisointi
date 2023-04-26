@@ -7,13 +7,11 @@ const notificationSlice = createSlice({
   initialState,
   reducers: {
     createNotification(state, action) {
-      console.log('action.payload.message:', action.payload.message)
       state.message = action.payload.message
       state.type = action.payload.type
       return state
     },
     clearNotification() {
-      console.log('clear')
       return initialState
     },
   },
@@ -26,7 +24,6 @@ const notificationSlice = createSlice({
  * @param {string} [type='info'] - optional message display type: 'error' or 'info'. defaults to 'info'
  */
 export const setNotification = (message, timeMs = 4000, type = 'info') => {
-  console.log('setNotification ', message, timeMs)
   return async (dispatch) => {
     const notification = {
       message: message,
