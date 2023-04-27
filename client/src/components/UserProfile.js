@@ -56,7 +56,7 @@ const UserProfile = () => {
           <PasswordChangeForm />
         </Togglable>
       </Box>
-      <Button color="secondary" variant="contained" onClick={() => userService.logoutLocalUser(dispatch)}
+      <Button color="primary" variant="contained" onClick={() => userService.logoutLocalUser(dispatch)}
         data-cy='logout'>Kirjaudu ulos</Button>
     </Box>
   )
