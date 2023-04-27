@@ -15,8 +15,9 @@ describe('Anturi app', function () {
     it('succeeds with correct credentials', function () {
       cy.get('[data-cy="username"]').type(userUser().username)
       cy.get('[data-cy="password"]').type(userUser().password)
-      cy.get('[data-cy="logout"]').should('not.exist')
       cy.get('[data-cy="login"]').click()
+      cy.contains(`${userUser().firstName} ${userUser().lastName} kirjattu sisään`)
+      cy.visit('/userprofile')
       cy.get('[data-cy="logout"]').should('exist')
     })
 
@@ -25,6 +26,8 @@ describe('Anturi app', function () {
       cy.get('[data-cy="username"]').type(userUser().username)
       cy.get('[data-cy="password"]').type(userUser().password)
       cy.get('[data-cy="login"]').click()
+      cy.contains(`${userUser().firstName} ${userUser().lastName} kirjattu sisään`)
+      cy.visit('/userprofile')
       cy.get('[data-cy="logout"]').should('exist')
       cy.reload()
       cy.get('[data-cy="logout"]').should('exist')
@@ -63,6 +66,7 @@ describe('Anturi app', function () {
     })
 
     it('user can log out', function () {
+      cy.visit('/userprofile')
       cy.get('[data-cy="logout"]').click()
       cy.contains('Kirjaudu sisään')
     })
@@ -478,6 +482,7 @@ describe('Anturi app', function () {
         cy.get('[data-cy="addUser"]').click()
         cy.contains('Käyttäjän luonti onnistui!')
         cy.login({ username: 'testi@testi.net', password: userUser().password })
+        cy.visit('/userprofile')
         cy.get('[data-cy="logout"]').should('exist')
       })
       it('registeration fails if some field is empty', function () {

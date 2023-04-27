@@ -17,7 +17,6 @@ import userService from './services/userService'
 import jwt_decode from 'jwt-decode'
 import UserMainView from './components/UserMainView'
 import Navbar from './components/Navbar'
-import Button from '@mui/material/Button'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 
 function App() {
@@ -74,8 +73,6 @@ function App() {
         ?
         <><ThemeProvider theme={theme}>
           <Navbar />
-          <Button color="secondary" variant="contained" onClick={() => userService.logoutLocalUser(dispatch)}
-            data-cy='logout'>Kirjaudu ulos</Button>
           <Notification />
           <Routes>
             <Route path="/user" element={<UserMainView />} />
