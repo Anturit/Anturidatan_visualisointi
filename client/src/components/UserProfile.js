@@ -1,10 +1,11 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
+import { Box, Button } from '@mui/material'
 import Togglable from './Togglable'
 import PasswordChangeForm from './PasswordChangeForm'
 import EditProfileDetailsDropdown from './EditProfileDetailsDropdown'
+import userService from '../services/userService'
 
 /**
  * @typedef {import('../services/userService').userObject} userObject
@@ -17,11 +18,12 @@ const UserProfile = () => {
    * @type {userObject}
    */
   const user = useSelector((state) => state.loginForm.user)
+  const dispatch = useDispatch()
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Typography align="center" variant="h2" component="h2">
-        Käyttäjätiedot
+        Omat tiedot
       </Typography>
       <Box sx={{ mt: 2 }}>
         <Typography variant="h6" component="h2">
@@ -47,13 +49,15 @@ const UserProfile = () => {
           {new Date(user.expirationDate).toLocaleDateString('fi-FI')} asti.
         </Typography>
       </Box>
-      <Box sx={{ mt: 2 }}>
+      <Box sx={{ mt: 2, mb: 2 }}>
         <Togglable buttonLabel='Muokkaa tietoja' id='editForm'>
           <EditProfileDetailsDropdown userDetailsToShow={user} />
           <br />
           <PasswordChangeForm />
         </Togglable>
       </Box>
+      <Button color="secondary" variant="contained" onClick={() => userService.logoutLocalUser(dispatch)}
+        data-cy='logout'>Kirjaudu ulos</Button>
     </Box>
   )
 }
