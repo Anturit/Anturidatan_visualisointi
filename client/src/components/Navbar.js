@@ -8,6 +8,7 @@ import {
 import { Link } from 'react-router-dom'
 import Logo from '../assets/logo_a_small.png'
 import Box from '@mui/material/Box'
+import NavbarLink from './NavbarLink'
 
 function Navbar() {
   const user = useSelector((state) => state.loginForm.user)
@@ -17,35 +18,17 @@ function Navbar() {
       <AppBar position="static">
         <Toolbar>
           <>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} >
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               <Link to='/' >
                 <img src={Logo} style={{ maxWidth: 100, margin: 20, marginBottom: 10 }} alt="Kymppiremontit logo" />
               </Link>
             </Typography>
-            {user.role === 'user' && (
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} >
-                <Link to='/' style={{ textDecoration: 'none', color: 'inherit' }}>
-              Etusivu
-                </Link>
-              </Typography>
-            )}
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} >
-              <Link to='/userprofile' style={{ textDecoration: 'none', color: 'inherit' }}  >
-                {'Omat tiedot'}
-              </Link>
-            </Typography>
+            {user.role === 'user' && <NavbarLink to='/user' text='Etusivu' />}
+            <NavbarLink to='/userprofile' text='Oma profiili' />
             {user.role === 'admin' && (
               <>
-                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} >
-                  <Link to='/users' style={{ textDecoration: 'none', color: 'inherit' }}>
-                    Käyttäjät
-                  </Link>
-                </Typography>
-                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} >
-                  <Link to='/register' style={{ textDecoration: 'none', color: 'inherit' }}>
-                    Luo käyttäjä
-                  </Link>
-                </Typography>
+                <NavbarLink to='/users' text='Käyttäjät' />
+                <NavbarLink to='/register' text='Luo käyttäjä' />
               </>
             )}
           </>
@@ -54,5 +37,5 @@ function Navbar() {
     </Box>
   )
 }
-export default Navbar
 
+export default Navbar
