@@ -4,7 +4,7 @@
 
 Helsingin yliopiston Ohjelmistotuotantoprojekti, kevät 2023.
 
-Projektissa toteutetaan sensoridatan visualisointi sovellus Kymppiremontit -yritykselle. Selaimessa toimiva web-sovellus, jonka tarkoitus on visualisoida sensoreista tulevaa dataa käyttäjälle. 
+Projektissa toteutetaan sensoridatan visualisointi sovellus Kymppiremontit -yritykselle. Selaimessa toimiva web-sovellus, jonka tarkoitus on visualisoida sensoreista tulevaa dataa käyttäjälle.
 
 ## Sovellus
 
@@ -18,7 +18,7 @@ Projektissa toteutetaan sensoridatan visualisointi sovellus Kymppiremontit -yrit
   - *Käynnissäolevan sprintin käyttäjätarinat.*
 - [Task Board](https://github.com/orgs/Anturit/projects/2/views/8)
   - *Käyttäjätarinoihin liityvät tehtävät.*
-- [Other tasks board](https://github.com/orgs/Anturit/projects/2/views/11) 
+- [Other tasks board](https://github.com/orgs/Anturit/projects/2/views/11)
   - *Kaikki muut projektin etenemiseen liittyvät tehtävät.*
 
 ## Dokumentaatio
@@ -26,8 +26,9 @@ Projektissa toteutetaan sensoridatan visualisointi sovellus Kymppiremontit -yrit
 - [Definition of Done](https://github.com/Anturit/Anturidatan_visualisointi/blob/main/documentation/definition_of_done.md)
 - [Arkkitehtuuri](https://github.com/Doubleneck/Anturidatan_visualisointi/blob/main/documentation/arkkitehtuuri.md)
 - [Tuntikirjanpito](https://github.com/orgs/Anturit/projects/2/insights/15) *HUOM! Luku- ja muokkausoikeudet vain tiimin jäsenillä mukaanlukien ohjaaja.*
+- [Koodin dokumentointikäytännöt](https://github.com/Anturit/Anturidatan_visualisointi/blob/main/documentation/koodin_dokumentointikaytannot.md)
 
 
 ## Testaus ja käyttöönotto
-- [Asennus ohjeet](documentation/installation_instructions-md)
-- [Testaus ohjeet](documentation/testing_instructions.md)
+- [Asennus ohjeet](https://github.com/Anturit/Anturidatan_visualisointi/blob/main/documentation/installation_instructions.md)
+- [Testaus ohjeet]([documentation/testing_instructions.md](https://github.com/Anturit/Anturidatan_visualisointi/blob/main/documentation/testing_instructions.md))
